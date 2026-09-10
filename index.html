@@ -2,82 +2,74 @@
 <html lang="pl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#64152d"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>Terminarz wizyt – wspólna baza</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Terminarz Wizyt — Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script>
 <style>
-:root{--b:#64152d;--bd:#3d0b1c;--g:#d7ad55;--bg:#f6f0e5;--card:#fffdf8;--ink:#24151a;--line:#d8c8aa}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}
-body{padding-top:62px}.top{position:fixed;z-index:20;top:0;left:0;right:0;height:62px;background:linear-gradient(90deg,var(--bd),var(--b));color:#fff;display:flex;align-items:center;padding-top:env(safe-area-inset-top);box-shadow:0 2px 10px #0003}.top h1{font-size:18px;margin-left:15px}.top button{margin-left:auto;margin-right:12px}
-.wrap{max-width:1150px;margin:auto;padding:10px}.grid{display:grid;grid-template-columns:330px 1fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);padding:14px;box-shadow:0 2px 8px #0001}
-h2{margin:0 0 12px;color:var(--b);font-size:18px}label{display:block;font-size:13px;font-weight:bold;margin:9px 0 4px}
-input,select,textarea,button{font:inherit}input,select,textarea{width:100%;padding:11px;border:1px solid #bfae8f;background:#fff;border-radius:0}textarea{min-height:65px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-button{border:1px solid var(--g);background:linear-gradient(#8b2443,var(--b));color:#fff;padding:10px 13px;font-weight:bold;border-radius:0;min-height:42px}.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1}
-.monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.monthbar strong{text-transform:capitalize;color:var(--b);font-size:18px}.monthbar button{width:45px}
-.week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.dow{text-align:center;font-size:11px;font-weight:bold;color:#765b36;padding:4px}.day{min-height:91px;background:#fff;border:1px solid var(--line);padding:5px}.day.muted{background:#f3eee5;color:#aaa}.day.today{outline:2px solid var(--g);outline-offset:-2px}.day.sel{background:#fff2c8}.num{font-weight:bold;font-size:12px}.appt{font-size:10px;margin-top:4px;padding:3px 4px;background:var(--b);color:#fff;border-left:2px solid var(--g);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item{border-top:1px solid #e4dac7;padding:10px 0}.item:first-child{border-top:0}.item b{color:var(--b)}.small{font-size:12px;color:#6d6255}.empty{text-align:center;padding:18px;color:#887d70}.status{font-size:12px;margin:5px 0 12px;padding:8px;background:#fff4cf;border:1px solid var(--g);color:var(--b)}
-#login{max-width:420px;margin:70px auto}.hidden{display:none}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.day{min-height:74px}.wrap{padding:7px}}@media(max-width:520px){.row{grid-template-columns:1fr}.day{min-height:59px}.appt{display:none}.day.has:after{content:"•";display:block;color:var(--b);font-size:22px}}
-</style></head>
-<body>
+:root{--b:#64152d;--bd:#3d0b1c;--g:#d7ad55;--bg:#f6f0e5;--card:#fffdf8;--ink:#24151a;--line:#d8c8aa;--ok:#216b3a;--bad:#a51f2d}
+*{box-sizing:border-box}body{margin:0;padding-top:60px;background:var(--bg);color:var(--ink);font-family:Arial,sans-serif}.top{position:fixed;top:0;left:0;right:0;z-index:20;height:60px;background:linear-gradient(90deg,var(--bd),var(--b));color:#fff;display:flex;align-items:center;padding:0 14px}.top h1{font-size:18px;margin:0}.top button{margin-left:auto;width:auto;padding:8px 12px}.wrap{max-width:1180px;margin:auto;padding:10px}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tabs button{width:auto;background:#fff;color:var(--b);border:1px solid var(--g)}.tabs button.active{background:var(--b);color:#fff}.panel{display:none}.panel.active{display:block}.card{background:var(--card);border:1px solid var(--line);padding:14px;margin-bottom:12px}h2{margin:0 0 12px;color:var(--b);font-size:18px}.grid{display:grid;grid-template-columns:340px 1fr;gap:12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}label{display:block;font-size:13px;font-weight:bold;margin:8px 0 4px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;padding:10px;border:1px solid #bfae8f;border-radius:0;background:#fff}button{border:1px solid var(--g);background:linear-gradient(#8b2443,var(--b));color:#fff;padding:9px 12px;font-weight:bold;border-radius:0;cursor:pointer}.secondary{background:#fff;color:var(--b)}.danger{background:#8f2030}.ok{background:#246b3c}.status{padding:9px;background:#fff3ce;border:1px solid var(--g);margin-bottom:10px;font-size:13px}.small{font-size:12px;color:#6d6255}.item{border-top:1px solid #e4dac7;padding:11px 0}.item:first-child{border-top:0}.item b{color:var(--b)}.item .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.item .btns button{width:auto}.pill{display:inline-block;padding:3px 7px;font-size:11px;border:1px solid var(--g);margin-left:5px}.pending{background:#fff0bf}.confirmed{background:#e4f2e8}.rejected{background:#f8dddd}.calendarbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.calendarbar button{width:44px}.calendarbar strong{text-transform:capitalize;color:var(--b)}.week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.dow{text-align:center;font-size:11px;font-weight:bold;padding:4px;color:#765b36}.day{min-height:86px;background:#fff;border:1px solid var(--line);padding:4px}.day.muted{background:#f1ece4;color:#aaa}.day.sel{background:#fff0bf}.day.today{outline:2px solid var(--g);outline-offset:-2px}.num{font-size:12px;font-weight:bold}.appt{font-size:10px;margin-top:4px;padding:3px;background:var(--b);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.list{max-height:560px;overflow:auto}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.service-row,.off-row,.hours-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;border-top:1px solid #e4dac7;padding:10px 0}.hours-row{grid-template-columns:70px 1fr 1fr auto}.service-row input,.hours-row input{min-width:0}.hidden{display:none}#login{max-width:420px;margin:70px auto}
+@media(max-width:850px){.grid,.settings-grid{grid-template-columns:1fr}.day{min-height:64px}}@media(max-width:520px){.row{grid-template-columns:1fr}.hours-row{grid-template-columns:55px 1fr 1fr}.hours-row button{grid-column:1/-1}.appt{display:none}.day.has:after{content:"•";display:block;color:var(--b);font-size:20px}}
+</style></head><body>
 <header class="top"><h1>TERMINARZ WIZYT</h1><button id="logout" class="hidden">Wyloguj</button></header>
-<section id="login" class="card">
-<h2>Logowanie</h2><div class="status">Wspólna baza online – zaloguj się swoim kontem.</div>
-<label>E-mail</label><input id="email" type="email" autocomplete="username">
-<label>Hasło</label><input id="password" type="password" autocomplete="current-password">
-<div class="actions"><button id="loginBtn">Zaloguj</button><button id="signupBtn">Utwórz konto</button></div>
-<div id="loginMsg" class="small"></div>
-</section>
+
+<section id="login" class="card"><h2>Logowanie</h2><div id="loginMsg" class="status">Wspólna baza online.</div>
+<label>E-mail</label><input id="email" type="email"><label>Hasło</label><input id="password" type="password">
+<div class="row" style="margin-top:10px"><button id="loginBtn">Zaloguj</button><button id="signupBtn" class="secondary">Utwórz konto</button></div></section>
+
 <main id="app" class="wrap hidden">
-<div class="status" id="sync">● Połączono z bazą online</div>
+<div id="sync" class="status">● Połączono z bazą online</div>
+<nav class="tabs">
+<button data-tab="wizyty" class="active">Wizyty</button><button data-tab="uslugi">Usługi</button><button data-tab="godziny">Godziny pracy</button><button data-tab="wolne">Dni wolne / urlop</button>
+</nav>
+
+<section id="wizyty" class="panel active">
 <div class="grid">
-<section class="card"><h2>Nowa wizyta</h2><form id="form">
-<label>Imię i nazwisko klienta</label><input id="client" required>
-<div class="row"><div><label>Data</label><input id="date" type="date" required></div><div><label>Godzina</label><input id="time" type="time" required></div></div>
-<label>Rodzaj wizyty</label><input id="service" placeholder="np. konsultacja">
-<div class="row"><div><label>Czas trwania</label><select id="duration"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
-<label>E-mail klienta</label><input id="clientEmail" type="email" autocomplete="email">
-<label>Notatka</label><textarea id="note"></textarea><div class="actions"><button>+ Umów wizytę</button><button type="button" id="clear">Wyczyść</button></div></form></section>
-<section class="card"><div class="monthbar"><button id="prev">‹</button><strong id="title"></strong><button id="next">›</button></div><div class="week" id="calendar"></div></section>
-<section class="card" style="grid-column:1/-1"><h2>Wizyty: <span id="selectedLabel"></span></h2><div id="list"></div></section>
-</div></main>
+<div class="card"><h2>Nowa wizyta</h2><form id="form">
+<label>Imię i nazwisko</label><input id="client" required><div class="row"><div><label>Data</label><input id="date" type="date" required></div><div><label>Godzina</label><input id="time" type="time" required></div></div>
+<label>Usługa</label><select id="serviceSelect"></select><div class="row"><div><label>Czas trwania</label><input id="duration" type="number" min="5" step="5" value="60" required></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
+<label>E-mail</label><input id="clientEmail" type="email"><label>Notatka</label><textarea id="note"></textarea><button style="margin-top:10px">+ Umów wizytę</button></form></div>
+<div class="card"><div class="calendarbar"><button id="prev">‹</button><strong id="title"></strong><button id="next">›</button></div><div class="week" id="calendar"></div></div>
+<div class="card" style="grid-column:1/-1"><h2>Wizyty: <span id="selectedLabel"></span></h2><div id="list" class="list"></div></div>
+</div></section>
+
+<section id="uslugi" class="panel"><div class="card"><h2>Usługi</h2><div class="status">Te usługi będą widoczne klientom podczas rezerwacji.</div><form id="serviceForm"><div class="row"><div><label>Nazwa usługi</label><input id="serviceName" required></div><div><label>Czas trwania (min)</label><input id="serviceDuration" type="number" min="5" step="5" value="60" required></div></div><button style="margin-top:10px">Dodaj usługę</button></form><div id="servicesList"></div></div></section>
+
+<section id="godziny" class="panel"><div class="card"><h2>Godziny pracy</h2><div class="status">Ustaw godziny, w których klienci mogą rezerwować wizyty.</div><div id="hoursList"></div></div></section>
+
+<section id="wolne" class="panel"><div class="card"><h2>Dni wolne / urlop</h2><form id="offForm"><div class="row"><div><label>Od</label><input id="offFrom" type="date" required></div><div><label>Do</label><input id="offTo" type="date" required></div></div><label>Opis</label><input id="offReason" placeholder="np. urlop"><button style="margin-top:10px">Dodaj dni wolne</button></form><div id="offsList"></div></div></section>
+</main>
+
 <script>
-const cfg=window.TERM_CONFIG||{};const sb=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
-const WORKSPACE=cfg.WORKSPACE_ID;let view=new Date(),selected=new Date(),rows=[];
-const $=x=>document.getElementById(x),iso=d=>d.toISOString().slice(0,10),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const C=window.TERM_CONFIG||{},sb=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_PUBLISHABLE_KEY),W=C.WORKSPACE_ID,$=id=>document.getElementById(id);
+let rows=[],services=[],hours=[],offs=[],view=new Date(),selected=new Date();
+const iso=d=>d.toISOString().slice(0,10),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const plDate=s=>new Intl.DateTimeFormat('pl-PL',{dateStyle:'full'}).format(new Date(s+'T12:00:00'));
-function msg(t){$('loginMsg').textContent=t}
-async function load(){let {data,error}=await sb.from('wizyty').select('*').eq('workspace_id',WORKSPACE).order('data').order('godzina');if(error){$('sync').textContent='Błąd połączenia: '+error.message;return}rows=data||[];render()}
-function render(){let y=view.getFullYear(),m=view.getMonth(),f=new Date(y,m,1),start=(f.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),c=$('calendar');c.innerHTML='';$('title').textContent=new Intl.DateTimeFormat('pl-PL',{month:'long',year:'numeric'}).format(f);['Pn','Wt','Śr','Cz','Pt','Sb','Nd'].forEach(x=>{let e=document.createElement('div');e.className='dow';e.textContent=x;c.appendChild(e)});for(let i=0;i<42;i++){let n=i-start+1,d=new Date(y,m,n),e=document.createElement('div');e.className='day'+(n<1||n>days?' muted':'')+(iso(d)===iso(new Date())?' today':'')+(iso(d)===iso(selected)?' sel':'');let a=rows.filter(x=>x.data===iso(d));if(a.length)e.classList.add('has');e.innerHTML='<div class="num">'+d.getDate()+'</div>'+a.slice(0,3).map(x=>'<div class="appt">'+x.godzina.slice(0,5)+' '+esc(x.klient)+'</div>').join('');e.onclick=()=>{selected=d;$('date').value=iso(d);renderList()};c.appendChild(e)}renderList()}
-function renderList(){
-let a=rows.filter(x=>x.data===iso(selected)).sort((x,y)=>x.godzina.localeCompare(y.godzina));
-$('selectedLabel').textContent=plDate(iso(selected));
-$('list').innerHTML=a.length?a.map(x=>{
- const duration=x.czas_trwania ?? x.duration ?? x.czas ?? 60;
- const email=x.email||'';
- const status=x.status||'potwierdzona';
- return '<div class="item"><b>'+x.godzina.slice(0,5)+' — '+esc(x.klient)+'</b> <span class="small">('+esc(duration)+' min)</span>'+
- '<div>'+esc(x.usluga||'Wizyta')+(x.telefon?' · '+esc(x.telefon):'')+'</div>'+
- (email?'<div class="small">E-mail: <a href="mailto:'+encodeURIComponent(email)+'">'+esc(email)+'</a></div>':'')+
- '<div class="small">Status: '+esc(status)+'</div>'+
- (x.notatka?'<div class="small">'+esc(x.notatka)+'</div>':'')+
- '<button data-id="'+x.id+'" style="margin-top:7px;min-height:36px">Usuń</button></div>'
-}).join(''):'<div class="empty">Brak wizyt na ten dzień.</div>';
-$('list').querySelectorAll('[data-id]').forEach(b=>b.onclick=async()=>{if(confirm('Usunąć tę wizytę?')){let {error}=await sb.from('wizyty').delete().eq('id',b.dataset.id);if(error)alert(error.message);else load()}})
+function setMsg(t,err=false){$('sync').innerHTML=err?'<span style="color:#a51f2d">'+t+'</span>':t}
+async function refresh(){
+ const a=await sb.from('wizyty').select('*').eq('workspace_id',W).order('data').order('godzina');
+ const s=await sb.from('uslugi').select('*').eq('workspace_id',W).order('nazwa');
+ const h=await sb.from('godziny_pracy').select('*').eq('workspace_id',W).order('dzien_tygodnia');
+ const o=await sb.from('dni_wolne').select('*').eq('workspace_id',W).order('od');
+ if(a.error||s.error||h.error||o.error){setMsg((a.error||s.error||h.error||o.error).message,true);return}
+ rows=a.data||[];services=s.data||[];hours=h.data||[];offs=o.data||[];renderAll();setMsg('● Połączono z bazą online');
 }
-async function logged(){let {data}=await sb.auth.getSession();if(data.session){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');$('date').value=iso(selected);load()}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden')}}
-$('loginBtn').onclick=async()=>{let {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)msg(error.message);else msg('Zalogowano.');logged()}
-$('signupBtn').onclick=async()=>{let {data,error}=await sb.auth.signUp({email:$('email').value,password:$('password').value});if(error)msg(error.message);else msg(data.session?'Konto utworzone.':'Konto utworzone – sprawdź e-mail, jeśli potwierdzenie jest wymagane.')}
-$('logout').onclick=async()=>{await sb.auth.signOut();logged()}
-$('form').onsubmit=async e=>{
-e.preventDefault();
-let x={workspace_id:WORKSPACE,klient:$('client').value.trim(),data:$('date').value,godzina:$('time').value,usluga:$('service').value.trim(),czas_trwania:+$('duration').value,telefon:$('phone').value.trim(),email:$('clientEmail').value.trim(),notatka:$('note').value.trim()};
-let {error}=await sb.from('wizyty').insert(x);
-if(error)alert(error.message);else{selected=new Date(x.data+'T12:00:00');e.target.reset();$('date').value=iso(selected);load()}
-}
-$('clear').onclick=()=>{$('form').reset();$('date').value=iso(selected)};
-$('prev').onclick=()=>{view.setMonth(view.getMonth()-1);render()};
-$('next').onclick=()=>{view.setMonth(view.getMonth()+1);render()};
-sb.channel('terminarz-wizyty').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+WORKSPACE},()=>load()).subscribe();
-sb.auth.onAuthStateChange(()=>logged());logged();
+function renderAll(){renderCalendar();renderList();renderServices();renderHours();renderOffs();fillServiceSelect()}
+function fillServiceSelect(){let active=services.filter(s=>s.aktywna);$('serviceSelect').innerHTML=active.length?active.map(s=>`<option value="${s.id}" data-duration="${s.czas_trwania}">${esc(s.nazwa)} — ${s.czas_trwania} min</option>`).join(''):'<option value="">Brak usług — dodaj usługę w zakładce Usługi</option>';let s=active[0];if(s)$('duration').value=s.czas_trwania}
+$('serviceSelect').onchange=()=>{let o=$('serviceSelect').selectedOptions[0];if(o)$('duration').value=o.dataset.duration}
+function renderCalendar(){let y=view.getFullYear(),m=view.getMonth(),f=new Date(y,m,1),start=(f.getDay()+6)%7,days=new Date(y,m+1,0).getDate();$('title').textContent=new Intl.DateTimeFormat('pl-PL',{month:'long',year:'numeric'}).format(f);let c=$('calendar');c.innerHTML='';['Pn','Wt','Śr','Cz','Pt','Sb','Nd'].forEach(x=>{let e=document.createElement('div');e.className='dow';e.textContent=x;c.appendChild(e)});for(let i=0;i<42;i++){let n=i-start+1,d=new Date(y,m,n),e=document.createElement('div');e.className='day'+(n<1||n>days?' muted':'')+(iso(d)===iso(selected)?' sel':'')+(iso(d)===iso(new Date())?' today':'');let a=rows.filter(x=>x.data===iso(d)&&x.status!=='odrzucona');if(a.length)e.classList.add('has');e.innerHTML='<div class="num">'+d.getDate()+'</div>'+a.slice(0,3).map(x=>`<div class="appt">${esc((x.godzina||'').slice(0,5))} ${esc(x.klient)}</div>`).join('');e.onclick=()=>{selected=d;$('date').value=iso(d);renderCalendar();renderList()};c.appendChild(e)}}
+function renderList(){let a=rows.filter(x=>x.data===iso(selected)).sort((x,y)=>String(x.godzina).localeCompare(String(y.godzina)));$('selectedLabel').textContent=plDate(iso(selected));$('list').innerHTML=a.length?a.map(x=>{let dur=x.czas_trwania??60,email=x.email||'',st=x.status||'potwierdzona',cls=st==='oczekuje'?'pending':st==='odrzucona'?'rejected':'confirmed';return `<div class="item"><b>${esc((x.godzina||'').slice(0,5))} — ${esc(x.klient)}</b> <span class="pill ${cls}">${esc(st)}</span> <span class="small">(${dur} min)</span><div>${esc(x.usluga||'Wizyta')} ${x.telefon?' · '+esc(x.telefon):''}</div>${email?`<div class="small">E-mail: <a href="mailto:${encodeURIComponent(email)}">${esc(email)}</a></div>`:''}${x.notatka?`<div class="small">${esc(x.notatka)}</div>`:''}<div class="btns">${st!=='potwierdzona'?'<button class="ok" data-act="confirm" data-id="'+x.id+'">Potwierdź</button>':''}${st!=='odrzucona'?'<button class="danger" data-act="reject" data-id="'+x.id+'">Odrzuć</button>':''}<button class="secondary" data-act="delete" data-id="${x.id}">Usuń</button></div></div>`}).join(''):'<div class="small">Brak wizyt na ten dzień.</div>';document.querySelectorAll('#list button[data-id]').forEach(b=>b.onclick=async()=>{let id=b.dataset.id,act=b.dataset.act;if(act==='delete'&&!confirm('Usunąć wizytę?'))return;let q=act==='delete'?sb.from('wizyty').delete().eq('id',id):sb.from('wizyty').update({status:act==='confirm'?'potwierdzona':'odrzucona'}).eq('id',id);let {error}=await q;if(error)alert(error.message);else refresh()})}
+function renderServices(){$('servicesList').innerHTML=services.map(s=>`<div class="service-row"><div><b>${esc(s.nazwa)}</b><div class="small">${s.czas_trwania} min · ${s.aktywna?'aktywna':'wyłączona'}</div></div><div><button data-sid="${s.id}" data-sa="${s.aktywna?'0':'1'}">${s.aktywna?'Wyłącz':'Włącz'}</button> <button class="danger" data-sdel="${s.id}">Usuń</button></div></div>`).join('')||'<div class="small">Brak usług.</div>';document.querySelectorAll('[data-sid]').forEach(b=>b.onclick=async()=>{await sb.from('uslugi').update({aktywna:b.dataset.sa==='1'}).eq('id',b.dataset.sid);refresh()});document.querySelectorAll('[data-sdel]').forEach(b=>b.onclick=async()=>{if(confirm('Usunąć usługę?')){await sb.from('uslugi').delete().eq('id',b.dataset.sdel);refresh()}})}
+function renderHours(){let names=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];$('hoursList').innerHTML=hours.sort((a,b)=>a.dzien_tygodnia-b.dzien_tygodnia).map(h=>`<div class="hours-row"><b>${names[h.dzien_tygodnia]}</b><input type="time" value="${h.od||''}" data-hf="${h.id}"><input type="time" value="${h.do||''}" data-ht="${h.id}"><button data-hsave="${h.id}">Zapisz</button></div>`).join('');document.querySelectorAll('[data-hsave]').forEach(b=>b.onclick=async()=>{let id=b.dataset.hsave,from=document.querySelector('[data-hf="'+id+'"]').value,to=document.querySelector('[data-ht="'+id+'"]').value;let {error}=await sb.from('godziny_pracy').update({od:from,do:to}).eq('id',id);if(error)alert(error.message);else refresh()})}
+function renderOffs(){$('offsList').innerHTML=offs.map(o=>`<div class="off-row"><div><b>${o.od} — ${o.do}</b><div class="small">${esc(o.opis||'Dzień wolny')}</div></div><button class="danger" data-odel="${o.id}">Usuń</button></div>`).join('')||'<div class="small">Brak zaplanowanych dni wolnych.</div>';document.querySelectorAll('[data-odel]').forEach(b=>b.onclick=async()=>{if(confirm('Usunąć dni wolne?')){await sb.from('dni_wolne').delete().eq('id',b.dataset.odel);refresh()}})}
+$('form').onsubmit=async e=>{e.preventDefault();let service=$('serviceSelect').selectedOptions[0];let x={workspace_id:W,klient:$('client').value.trim(),data:$('date').value,godzina:$('time').value,usluga:service?service.textContent.split(' — ')[0]:'Wizyta',czas_trwania:+$('duration').value,telefon:$('phone').value.trim(),email:$('clientEmail').value.trim(),notatka:$('note').value.trim(),status:'potwierdzona'};let {error}=await sb.from('wizyty').insert(x);if(error)alert(error.message);else{selected=new Date(x.data+'T12:00:00');e.target.reset();$('date').value=iso(selected);refresh()}}
+$('serviceForm').onsubmit=async e=>{e.preventDefault();let {error}=await sb.from('uslugi').insert({workspace_id:W,nazwa:$('serviceName').value.trim(),czas_trwania:+$('serviceDuration').value,aktywna:true});if(error)alert(error.message);else{e.target.reset();$('serviceDuration').value=60;refresh()}}
+$('offForm').onsubmit=async e=>{e.preventDefault();if($('offTo').value<$('offFrom').value){alert('Data końcowa nie może być wcześniejsza.');return}let {error}=await sb.from('dni_wolne').insert({workspace_id:W,od:$('offFrom').value,do:$('offTo').value,opis:$('offReason').value.trim()});if(error)alert(error.message);else{e.target.reset();refresh()}}
+$('prev').onclick=()=>{view.setMonth(view.getMonth()-1);renderCalendar()};$('next').onclick=()=>{view.setMonth(view.getMonth()+1);renderCalendar()};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+$('loginBtn').onclick=async()=>{let {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)$('loginMsg').textContent=error.message;else show()};
+$('signupBtn').onclick=async()=>{let {data,error}=await sb.auth.signUp({email:$('email').value,password:$('password').value});$('loginMsg').textContent=error?error.message:(data.session?'Konto utworzone.':'Konto utworzone — sprawdź e-mail, jeśli wymagane.')};
+$('logout').onclick=async()=>{await sb.auth.signOut();show()};
+async function show(){let {data}=await sb.auth.getSession();let yes=!!data.session;$('login').classList.toggle('hidden',yes);$('app').classList.toggle('hidden',!yes);$('logout').classList.toggle('hidden',!yes);if(yes){$('date').value=iso(selected);refresh()}}show();
+sb.auth.onAuthStateChange(()=>show());
+sb.channel('terminarz-rozbudowany').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+W},()=>refresh()).subscribe();
 </script></body></html>
