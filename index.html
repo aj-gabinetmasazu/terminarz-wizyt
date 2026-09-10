@@ -36,6 +36,7 @@ button{border:1px solid var(--g);background:linear-gradient(#8b2443,var(--b));co
 <div class="row"><div><label>Data</label><input id="date" type="date" required></div><div><label>Godzina</label><input id="time" type="time" required></div></div>
 <label>Rodzaj wizyty</label><input id="service" placeholder="np. konsultacja">
 <div class="row"><div><label>Czas trwania</label><select id="duration"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
+<label>E-mail klienta</label><input id="clientEmail" type="email" autocomplete="email">
 <label>Notatka</label><textarea id="note"></textarea><div class="actions"><button>+ Umów wizytę</button><button type="button" id="clear">Wyczyść</button></div></form></section>
 <section class="card"><div class="monthbar"><button id="prev">‹</button><strong id="title"></strong><button id="next">›</button></div><div class="week" id="calendar"></div></section>
 <section class="card" style="grid-column:1/-1"><h2>Wizyty: <span id="selectedLabel"></span></h2><div id="list"></div></section>
@@ -48,13 +49,35 @@ const plDate=s=>new Intl.DateTimeFormat('pl-PL',{dateStyle:'full'}).format(new D
 function msg(t){$('loginMsg').textContent=t}
 async function load(){let {data,error}=await sb.from('wizyty').select('*').eq('workspace_id',WORKSPACE).order('data').order('godzina');if(error){$('sync').textContent='Błąd połączenia: '+error.message;return}rows=data||[];render()}
 function render(){let y=view.getFullYear(),m=view.getMonth(),f=new Date(y,m,1),start=(f.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),c=$('calendar');c.innerHTML='';$('title').textContent=new Intl.DateTimeFormat('pl-PL',{month:'long',year:'numeric'}).format(f);['Pn','Wt','Śr','Cz','Pt','Sb','Nd'].forEach(x=>{let e=document.createElement('div');e.className='dow';e.textContent=x;c.appendChild(e)});for(let i=0;i<42;i++){let n=i-start+1,d=new Date(y,m,n),e=document.createElement('div');e.className='day'+(n<1||n>days?' muted':'')+(iso(d)===iso(new Date())?' today':'')+(iso(d)===iso(selected)?' sel':'');let a=rows.filter(x=>x.data===iso(d));if(a.length)e.classList.add('has');e.innerHTML='<div class="num">'+d.getDate()+'</div>'+a.slice(0,3).map(x=>'<div class="appt">'+x.godzina.slice(0,5)+' '+esc(x.klient)+'</div>').join('');e.onclick=()=>{selected=d;$('date').value=iso(d);renderList()};c.appendChild(e)}renderList()}
-function renderList(){let a=rows.filter(x=>x.data===iso(selected)).sort((x,y)=>x.godzina.localeCompare(y.godzina));$('selectedLabel').textContent=plDate(iso(selected));$('list').innerHTML=a.length?a.map(x=>'<div class="item"><b>'+x.godzina.slice(0,5)+' — '+esc(x.klient)+'</b> <span class="small">('+x.duration+' min)</span><div>'+esc(x.usluga||'Wizyta')+(x.telefon?' · '+esc(x.telefon):'')+'</div>'+(x.notatka?'<div class="small">'+esc(x.notatka)+'</div>':'')+'<button data-id="'+x.id+'" style="margin-top:7px;min-height:36px">Usuń</button></div>').join(''):'<div class="empty">Brak wizyt na ten dzień.</div>';$('list').querySelectorAll('[data-id]').forEach(b=>b.onclick=async()=>{if(confirm('Usunąć tę wizytę?')){let {error}=await sb.from('wizyty').delete().eq('id',b.dataset.id);if(error)alert(error.message);else load()}})}
+function renderList(){
+let a=rows.filter(x=>x.data===iso(selected)).sort((x,y)=>x.godzina.localeCompare(y.godzina));
+$('selectedLabel').textContent=plDate(iso(selected));
+$('list').innerHTML=a.length?a.map(x=>{
+ const duration=x.czas_trwania ?? x.duration ?? x.czas ?? 60;
+ const email=x.email||'';
+ const status=x.status||'potwierdzona';
+ return '<div class="item"><b>'+x.godzina.slice(0,5)+' — '+esc(x.klient)+'</b> <span class="small">('+esc(duration)+' min)</span>'+
+ '<div>'+esc(x.usluga||'Wizyta')+(x.telefon?' · '+esc(x.telefon):'')+'</div>'+
+ (email?'<div class="small">E-mail: <a href="mailto:'+encodeURIComponent(email)+'">'+esc(email)+'</a></div>':'')+
+ '<div class="small">Status: '+esc(status)+'</div>'+
+ (x.notatka?'<div class="small">'+esc(x.notatka)+'</div>':'')+
+ '<button data-id="'+x.id+'" style="margin-top:7px;min-height:36px">Usuń</button></div>'
+}).join(''):'<div class="empty">Brak wizyt na ten dzień.</div>';
+$('list').querySelectorAll('[data-id]').forEach(b=>b.onclick=async()=>{if(confirm('Usunąć tę wizytę?')){let {error}=await sb.from('wizyty').delete().eq('id',b.dataset.id);if(error)alert(error.message);else load()}})
+}
 async function logged(){let {data}=await sb.auth.getSession();if(data.session){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');$('date').value=iso(selected);load()}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden')}}
 $('loginBtn').onclick=async()=>{let {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)msg(error.message);else msg('Zalogowano.');logged()}
 $('signupBtn').onclick=async()=>{let {data,error}=await sb.auth.signUp({email:$('email').value,password:$('password').value});if(error)msg(error.message);else msg(data.session?'Konto utworzone.':'Konto utworzone – sprawdź e-mail, jeśli potwierdzenie jest wymagane.')}
 $('logout').onclick=async()=>{await sb.auth.signOut();logged()}
-$('form').onsubmit=async e=>{e.preventDefault();let x={workspace_id:WORKSPACE,klient:$('client').value.trim(),data:$('date').value,godzina:$('time').value,usluga:$('service').value.trim(),czas_trwania:+$('duration').value,telefon:$('phone').value.trim(),notatka:$('note').value.trim()};let {error}=await sb.from('wizyty').insert(x);if(error)alert(error.message);else{selected=new Date(x.data+'T12:00:00');e.target.reset();$('date').value=iso(selected);load()}}
-$('clear').onclick=()=>{$('form').reset();$('date').value=iso(selected)};$('prev').onclick=()=>{view.setMonth(view.getMonth()-1);render()};$('next').onclick=()=>{view.setMonth(view.getMonth()+1);render()};$('todayBtn')?.addEventListener('click',()=>{view=new Date();selected=new Date();$('date').value=iso(selected);render()});
+$('form').onsubmit=async e=>{
+e.preventDefault();
+let x={workspace_id:WORKSPACE,klient:$('client').value.trim(),data:$('date').value,godzina:$('time').value,usluga:$('service').value.trim(),czas_trwania:+$('duration').value,telefon:$('phone').value.trim(),email:$('clientEmail').value.trim(),notatka:$('note').value.trim()};
+let {error}=await sb.from('wizyty').insert(x);
+if(error)alert(error.message);else{selected=new Date(x.data+'T12:00:00');e.target.reset();$('date').value=iso(selected);load()}
+}
+$('clear').onclick=()=>{$('form').reset();$('date').value=iso(selected)};
+$('prev').onclick=()=>{view.setMonth(view.getMonth()-1);render()};
+$('next').onclick=()=>{view.setMonth(view.getMonth()+1);render()};
 sb.channel('terminarz-wizyty').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+WORKSPACE},()=>load()).subscribe();
 sb.auth.onAuthStateChange(()=>logged());logged();
 </script></body></html>
