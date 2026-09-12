@@ -4,7 +4,13 @@
 <meta name="theme-color" content="#64152d"><meta name="apple-mobile-web-app-capable" content="yes">
 <title>Terminarz wizyt – panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+<script>
+window.TERM_CONFIG={
+  SUPABASE_URL:"https://oiabhlviecdkstuedmdp.supabase.co",
+  SUPABASE_PUBLISHABLE_KEY:"sb_publishable_IoteuBlBG9exrD5ubm-z4A_9szDC9Md",
+  WORKSPACE_ID:"11111111-1111-1111-1111-111111111111"
+};
+</script>
 <style>
 :root{--b:#64152d;--bd:#3d0b1c;--g:#d7ad55;--bg:#f6f0e5;--card:#fffdf8;--ink:#24151a;--line:#d8c8aa;--muted:#74695d;--ok:#315b2c;--okbg:#edf5e8;--bad:#7a2424;--badbg:#f8e7e7;--pend:#765b36;--pendbg:#fff4cf}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}body{padding-top:64px}.top{position:fixed;z-index:30;top:0;left:0;right:0;height:64px;background:linear-gradient(90deg,var(--bd),var(--b));color:#fff;display:flex;align-items:center;padding:0 12px;box-shadow:0 2px 10px #0003}.top h1{font-size:18px;margin:0}.top .spacer{flex:1}.top button{margin-left:8px}
@@ -16,103 +22,688 @@ button,input,select,textarea{font:inherit}button{border:1px solid var(--g);backg
 @media(max-width:900px){.grid2{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.serviceRow,.hourRow,.offRow{grid-template-columns:1fr 1fr}.serviceRow .actions,.hourRow .actions,.offRow .actions{grid-column:1/-1}}
 @media(max-width:560px){body{padding-top:58px}.top{height:58px}.top h1{font-size:15px}.wrap{padding:7px}.row,.settingsGrid,.filters{grid-template-columns:1fr}.day{min-height:68px}.appt{display:none}.day.has:after{content:"•";display:block;color:var(--b);font-size:22px}.table th,.table td{font-size:12px;padding:7px}.tabs{margin-left:-7px;margin-right:-7px;padding-left:7px}}
 
-/* ===== NOWE MENU: tylko wygląd/nawigacja ===== */
-body{padding-left:220px;overflow-x:hidden}
-.top{padding-left:16px}
-.menuToggle{display:none;border:0;background:transparent;padding:5px 10px;font-size:24px;min-height:42px}
-.sideNav{position:fixed;z-index:25;top:64px;left:0;bottom:0;width:220px;background:linear-gradient(180deg,var(--bd),var(--b));border-right:2px solid var(--g);padding:14px 10px;box-shadow:3px 0 14px #0002}
-.sideLogo{display:flex;align-items:center;justify-content:center;gap:10px;padding:4px 4px 17px;margin-bottom:10px;border-bottom:1px solid #d7ad5580}
-.logoMark{width:42px;height:42px;border:2px solid var(--g);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:15px;font-weight:bold;letter-spacing:1px;background:#ffffff08}
-.logoText{color:#fff;font-size:12px;line-height:1.25;font-weight:bold;letter-spacing:1.5px;text-align:left}
-.logoText span{color:var(--g)}
-.sideTitle{color:var(--g);font-size:10px;font-weight:bold;letter-spacing:2px;text-align:center;padding:2px 0 8px;margin-bottom:5px}
-.sideItem{width:100%;display:flex;align-items:center;gap:11px;text-align:left;background:transparent;border:1px solid transparent;color:#fff;padding:12px 13px;margin:3px 0;font-size:13px}
-.sideItem:hover{background:#ffffff12;border-color:#d7ad5560}
-.sideItem.active{background:#8b2443;border-color:var(--g);box-shadow:inset 4px 0 0 var(--g)}
-.navShade{display:none}
 
-@media(max-width:900px){
-  body{padding-left:0}
-  .menuToggle{display:block}
-  .sideNav{top:58px;transform:translateX(-100%);transition:transform .22s ease;width:245px}
-  .sideNav.open{transform:translateX(0)}
-  .navShade.show{display:none}
-  body.menuOpen .top,
-  body.menuOpen #login,
-  body.menuOpen #app{transform:translateX(245px)}
-  body .top,
-  body #login,
-  body #app{transition:transform .22s ease}
+
+/* =========================================================
+   MENU MASTER — PC / TABLET / ANDROID / iOS
+   Jedna spójna konstrukcja. Bez zmian w logice bazy/logowania.
+   ========================================================= */
+:root{
+  --menu-w:250px;
+  --top-h:68px;
+  --wine:#64152d;
+  --wine-dark:#3d0b1c;
+  --wine-light:#7b1d39;
+  --gold:#d7ad55;
 }
 
-/* ===== MENU GÓRNE + BOCZNE JAKO JEDEN PANEL ===== */
-.top{z-index:40}
-.sideNav{z-index:35;top:64px}
-.menuToggle{position:relative;width:46px;height:44px;display:flex;flex-direction:column;justify-content:center;gap:6px;align-items:center}
-.menuToggle span{display:block;width:23px;height:2px;background:#fff;transition:transform .2s ease,opacity .2s ease}
-body.menuOpen .menuToggle span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+/* wspólne */
+html,body{
+  min-height:100%;
+  width:100%;
+  margin:0;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  padding-top:var(--top-h);
+  padding-left:var(--menu-w);
+  background:var(--bg);
+}
+
+/* GÓRNE MENU — zawsze przyklejone */
+.top{
+  position:fixed !important;
+  z-index:4000 !important;
+  top:0 !important;
+  left:var(--menu-w) !important;
+  right:0 !important;
+  width:auto !important;
+  height:var(--top-h) !important;
+  min-height:var(--top-h) !important;
+  display:flex !important;
+  align-items:center !important;
+  box-sizing:border-box !important;
+  padding:0 18px !important;
+  background:linear-gradient(90deg,var(--wine-dark),var(--wine)) !important;
+  color:#fff !important;
+  border:0 !important;
+  border-bottom:3px solid var(--gold) !important;
+  border-radius:0 !important;
+  box-shadow:0 3px 12px #0003 !important;
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
+}
+
+/* BOCZNE MENU — na komputerze stale widoczne */
+.sideNav{
+  position:fixed !important;
+  z-index:4100 !important;
+  top:0 !important;
+  left:0 !important;
+  bottom:0 !important;
+  width:var(--menu-w) !important;
+  height:100vh !important;
+  height:100dvh !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:18px 12px !important;
+  padding-top:max(18px,env(safe-area-inset-top)) !important;
+  padding-bottom:max(18px,env(safe-area-inset-bottom)) !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+  background:linear-gradient(180deg,var(--wine-dark),var(--wine)) !important;
+  border:0 !important;
+  border-right:3px solid var(--gold) !important;
+  border-radius:0 !important;
+  box-shadow:3px 0 12px #0002 !important;
+}
+
+/* Logo */
+.sideLogo{
+  min-height:68px !important;
+  margin:0 2px 18px !important;
+  padding:3px 2px 15px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:10px !important;
+  border-bottom:1px solid #d7ad5580 !important;
+}
+.sideTitle{
+  margin:0 2px 8px !important;
+  padding:0 3px 6px !important;
+  color:#ead8a9 !important;
+  letter-spacing:2px !important;
+  font-size:11px !important;
+}
+
+/* Pozycje menu */
+.sideItem{
+  width:100% !important;
+  min-height:48px !important;
+  margin:4px 0 !important;
+  padding:11px 12px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:11px !important;
+  box-sizing:border-box !important;
+  border:1px solid transparent !important;
+  border-left:3px solid transparent !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:#fff !important;
+  text-align:left !important;
+  font-weight:bold !important;
+  touch-action:manipulation !important;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.sideItem:hover{
+  background:#ffffff12 !important;
+  border-color:#d7ad5560 !important;
+}
+.sideItem:active{
+  transform:translateY(1px);
+}
+.sideItem.active{
+  background:linear-gradient(90deg,var(--wine-light),#70203a) !important;
+  border-color:#d7ad55 !important;
+  border-left-color:var(--gold) !important;
+  box-shadow:inset 4px 0 0 var(--gold) !important;
+}
+
+/* Hamburger */
+.menuToggle{
+  display:flex !important;
+  flex:0 0 46px !important;
+  width:46px !important;
+  height:46px !important;
+  min-width:46px !important;
+  min-height:46px !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-direction:column !important;
+  gap:6px !important;
+  margin:0 !important;
+  padding:5px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  touch-action:manipulation !important;
+}
+.menuToggle span{
+  display:block !important;
+  width:24px !important;
+  height:2px !important;
+  background:#fff !important;
+  transition:transform .2s ease,opacity .2s ease !important;
+}
+body.menuOpen .menuToggle span:nth-child(1){
+  transform:translateY(8px) rotate(45deg);
+}
 body.menuOpen .menuToggle span:nth-child(2){opacity:0}
-body.menuOpen .menuToggle span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
-@media(min-width:901px){
-  .menuToggle{display:flex}
-  body{padding-left:220px}
-}
-@media(max-width:900px){
-  .menuToggle{display:flex}
-  body{padding-left:0}
-  .sideNav{top:58px}
+body.menuOpen .menuToggle span:nth-child(3){
+  transform:translateY(-8px) rotate(-45deg);
 }
 
-/* ===== BOCZNE + GÓRNE MENU: OBOK SIEBIE I POŁĄCZONE ===== */
-body{padding-left:0;overflow-x:hidden}
-.top{left:0;right:0;transition:left .22s ease,transform .22s ease}
-.sideNav{top:0;bottom:0;transform:translateX(-100%);transition:transform .22s ease;width:220px}
-.sideNav.open{transform:translateX(0)}
-.menuToggle{display:flex}
-body.menuOpen .top{left:220px}
-body.menuOpen #login,body.menuOpen #app{transform:translateX(220px)}
-body #login,body #app{transition:transform .22s ease}
-@media(max-width:900px){
-  body{padding-left:0}
-  .top{left:0}
-  .sideNav{top:0;width:245px}
-  body.menuOpen .top{left:245px}
-  body.menuOpen #login,body.menuOpen #app{transform:translateX(245px)}
+/* brak przesłony */
+#navShade,.navShade,.navShade.show{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
 }
 
-/* ===== POPRAWKA MOBILE: GÓRNE I BOCZNE MENU JAKO JEDEN ELEMENT ===== */
-@media(max-width:900px){
+/* komputer */
+@media (min-width:901px){
+  .sideNav{transform:none !important;}
+  .top{transform:none !important;}
+  #login,#app{transform:none !important;}
+}
+
+/* tablet + telefon: boczne menu wysuwane, ale nadal przyklejone do ekranu */
+@media (max-width:900px){
+  body{
+    padding-left:0 !important;
+    padding-top:64px !important;
+  }
   .top{
     left:0 !important;
+    right:0 !important;
     width:100% !important;
-    transform:translateX(0);
-    transition:transform .22s ease !important;
+    height:calc(64px + env(safe-area-inset-top)) !important;
+    min-height:calc(64px + env(safe-area-inset-top)) !important;
+    padding-top:env(safe-area-inset-top) !important;
+    padding-left:max(10px,env(safe-area-inset-left)) !important;
+    padding-right:max(10px,env(safe-area-inset-right)) !important;
   }
   .sideNav{
     top:0 !important;
-    left:0 !important;
+    width:min(300px,84vw) !important;
     height:100vh !important;
-    bottom:auto !important;
-    width:245px !important;
-    transform:translateX(-100%) !important;
-    transition:transform .22s ease !important;
-    z-index:45 !important;
-    padding-top:calc(14px + env(safe-area-inset-top));
+    height:100dvh !important;
+    padding-top:calc(14px + env(safe-area-inset-top)) !important;
+    transform:translate3d(-101%,0,0) !important;
+    transition:transform .23s ease !important;
+    will-change:transform;
   }
   .sideNav.open{
-    transform:translateX(0) !important;
+    transform:translate3d(0,0,0) !important;
   }
-  body.menuOpen .top{
-    transform:translateX(245px) !important;
-    left:0 !important;
+  body .top,
+  body #login,
+  body #app{
+    transition:transform .23s ease !important;
+    will-change:transform;
   }
+  body.menuOpen .top,
   body.menuOpen #login,
   body.menuOpen #app{
-    transform:translateX(245px) !important;
+    transform:translate3d(min(300px,84vw),0,0) !important;
   }
-  .menuToggle{position:relative;z-index:50}
+  #login,#app{
+    width:100% !important;
+    max-width:100% !important;
+  }
 }
-</style></head>
+
+/* mały ekran Android/iOS */
+@media (max-width:560px){
+  body{
+    padding-top:calc(58px + env(safe-area-inset-top)) !important;
+  }
+  .top{
+    height:calc(58px + env(safe-area-inset-top)) !important;
+    min-height:calc(58px + env(safe-area-inset-top)) !important;
+  }
+  .top h1{
+    max-width:calc(100vw - 120px) !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+    font-size:15px !important;
+  }
+  .sideNav{
+    width:min(280px,86vw) !important;
+  }
+  body.menuOpen .top,
+  body.menuOpen #login,
+  body.menuOpen #app{
+    transform:translate3d(min(280px,86vw),0,0) !important;
+  }
+  .sideItem{
+    min-height:48px !important;
+    padding:12px 13px !important;
+  }
+  button{
+    min-height:44px;
+  }
+  input,select,textarea{
+    min-height:44px;
+    font-size:16px !important;
+  }
+}
+
+/* bardzo mały telefon */
+@media (max-width:360px){
+  .sideNav{width:235px !important;}
+  body.menuOpen .top,
+  body.menuOpen #login,
+  body.menuOpen #app{
+    transform:translate3d(235px,0,0) !important;
+  }
+}
+
+/* Safari iOS */
+@supports (-webkit-touch-callout:none){
+  .top,.sideNav{
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+  }
+}
+
+
+/* =========================================================
+   ELEGANCKIE MENU BOCZNE + LOGO
+   ========================================================= */
+.sideNav{
+  padding:20px 13px 16px !important;
+  background:
+    radial-gradient(circle at 30% 8%, #8b24431f 0, transparent 28%),
+    linear-gradient(180deg,#3d0b1c 0%,#64152d 52%,#561025 100%) !important;
+}
+
+.brand{
+  position:relative;
+  min-height:78px;
+  margin:0 4px 21px;
+  padding:4px 5px 17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  border-bottom:1px solid #d7ad5566;
+}
+
+.brandLogo{
+  width:54px;
+  height:54px;
+  flex:0 0 54px;
+  display:grid;
+  place-items:center;
+  position:relative;
+}
+
+.brandCalendar{
+  position:relative;
+  width:43px;
+  height:42px;
+  border:2px solid var(--gold);
+  border-radius:8px;
+  background:linear-gradient(145deg,#7b1d39,#4c0d21);
+  box-shadow:0 4px 12px #0004,inset 0 0 0 1px #ffffff12;
+}
+
+.brandCalendar .ring{
+  position:absolute;
+  top:-8px;
+  width:6px;
+  height:13px;
+  border:2px solid var(--gold);
+  border-radius:5px;
+  background:#64152d;
+}
+.brandCalendar .r1{left:9px}
+.brandCalendar .r2{right:9px}
+
+.brandCalendar .calTop{
+  position:absolute;
+  left:0;
+  right:0;
+  top:9px;
+  height:2px;
+  background:var(--gold);
+  opacity:.9;
+}
+
+.brandCalendar .calBody{
+  position:absolute;
+  left:7px;
+  right:7px;
+  top:16px;
+  bottom:6px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+}
+.brandCalendar .calBody i{
+  display:block;
+  width:4px;
+  height:4px;
+  margin:auto;
+  border-radius:50%;
+  background:#ead8a9;
+}
+
+.brandText{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  line-height:1;
+  letter-spacing:2.3px;
+}
+.brandText strong{
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+}
+.brandText span{
+  margin-top:6px;
+  color:#e1c783;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:4px;
+}
+
+.menuCaption{
+  padding:0 9px 8px;
+  color:#d9bd7b;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.sideMenu{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.sideItem{
+  position:relative;
+  isolation:isolate;
+  min-height:50px !important;
+  margin:0 !important;
+  padding:10px 13px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:13px !important;
+  border:1px solid transparent !important;
+  border-left:3px solid transparent !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:#fdfaf5 !important;
+  box-shadow:none !important;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease !important;
+}
+
+.sideItem::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  border-radius:5px;
+  background:linear-gradient(90deg,#ffffff0c,#ffffff03);
+  opacity:0;
+  transition:opacity .18s ease;
+}
+.sideItem:hover::after{opacity:1}
+
+.sideItem:hover{
+  border-color:#d7ad5538 !important;
+  background:#ffffff08 !important;
+}
+
+.sideItem.active{
+  border-color:#d7ad5570 !important;
+  border-left-color:var(--gold) !important;
+  background:linear-gradient(90deg,#8b2443,#701b36) !important;
+  box-shadow:0 5px 14px #00025,inset 0 0 0 1px #ffffff08 !important;
+}
+
+.menuIcon{
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  display:grid;
+  place-items:center;
+  color:#e7ce91;
+  font-size:20px;
+  line-height:1;
+  border:1px solid #d7ad5540;
+  background:#ffffff08;
+  border-radius:4px;
+}
+.sideItem.active .menuIcon{
+  color:#fff4cf;
+  border-color:#d7ad5590;
+  background:#d7ad5518;
+}
+.menuLabel{
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.15px;
+}
+
+.menuBottom{
+  margin-top:auto;
+  padding:16px 8px 3px;
+  color:#c8aa68;
+  font-size:8px;
+  letter-spacing:1.7px;
+  text-align:center;
+}
+.menuLine{
+  height:1px;
+  margin-bottom:10px;
+  background:linear-gradient(90deg,transparent,#d7ad5570,transparent);
+}
+
+@media(max-width:900px){
+  .sideNav{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+}
+@media(max-width:560px){
+  .brand{min-height:72px;margin-bottom:17px}
+  .brandLogo{width:50px;height:50px;flex-basis:50px}
+  .brandCalendar{transform:scale(.93)}
+  .brandText strong{font-size:15px}
+  .brandText span{font-size:11px}
+  .sideItem{min-height:49px !important}
+}
+
+
+<style id="swipe-menu-fix">
+/* ===== MENU WYSUWANE PALCEM — ANDROID / iOS ===== */
+.sideNav{touch-action:pan-y !important;}
+.sideItem{border-radius:0 !important;}
+.menuToggle{touch-action:manipulation !important;}
+@media (max-width:900px){
+  .sideNav{transition:transform .28s cubic-bezier(.22,.61,.36,1) !important;}
+  body .top,body #login,body #app{transition:transform .28s cubic-bezier(.22,.61,.36,1) !important;}
+}
+</style>
+</style>
+
+
+<style id="menu-slide-final">
+/* =========================================================
+   MENU BOCZNE — WYSUWANE NA KAŻDYM EKRANIE
+   Komputer / tablet / Android / iOS
+   ========================================================= */
+body{
+  padding-left:0 !important;
+}
+.top{
+  left:0 !important;
+  right:0 !important;
+  width:100% !important;
+  transition:transform .28s cubic-bezier(.22,.61,.36,1) !important;
+  will-change:transform;
+}
+.sideNav{
+  transform:translate3d(-101%,0,0) !important;
+  transition:transform .28s cubic-bezier(.22,.61,.36,1) !important;
+  will-change:transform;
+}
+.sideNav.open{
+  transform:translate3d(0,0,0) !important;
+}
+body.menuOpen .top,
+body.menuOpen #login,
+body.menuOpen #app{
+  transform:translate3d(var(--menu-w),0,0) !important;
+}
+#login,#app{
+  transition:transform .28s cubic-bezier(.22,.61,.36,1) !important;
+  will-change:transform;
+}
+.menuToggle{
+  position:relative !important;
+  z-index:2 !important;
+}
+/* Menu jest zawsze wysuwane — również na dużym monitorze. */
+@media (min-width:901px){
+  .sideNav{
+    width:var(--menu-w) !important;
+    top:0 !important;
+    bottom:0 !important;
+    height:100vh !important;
+    height:100dvh !important;
+  }
+  body.menuOpen .top,
+  body.menuOpen #login,
+  body.menuOpen #app{
+    transform:translate3d(var(--menu-w),0,0) !important;
+  }
+}
+@media (max-width:900px){
+  .sideNav{
+    width:min(300px,84vw) !important;
+  }
+  body.menuOpen .top,
+  body.menuOpen #login,
+  body.menuOpen #app{
+    transform:translate3d(min(300px,84vw),0,0) !important;
+  }
+}
+@media (max-width:560px){
+  .sideNav{width:min(280px,86vw) !important;}
+  body.menuOpen .top,
+  body.menuOpen #login,
+  body.menuOpen #app{
+    transform:translate3d(min(280px,86vw),0,0) !important;
+  }
+}
+@media (max-width:360px){
+  .sideNav{width:235px !important;}
+  body.menuOpen .top,
+  body.menuOpen #login,
+  body.menuOpen #app{transform:translate3d(235px,0,0) !important;}
+}
+/* kwadratowe, eleganckie elementy — bez zaokrągleń */
+.sideItem,.menuToggle,.top,.sideNav{border-radius:0 !important;}
+</style>
+
+
+<style id="rodo-admin-v1">
+/* ===== RODO — PANEL ADMINA v1 ===== */
+.rodoToolbar{
+  display:grid;
+  grid-template-columns:1.5fr .8fr .8fr auto;
+  gap:8px;
+  margin-bottom:12px;
+}
+.rodoSummary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+.rodoStat{
+  border:1px solid var(--line);
+  background:#f8f3e9;
+  padding:10px;
+}
+.rodoStat strong{
+  display:block;
+  color:var(--b);
+  font-size:18px;
+  margin-bottom:2px;
+}
+.rodoStat span{font-size:11px;color:var(--muted)}
+.rodoTable .rodoYes{
+  color:var(--ok);
+  font-weight:bold;
+}
+.rodoTable .rodoNo{
+  color:var(--bad);
+  font-weight:bold;
+}
+.rodoDetail{
+  margin-top:10px;
+  padding:10px;
+  border-left:3px solid var(--gold);
+  background:#f8f3e9;
+  font-size:12px;
+}
+.rodoDetailGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:6px 16px;
+}
+.rodoLoading{padding:22px;text-align:center;color:var(--muted)}
+.rodoError{
+  padding:10px;
+  border:1px solid #d5a0a0;
+  background:var(--badbg);
+  color:var(--bad);
+  font-size:13px;
+}
+.rodoActions{display:flex;gap:5px;align-items:center;justify-content:flex-start;white-space:nowrap}
+.rodoAction{width:34px;min-width:34px;height:34px;min-height:34px;padding:0!important;display:inline-grid;place-items:center;font-size:17px;line-height:1;border:1px solid var(--line);background:#fff;color:var(--b);cursor:pointer}
+.rodoAction.edit{color:var(--b);border-color:#d7ad55;background:#fffaf0}
+.rodoAction.delete{color:#b01825;border-color:#d5a0a0;background:#fff5f5}
+.rodoAction.save{color:var(--ok);border-color:#9fbd8e;background:var(--okbg);font-size:16px}
+.rodoAction.cancel{color:var(--bad);border-color:#d5a0a0;background:var(--badbg);font-size:16px}
+.rodoEditRow td{background:#fffaf0!important;vertical-align:middle}
+.rodoTable tr.rodoSelected td{background:#fff8e6}
+.rodoEditRow input,.rodoEditRow select{min-width:90px;padding:7px;font-size:12px}
+.rodoEditGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.rodoEditGrid label{font-size:11px;margin:0 0 3px}
+.rodoReadonly{background:#eee9df!important;color:var(--muted)!important}
+@media(max-width:560px){.rodoActions{position:sticky;left:0}.rodoAction{width:36px;min-width:36px;height:36px}}
+
+@media(max-width:900px){
+  .rodoToolbar{grid-template-columns:1fr 1fr}
+  .rodoSummary{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .rodoToolbar,.rodoSummary{grid-template-columns:1fr}
+  .rodoTable th,.rodoTable td{white-space:nowrap}
+  .rodoDetailGrid{grid-template-columns:1fr}
+}
+</style>
+
+
+<style id="menu-scrollbar-hidden">
+/* ===== MENU BOCZNE — bez widocznego paska przewijania ===== */
+.sideNav{
+  scrollbar-width:none !important;
+  -ms-overflow-style:none !important;
+}
+.sideNav::-webkit-scrollbar{
+  width:0 !important;
+  height:0 !important;
+  display:none !important;
+}
+</style>
+
+</head>
 <body>
 <header class="top">
 <button type="button" id="menuToggle" class="menuToggle" aria-label="Otwórz menu"><span></span><span></span><span></span></button>
@@ -121,17 +712,52 @@ body #login,body #app{transition:transform .22s ease}
 <button id="logout" class="hidden">Wyloguj</button>
 </header>
 <aside id="sideNav" class="sideNav">
-<div class="sideLogo">
-  <div class="logoMark">TV</div>
-  <div class="logoText">TERMINARZ<br><span>WIZYT</span></div>
-</div>
-<div class="sideTitle">MENU</div>
-<button type="button" class="sideItem active" data-panel="calendarPanel">📅 <span>Terminarz</span></button>
-<button type="button" class="sideItem" data-panel="visitsPanel">📋 <span>Wizyty</span></button>
-<button type="button" class="sideItem" data-panel="servicesPanel">✦ <span>Usługi</span></button>
-<button type="button" class="sideItem" data-panel="hoursPanel">◷ <span>Godziny pracy</span></button>
-<button type="button" class="sideItem" data-panel="offPanel">☀ <span>Dni wolne</span></button>
-<button type="button" class="sideItem" data-panel="settingsPanel">⚙ <span>Ustawienia</span></button>
+  <div class="brand">
+    <div class="brandLogo" aria-hidden="true">
+      <div class="brandCalendar">
+        <span class="ring r1"></span><span class="ring r2"></span>
+        <span class="calTop"></span>
+        <span class="calBody">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+      </div>
+    </div>
+    <div class="brandText">
+      <strong>TERMINARZ</strong>
+      <span>WIZYT</span>
+    </div>
+  </div>
+
+  <div class="menuCaption">MENU GŁÓWNE</div>
+
+  <nav class="sideMenu" aria-label="Menu główne">
+    <button type="button" class="sideItem active" data-panel="calendarPanel">
+      <span class="menuIcon">▦</span><span class="menuLabel">Terminarz</span>
+    </button>
+    <button type="button" class="sideItem" data-panel="visitsPanel">
+      <span class="menuIcon">☷</span><span class="menuLabel">Wizyty</span>
+    </button>
+    <button type="button" class="sideItem" data-panel="servicesPanel">
+      <span class="menuIcon">✦</span><span class="menuLabel">Usługi</span>
+    </button>
+    <button type="button" class="sideItem" data-panel="hoursPanel">
+      <span class="menuIcon">◷</span><span class="menuLabel">Godziny pracy</span>
+    </button>
+    <button type="button" class="sideItem" data-panel="offPanel">
+      <span class="menuIcon">◇</span><span class="menuLabel">Dni wolne</span>
+    </button>
+    <button type="button" class="sideItem" data-panel="settingsPanel">
+      <span class="menuIcon">⚙</span><span class="menuLabel">Ustawienia</span>
+    </button>
+    <button type="button" class="sideItem" data-panel="rodoPanel">
+      <span class="menuIcon">✓</span><span class="menuLabel">RODO</span>
+    </button>
+  </nav>
+
+  <div class="menuBottom">
+    <div class="menuLine"></div>
+    <span>TERMINARZ ONLINE</span>
+  </div>
 </aside>
 <div id="navShade" class="navShade"></div>
 <section id="login" class="card">
@@ -143,7 +769,7 @@ body #login,body #app{transition:transform .22s ease}
 <main id="app" class="wrap hidden">
 <div id="sync" class="notice">● Połączono z bazą online</div>
 <nav class="tabs">
-<button class="tab active" data-tab="calendarPanel">TERMINARZ</button><button class="tab" data-tab="visitsPanel">WIZYTY</button><button class="tab" data-tab="servicesPanel">USŁUGI</button><button class="tab" data-tab="hoursPanel">GODZINY PRACY</button><button class="tab" data-tab="offPanel">DNI WOLNE</button><button class="tab" data-tab="settingsPanel">USTAWIENIA</button>
+<button class="tab active" data-tab="calendarPanel">TERMINARZ</button><button class="tab" data-tab="visitsPanel">WIZYTY</button><button class="tab" data-tab="servicesPanel">USŁUGI</button><button class="tab" data-tab="hoursPanel">GODZINY PRACY</button><button class="tab" data-tab="offPanel">DNI WOLNE</button><button class="tab" data-tab="settingsPanel">USTAWIENIA</button><button class="tab" data-tab="rodoPanel">RODO</button>
 </nav>
 <section id="calendarPanel" class="panel active">
 <div class="grid2">
@@ -163,47 +789,147 @@ body #login,body #app{transition:transform .22s ease}
 <section id="hoursPanel" class="panel"><section class="card"><h2>Godziny pracy</h2><div class="help">Ustaw godziny dla każdego dnia. Wyłącz dzień, jeśli nie przyjmujesz wtedy wizyt.</div><div id="hoursList"></div><div class="actions"><button id="saveHours">Zapisz godziny pracy</button></div><div id="hoursMsg" class="help"></div></section></section>
 <section id="offPanel" class="panel"><section class="card"><h2>Dni wolne / urlop</h2><form id="offForm"><div class="row"><div><label>Od</label><input id="offFrom" type="date" required></div><div><label>Do</label><input id="offTo" type="date" required></div></div><label>Opis</label><input id="offDesc" placeholder="np. Urlop"><div class="actions"><button>Dodaj dzień wolny</button></div><div id="offMsg" class="help"></div></form><div id="offList"></div></section></section>
 <section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div><div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div></section></section>
+<section id="rodoPanel" class="panel">
+<section class="card">
+  <div class="sectionTitle">
+    <h2>Zgody RODO</h2>
+    <span class="count" id="rodoCount"></span>
+  </div>
+
+  <div class="help" style="margin-bottom:12px">
+    Dane są pobierane wyłącznie przez bezpieczną funkcję administracyjną
+    <b>pobierz_zgody_rodo_admin</b>. Panel nie odczytuje bezpośrednio tabeli
+    <b>zgody_rodo</b>.
+  </div>
+
+  <div class="rodoSummary">
+    <div class="rodoStat"><strong id="rodoTotal">0</strong><span>Wszystkich zgód</span></div>
+    <div class="rodoStat"><strong id="rodoConfirmed">0</strong><span>Potwierdzone RODO</span></div>
+    <div class="rodoStat"><strong id="rodoMarketing">0</strong><span>Zgód marketingowych</span></div>
+  </div>
+
+  <div class="rodoToolbar">
+    <input id="rodoSearch" placeholder="Szukaj: klient, telefon, e-mail">
+    <input id="rodoFrom" type="date" title="Od">
+    <input id="rodoTo" type="date" title="Do">
+    <button id="rodoRefresh" class="secondary smallBtn" type="button">Odśwież</button>
+  </div>
+
+  <div id="rodoMsg" class="help" style="margin-bottom:8px"></div>
+
+  <div class="tableWrap">
+    <table class="table rodoTable">
+      <thead>
+        <tr>
+          <th>Data zgody</th>
+          <th>Klient</th>
+          <th>Telefon</th>
+          <th>E-mail</th>
+          <th>RODO</th>
+          <th>Wersja</th>
+          <th>Marketing</th>
+          <th>Data marketingu</th><th>Akcje</th>
+        </tr>
+      </thead>
+      <tbody id="rodoTable"></tbody>
+    </table>
+  </div>
+  <div id="rodoDetail" class="rodoDetail hidden"></div>
+</section>
+</section>
 </main>
 <script>
 
-/* ===== OBSŁUGA NOWEGO MENU — bez zmian w logowaniu i bazie ===== */
-function openPanel(panelId){
-  document.querySelectorAll('.sideItem').forEach(function(btn){
-    btn.classList.toggle('active', btn.dataset.panel === panelId);
-  });
-  document.querySelectorAll('.panel').forEach(function(panel){
-    panel.classList.remove('active');
-  });
-  var panel = document.getElementById(panelId);
-  if(panel) panel.classList.add('active');
-  if(window.innerWidth <= 900){
-    document.getElementById('sideNav').classList.remove('open');
+/* ===== MENU — klik + wysuwanie palcem Android/iOS, bez dotykania bazy/logowania ===== */
+(function(){
+  const toggle=document.getElementById('menuToggle');
+  const side=document.getElementById('sideNav');
+  if(!toggle || !side) return;
+
+  const menuWidth=()=>Math.min(side.getBoundingClientRect().width || 280, window.innerWidth*.88);
+  let touchStartX=0, touchStartY=0, touchX=0, dragging=false, tracking=false;
+  const EDGE=28, THRESHOLD=55;
+
+  function closeMenu(){
+    side.classList.remove('open');
     document.body.classList.remove('menuOpen');
-    document.getElementById('navShade').classList.remove('show');
+    toggle.setAttribute('aria-label','Otwórz menu');
   }
-}
-document.querySelectorAll('.sideItem').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    openPanel(btn.dataset.panel);
+  function openMenu(){
+    side.classList.add('open');
+    document.body.classList.add('menuOpen');
+    toggle.setAttribute('aria-label','Zamknij menu');
+  }
+  toggle.addEventListener('click',function(){
+    if(document.body.classList.contains('menuOpen')) closeMenu();
+    else openMenu();
   });
-});
-document.getElementById('menuToggle').addEventListener('click', function(){
-  var open = document.body.classList.toggle('menuOpen');
-  document.getElementById('sideNav').classList.toggle('open', open);
-  this.setAttribute('aria-label', open ? 'Zamknij menu' : 'Otwórz menu');
-});
-document.getElementById('navShade').addEventListener('click', function(){
-  document.getElementById('sideNav').classList.remove('open');
-  document.body.classList.remove('menuOpen');
-});
+
+  document.querySelectorAll('.sideItem').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      const id=btn.dataset.panel;
+      document.querySelectorAll('.sideItem').forEach(x=>x.classList.toggle('active',x===btn));
+      document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));
+      document.querySelectorAll('.tab').forEach(function(tab){
+        tab.classList.toggle('active',tab.dataset.tab===id);
+      });
+      if(window.innerWidth<=900) closeMenu();
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+
+  /* ===== GESTY PRZESUWANIA PALCEM =====
+     Android + iOS: przeciągnięcie od lewej krawędzi otwiera menu,
+     przeciągnięcie w lewo po otwartym menu je zamyka. */
+  document.addEventListener('touchstart',function(e){
+    if(window.innerWidth>900 || !e.touches || e.touches.length!==1) return;
+    const t=e.touches[0];
+    touchStartX=t.clientX; touchStartY=t.clientY; touchX=t.clientX;
+    tracking=false; dragging=false;
+    const open=document.body.classList.contains('menuOpen');
+    if((!open && touchStartX<=EDGE) || open){ tracking=true; }
+  },{passive:true});
+
+  document.addEventListener('touchmove',function(e){
+    if(!tracking || !e.touches || e.touches.length!==1) return;
+    const t=e.touches[0];
+    touchX=t.clientX;
+    const dx=touchX-touchStartX, dy=t.clientY-touchStartY;
+    if(Math.abs(dx)<8 || Math.abs(dx)<Math.abs(dy)*1.15) return;
+    dragging=true;
+    if(Math.abs(dx)>12 && e.cancelable) e.preventDefault();
+  },{passive:false});
+
+  document.addEventListener('touchend',function(){
+    if(!tracking) return;
+    const dx=touchX-touchStartX;
+    tracking=false;
+    if(!dragging) return;
+    if(!document.body.classList.contains('menuOpen') && dx>THRESHOLD){ openMenu(); }
+    else if(document.body.classList.contains('menuOpen') && dx<-THRESHOLD){ closeMenu(); }
+    dragging=false;
+  },{passive:true});
+
+  document.addEventListener('touchcancel',function(){tracking=false;dragging=false;},{passive:true});
+
+  /* Klawiatura: Escape zamyka menu. */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && document.body.classList.contains('menuOpen')) closeMenu();
+  });
+
+  window.addEventListener('resize',function(){
+    /* Po zmianie orientacji nie zostawiaj menu w nieprawidłowym stanie. */
+    if(window.innerWidth>900) closeMenu();
+  });
+})();
 const cfg=window.TERM_CONFIG||{};const sb=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);const WORKSPACE=cfg.WORKSPACE_ID;
 const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
 const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const plDate=s=>new Intl.DateTimeFormat('pl-PL',{dateStyle:'full'}).format(new Date(s+'T12:00:00'));
 const shortDate=s=>new Intl.DateTimeFormat('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(s+'T12:00:00'));
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-let view=new Date(),selected=new Date(),rows=[],services=[],hours=[],daysOff=[],editingServiceId=null;
-const days=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+let view=new Date(),selected=new Date(),rows=[],services=[],hours=[],daysOff=[],editingServiceId=null,rodoRows=[],rodoLoaded=false;
+const days=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];document.querySelectorAll('.tab').forEach(b=>b.onclick=async()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active');if(b.dataset.tab==='rodoPanel'&&!rodoLoaded)await loadRodo()});
 function statusClass(s){return s==='oczekuje'?'pending':s==='odrzucona'?'rejected':'confirmed'}
 function statusLabel(s){return s==='oczekuje'?'oczekuje':s==='odrzucona'?'odrzucona':'potwierdzona'}
 function showMsg(id,text,err=false){$(id).textContent=text;$(id).className='help'+(err?' err':'')}
@@ -223,9 +949,258 @@ function renderVisitsTable(){let a=[...rows];const q=$('visitSearch').value.trim
 function renderServices(){const l=$('servicesList');l.innerHTML=services.length?services.map(s=>'<div class="serviceRow"><div><b>'+esc(s.nazwa)+'</b></div><div>'+esc(s.czas_trwania)+' min</div><div><span class="statusBadge '+(s.aktywna?'confirmed':'rejected')+'">'+(s.aktywna?'aktywna':'nieaktywna')+'</span></div><div class="actions" style="margin:0"><button class="smallBtn" data-service-edit="'+s.id+'">Edytuj</button><button class="smallBtn danger" data-service-delete="'+s.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak usług.</div>';l.querySelectorAll('[data-service-edit]').forEach(b=>b.onclick=()=>{const s=services.find(x=>String(x.id)===b.dataset.serviceEdit);if(!s)return;editingServiceId=s.id;$('serviceName').value=s.nazwa;$('serviceMinutes').value=s.czas_trwania;$('serviceActive').checked=!!s.aktywna;$('serviceSaveBtn').textContent='Zapisz zmiany';$('serviceCancel').classList.remove('hidden')});l.querySelectorAll('[data-service-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć tę usługę?'))return;const r=await sb.from('uslugi').delete().eq('id',b.dataset.serviceDelete);if(r.error)showMsg('serviceMsg',r.error.message,true);else{showMsg('serviceMsg','Usługa usunięta.');await loadServices();renderServices()}})}
 function renderHours(){const defaults=[...Array(7)].map((_,i)=>hours.find(h=>Number(h.dzien_tygodnia)===i)||{dzien_tygodnia:i,od:'09:00',do:'17:00',aktywne:false});$('hoursList').innerHTML=defaults.map((h,i)=>'<div class="hourRow"><b>'+days[i]+'</b><input type="time" data-hour-from="'+i+'" value="'+esc((h.od||'').slice(0,5))+'"><input type="time" data-hour-to="'+i+'" value="'+esc((h.do||'').slice(0,5))+'"><label class="toggle"><input type="checkbox" data-hour-active="'+i+'" '+(h.aktywne?'checked':'')+'> Aktywny</label></div>').join('')}
 function renderOff(){const l=$('offList');l.innerHTML=daysOff.length?daysOff.map(x=>'<div class="offRow"><div><b>'+shortDate(x.od)+'</b></div><div><b>'+shortDate(x.do)+'</b></div><div>'+esc(x.opis||'Dzień wolny')+'</div><div class="actions" style="margin:0"><button class="smallBtn danger" data-off-delete="'+x.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak ustawionych dni wolnych.</div>';l.querySelectorAll('[data-off-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć ten okres wolny?'))return;const r=await sb.from('dni_wolne').delete().eq('id',b.dataset.offDelete);if(r.error)showMsg('offMsg',r.error.message,true);else{showMsg('offMsg','Okres usunięty.');await loadOff();renderOff();renderCalendar()}})}
+
+/* ===== RODO ADMIN — bezpośredni odczyt tabeli ZABRONIONY.
+   Panel korzysta wyłącznie z funkcji pobierz_zgody_rodo_admin. ===== */
+function rodoValue(x,names){
+  for(const n of names){
+    if(x && x[n]!==undefined && x[n]!==null) return x[n];
+  }
+  return null;
+}
+function rodoBool(v){ return v===true || v==='true' || v===1 || v==='1'; }
+function rodoDateTime(v){
+  if(!v) return '—';
+  try{return new Intl.DateTimeFormat('pl-PL',{dateStyle:'short',timeStyle:'short'}).format(new Date(v));}
+  catch(e){return String(v)}
+}
+function rodoDateOnly(v){
+  if(!v) return '';
+  const s=String(v);
+  return s.length>=10?s.slice(0,10):s;
+}
+function rodoId(x){
+  return rodoValue(x,['id','zgoda_id','consent_id','rodo_id']);
+}
+function hideRodoDetail(){
+  $('rodoDetail').classList.add('hidden');
+  $('rodoDetail').innerHTML='';
+}
+function clearRodoSelection(){
+  hideRodoDetail();
+  document.querySelectorAll('#rodoTable tr.rodoSelected').forEach(tr=>tr.classList.remove('rodoSelected'));
+}
+function rodoEditRow(x, i){
+  const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'';
+  const tel=rodoValue(x,['klient_telefon','telefon'])||'';
+  const email=rodoValue(x,['klient_email','email'])||'';
+  const rg=rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']));
+  const mg=rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']));
+  const rv=rodoValue(x,['rodo_wersja','rodoWersja'])||'';
+  return '<tr class="rodoEditRow" data-rodo-edit-index="'+i+'">'+
+    '<td>'+esc(rodoDateTime(rodoValue(x,['rodo_data','created_at','createdAt'])))+'</td>'+
+    '<td><input data-edit="klient" value="'+esc(klient)+'" aria-label="Klient"></td>'+
+    '<td><input data-edit="telefon" value="'+esc(tel)+'" aria-label="Telefon"></td>'+
+    '<td><input type="email" data-edit="email" value="'+esc(email)+'" aria-label="E-mail"></td>'+
+    '<td><select data-edit="rodo" aria-label="RODO"><option value="1" '+(rg?'selected':'')+'>TAK</option><option value="0" '+(!rg?'selected':'')+'>NIE</option></select></td>'+
+    '<td><input class="rodoReadonly" readonly value="'+esc(rv)+'" aria-label="Wersja RODO"></td>'+
+    '<td><select data-edit="marketing" aria-label="Marketing"><option value="1" '+(mg?'selected':'')+'>TAK</option><option value="0" '+(!mg?'selected':'')+'>NIE</option></select></td>'+
+    '<td>—</td>'+
+    '<td><div class="rodoActions"><button type="button" class="rodoAction save" title="Zapisz zmiany" aria-label="Zapisz zmiany" data-rodo-save="'+i+'">✓</button><button type="button" class="rodoAction cancel" title="Anuluj edycję" aria-label="Anuluj edycję" data-rodo-cancel="'+i+'">×</button></div></td>'+
+    '</tr>';
+}
+function renderRodo(){
+  const all=Array.isArray(rodoRows)?rodoRows:[];
+  const q=$('rodoSearch').value.trim().toLowerCase();
+  const from=$('rodoFrom').value;
+  const to=$('rodoTo').value;
+
+  let a=all.filter(x=>{
+    const klient=String(rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'');
+    const tel=String(rodoValue(x,['klient_telefon','telefon'])||'');
+    const email=String(rodoValue(x,['klient_email','email'])||'');
+    if(q && ![klient,tel,email].some(v=>v.toLowerCase().includes(q))) return false;
+    const dt=rodoValue(x,['rodo_data','created_at','createdAt']);
+    const day=rodoDateOnly(dt);
+    if(from && day<from) return false;
+    if(to && day>to) return false;
+    return true;
+  });
+
+  a.sort((x,y)=>{
+    const dx=String(rodoValue(x,['rodo_data','created_at','createdAt'])||'');
+    const dy=String(rodoValue(y,['rodo_data','created_at','createdAt'])||'');
+    return dy.localeCompare(dx);
+  });
+
+  const total=all.length;
+  const confirmed=all.filter(x=>rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']))).length;
+  const marketing=all.filter(x=>rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']))).length;
+  $('rodoTotal').textContent=total;
+  $('rodoConfirmed').textContent=confirmed;
+  $('rodoMarketing').textContent=marketing;
+  $('rodoCount').textContent=a.length+' '+(a.length===1?'zgoda':'zgód');
+
+  $('rodoTable').innerHTML=a.length?a.map((x,i)=>{
+    const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'—';
+    const tel=rodoValue(x,['klient_telefon','telefon'])||'—';
+    const email=rodoValue(x,['klient_email','email'])||'—';
+    const rd=rodoValue(x,['rodo_data','created_at','createdAt']);
+    const rv=rodoValue(x,['rodo_wersja','rodoWersja'])||'—';
+    const rg=rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']));
+    const mg=rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']));
+    const md=rodoValue(x,['marketing_data','marketingData']);
+    return '<tr data-rodo-index="'+i+'">'+
+      '<td>'+esc(rodoDateTime(rd))+'</td>'+
+      '<td><b>'+esc(klient)+'</b></td>'+
+      '<td>'+esc(tel)+'</td>'+
+      '<td>'+esc(email)+'</td>'+
+      '<td class="'+(rg?'rodoYes':'rodoNo')+'">'+(rg?'TAK':'NIE')+'</td>'+
+      '<td>'+esc(rv)+'</td>'+
+      '<td class="'+(mg?'rodoYes':'rodoNo')+'">'+(mg?'TAK':'NIE')+'</td>'+
+      '<td>'+esc(rodoDateTime(md))+'</td>'+
+      '<td><div class="rodoActions">'+
+        '<button type="button" class="rodoAction edit" title="Edytuj" aria-label="Edytuj" data-rodo-edit="'+i+'">✎</button>'+
+        '<button type="button" class="rodoAction delete" title="Usuń" aria-label="Usuń" data-rodo-delete="'+i+'">×</button>'+
+      '</div></td>'+
+      '</tr>';
+  }).join(''):'<tr><td colspan="9" class="empty">Brak zgód spełniających kryteria.</td></tr>';
+
+  clearRodoSelection();
+
+  $('rodoTable').querySelectorAll('[data-rodo-index]').forEach(tr=>{
+    tr.onclick=(ev)=>{
+      if(ev.target.closest('[data-rodo-edit],[data-rodo-delete]')) return;
+      const x=a[Number(tr.dataset.rodoIndex)];
+      if(!x)return;
+      const wasSelected=tr.classList.contains('rodoSelected');
+      if(wasSelected){
+        clearRodoSelection();
+        return;
+      }
+      $('rodoTable').querySelectorAll('tr.rodoSelected').forEach(r=>r.classList.remove('rodoSelected'));
+      tr.classList.add('rodoSelected');
+      const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'—';
+      const tel=rodoValue(x,['klient_telefon','telefon'])||'—';
+      const email=rodoValue(x,['klient_email','email'])||'—';
+      const rid=rodoValue(x,['rezerwacja_id','rezerwacjaId','reservation_id'])||'—';
+      const wid=rodoValue(x,['workspace_id','workspaceId'])||WORKSPACE;
+      const rd=rodoValue(x,['rodo_data','created_at','createdAt']);
+      const rv=rodoValue(x,['rodo_wersja','rodoWersja'])||'—';
+      const rg=rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']));
+      const mg=rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']));
+      const md=rodoValue(x,['marketing_data','marketingData']);
+      const mv=rodoValue(x,['marketing_wersja','marketingWersja'])||'—';
+      $('rodoDetail').classList.remove('hidden');
+      $('rodoDetail').innerHTML='<b>Szczegóły zgody</b>'+
+        '<div class="rodoDetailGrid" style="margin-top:7px">'+
+        '<div><b>Klient:</b> '+esc(klient)+'</div><div><b>Telefon:</b> '+esc(tel)+'</div>'+
+        '<div><b>E-mail:</b> '+esc(email)+'</div><div><b>Rezerwacja ID:</b> '+esc(rid)+'</div>'+
+        '<div><b>RODO potwierdzone:</b> '+(rg?'TAK':'NIE')+'</div><div><b>Data RODO:</b> '+esc(rodoDateTime(rd))+'</div>'+
+        '<div><b>Wersja RODO:</b> '+esc(rv)+'</div><div><b>Marketing:</b> '+(mg?'TAK':'NIE')+'</div>'+
+        '<div><b>Data marketingu:</b> '+esc(rodoDateTime(md))+'</div><div><b>Wersja marketingu:</b> '+esc(mv)+'</div>'+
+        '<div><b>Workspace:</b> '+esc(wid)+'</div></div>';
+    };
+  });
+
+  $('rodoTable').querySelectorAll('[data-rodo-edit]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const i=Number(b.dataset.rodoEdit),x=a[i];
+    if(!x)return;
+    const tr=b.closest('tr');
+    tr.outerHTML=rodoEditRow(x,i);
+    clearRodoSelection();
+    const row=$('rodoTable').querySelector('[data-rodo-edit-index="'+i+'"]');
+    row.querySelector('[data-rodo-save]').onclick=()=>saveRodoEdit(x,row);
+    row.querySelector('[data-rodo-cancel]').onclick=()=>renderRodo();
+  });
+
+  $('rodoTable').querySelectorAll('[data-rodo-delete]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const i=Number(b.dataset.rodoDelete),x=a[i];
+    if(!x)return;
+    const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'ten rekord';
+    if(!confirm('Usunąć zgodę RODO dla „'+klient+'”?')) return;
+    deleteRodoConsent(x);
+  });
+}
+async function saveRodoEdit(x,row){
+  const payload={
+    id:rodoId(x),
+    klient:row.querySelector('[data-edit="klient"]').value.trim(),
+    telefon:row.querySelector('[data-edit="telefon"]').value.trim(),
+    email:row.querySelector('[data-edit="email"]').value.trim(),
+    rodo_potwierdzone:row.querySelector('[data-edit="rodo"]').value==='1',
+    marketing_zgoda:row.querySelector('[data-edit="marketing"]').value==='1'
+  };
+  if(!payload.id){
+    showMsg('rodoMsg','Nie można zapisać: rekord nie zawiera identyfikatora zgody.',true);
+    return;
+  }
+  if(!payload.klient || !payload.telefon || !payload.email){
+    showMsg('rodoMsg','Uzupełnij klienta, telefon i e-mail.',true);
+    return;
+  }
+  showMsg('rodoMsg','Zapisywanie zmian...');
+  const r=await sb.rpc('edytuj_zgode_rodo_admin',{
+    p_id:payload.id,
+    p_workspace_id:WORKSPACE,
+    p_klient:payload.klient,
+    p_telefon:payload.telefon,
+    p_email:payload.email,
+    p_rodo_potwierdzone:payload.rodo_potwierdzone,
+    p_marketing_zgoda:payload.marketing_zgoda
+  });
+  if(r.error){
+    showMsg('rodoMsg','Nie udało się zapisać zmian: '+r.error.message,true);
+    return;
+  }
+  showMsg('rodoMsg','Zmiany zapisane.');
+  await loadRodo();
+}
+async function deleteRodoConsent(x){
+  const id=rodoId(x);
+  if(!id){showMsg('rodoMsg','Nie można usunąć: rekord nie zawiera identyfikatora zgody.',true);return;}
+  showMsg('rodoMsg','Usuwanie zgody...');
+  const r=await sb.rpc('usun_zgode_rodo_admin',{
+    p_id:id,
+    p_workspace_id:WORKSPACE
+  });
+  if(r.error){
+    showMsg('rodoMsg','Nie udało się usunąć zgody: '+r.error.message,true);
+    return;
+  }
+  showMsg('rodoMsg','Zgoda została usunięta.');
+  await loadRodo();
+}
+async function loadRodo(){
+  $('rodoMsg').textContent='Ładowanie zgód RODO...';
+  $('rodoRefresh').disabled=true;
+  $('rodoTable').innerHTML='<tr><td colspan="9" class="rodoLoading">Ładowanie...</td></tr>';
+  try{
+    const r=await sb.rpc('pobierz_zgody_rodo_admin',{p_workspace_id:WORKSPACE});
+    if(r.error){
+      rodoRows=[];
+      rodoLoaded=false;
+      $('rodoMsg').textContent='Nie udało się pobrać zgód RODO: '+r.error.message;
+      $('rodoMsg').className='help err';
+      $('rodoTable').innerHTML='<tr><td colspan="9" class="empty">Brak danych.</td></tr>';
+      $('rodoTotal').textContent='0';
+      $('rodoConfirmed').textContent='0';
+      $('rodoMarketing').textContent='0';
+      $('rodoCount').textContent='';
+      return;
+    }
+    rodoRows=Array.isArray(r.data)?r.data:[];
+    rodoLoaded=true;
+    $('rodoMsg').textContent='Zgody zostały pobrane bezpiecznie z funkcji administracyjnej.';
+    $('rodoMsg').className='help';
+    $('rodoDetail').classList.add('hidden');
+    renderRodo();
+  }catch(e){
+    rodoRows=[];
+    rodoLoaded=false;
+    $('rodoMsg').textContent='Błąd połączenia z funkcją RODO: '+(e?.message||e);
+    $('rodoMsg').className='help err';
+    $('rodoTable').innerHTML='<tr><td colspan="9" class="empty">Brak danych.</td></tr>';
+  }finally{
+    $('rodoRefresh').disabled=false;
+  }
+}
+
 async function loadSettings(){const r=await sb.from('ustawienia').select('*').eq('workspace_id',WORKSPACE).maybeSingle();if(r.error){showMsg('settingsMsg','Nie udało się wczytać ustawień: '+r.error.message,true);return}const x=r.data||{};$('setName').value=x.nazwa_terminarza||'Terminarz wizyt';$('setOwner').value=x.nazwa_osoby||'';$('setPhone').value=x.telefon||'';$('setEmail').value=x.email||'';$('setMessage').value=x.informacja_dla_klienta||''}
 $('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={workspace_id:WORKSPACE,nazwa_terminarza:$('setName').value.trim()||'Terminarz wizyt',nazwa_osoby:$('setOwner').value.trim(),telefon:$('setPhone').value.trim(),email:$('setEmail').value.trim(),informacja_dla_klienta:$('setMessage').value.trim(),updated_at:new Date().toISOString()};const r=await sb.from('ustawienia').upsert(payload,{onConflict:'workspace_id'});if(r.error)showMsg('settingsMsg','Nie udało się zapisać ustawień: '+r.error.message,true);else showMsg('settingsMsg','Ustawienia zapisane w bazie Supabase.')};
-$('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}showMsg('loginMsg','Logowanie...');$('loginBtn').disabled=true;const r=await sb.auth.signInWithPassword({email,password});$('loginBtn').disabled=false;if(r.error){showMsg('loginMsg','Błąd logowania: '+r.error.message,true);return}showMsg('loginMsg','');await logged()};
+$('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}const btn=$('loginBtn');showMsg('loginMsg','Logowanie...');btn.disabled=true;try{const r=await sb.auth.signInWithPassword({email,password});if(r.error){showMsg('loginMsg','Błąd logowania: '+r.error.message,true);return}showMsg('loginMsg','Zalogowano.');await logged()}catch(e){showMsg('loginMsg','Błąd połączenia z bazą: '+(e?.message||e),true)}finally{btn.disabled=false}};
 $('signupBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}if(password.length<6){showMsg('loginMsg','Hasło musi mieć co najmniej 6 znaków.',true);return}showMsg('loginMsg','Tworzenie konta...');$('signupBtn').disabled=true;const r=await sb.auth.signUp({email,password});$('signupBtn').disabled=false;if(r.error){showMsg('loginMsg','Błąd tworzenia konta: '+r.error.message,true);return}if(r.data?.session){showMsg('loginMsg','Konto utworzone.');await logged()}else showMsg('loginMsg','Konto utworzone. Sprawdź e-mail, jeśli wymagana jest jego weryfikacja.');};
 
 
@@ -297,6 +1272,17 @@ $('form').onsubmit=async function(e){
     if(btn) btn.disabled=false;
   }
 };
+
+
+$('rodoSearch').oninput=renderRodo;
+$('rodoFrom').onchange=renderRodo;
+$('rodoTo').onchange=renderRodo;
+$('rodoRefresh').onclick=loadRodo;
+document.querySelectorAll('.sideItem[data-panel="rodoPanel"]').forEach(b=>{
+  b.addEventListener('click',async()=>{
+    if(!rodoLoaded) await loadRodo();
+  });
+});
 
 sb.channel('terminarz-wizyty').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+WORKSPACE},()=>refreshAll()).subscribe();$('logout').onclick=async()=>{const r=await sb.auth.signOut();if(r.error)alert('Nie udało się wylogować: '+r.error.message);else await logged()};sb.auth.onAuthStateChange(()=>logged());$('date').value=iso(selected);logged();
 </script></body></html>
