@@ -609,6 +609,121 @@ body.menuOpen #app{
 .sideItem,.menuToggle,.top,.sideNav{border-radius:0 !important;}
 </style>
 
+
+<style id="rodo-admin-v1">
+/* ===== RODO — PANEL ADMINA v1 ===== */
+.rodoToolbar{
+  display:grid;
+  grid-template-columns:1.5fr .8fr .8fr auto;
+  gap:8px;
+  margin-bottom:12px;
+}
+.rodoSummary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+.rodoStat{
+  border:1px solid var(--line);
+  background:#f8f3e9;
+  padding:10px;
+}
+.rodoStat strong{
+  display:block;
+  color:var(--b);
+  font-size:18px;
+  margin-bottom:2px;
+}
+.rodoStat span{font-size:11px;color:var(--muted)}
+.rodoTable .rodoYes{
+  color:var(--ok);
+  font-weight:bold;
+}
+.rodoTable .rodoNo{
+  color:var(--bad);
+  font-weight:bold;
+}
+.rodoDetail{
+  margin-top:10px;
+  padding:10px;
+  border-left:3px solid var(--gold);
+  background:#f8f3e9;
+  font-size:12px;
+}
+.rodoDetailGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:6px 16px;
+}
+.rodoLoading{padding:22px;text-align:center;color:var(--muted)}
+.rodoError{
+  padding:10px;
+  border:1px solid #d5a0a0;
+  background:var(--badbg);
+  color:var(--bad);
+  font-size:13px;
+}
+.rodoActions{display:flex;gap:5px;align-items:center;justify-content:flex-start;white-space:nowrap}
+.rodoAction{width:34px;min-width:34px;height:34px;min-height:34px;padding:0!important;display:inline-grid;place-items:center;font-size:17px;line-height:1;border:1px solid var(--line);background:#fff;color:var(--b);cursor:pointer}
+.rodoAction.edit{color:var(--b);border-color:#d7ad55;background:#fffaf0}
+.rodoAction.delete{color:#b01825;border-color:#d5a0a0;background:#fff5f5}
+.rodoAction.save{color:var(--ok);border-color:#9fbd8e;background:var(--okbg);font-size:16px}
+.rodoAction.cancel{color:var(--bad);border-color:#d5a0a0;background:var(--badbg);font-size:16px}
+.rodoEditRow td{background:#fffaf0!important;vertical-align:middle}
+.rodoTable tr.rodoSelected td{background:#fff8e6}
+.rodoEditRow input,.rodoEditRow select{min-width:90px;padding:7px;font-size:12px}
+.rodoEditGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.rodoEditGrid label{font-size:11px;margin:0 0 3px}
+.rodoReadonly{background:#eee9df!important;color:var(--muted)!important}
+@media(max-width:560px){.rodoActions{position:sticky;left:0}.rodoAction{width:36px;min-width:36px;height:36px}}
+
+@media(max-width:900px){
+  .rodoToolbar{grid-template-columns:1fr 1fr}
+  .rodoSummary{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .rodoToolbar,.rodoSummary{grid-template-columns:1fr}
+  .rodoTable th,.rodoTable td{white-space:nowrap}
+  .rodoDetailGrid{grid-template-columns:1fr}
+}
+</style>
+
+
+<style id="menu-scrollbar-hidden">
+/* ===== MENU BOCZNE — bez widocznego paska przewijania ===== */
+.sideNav{
+  scrollbar-width:none !important;
+  -ms-overflow-style:none !important;
+}
+.sideNav::-webkit-scrollbar{
+  width:0 !important;
+  height:0 !important;
+  display:none !important;
+}
+</style>
+
+
+<style id="admin-users-v1">
+.adminBox{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.adminHeader h3{margin:0 0 8px;color:var(--b);font-size:18px}
+.adminNotice{padding:10px;border:1px solid var(--line);background:#f8f3e9;font-size:12px;line-height:1.5;margin-bottom:12px}
+.adminTableWrap{overflow-x:auto}
+.adminTable{width:100%;border-collapse:collapse;font-size:12px}
+.adminTable th,.adminTable td{border:1px solid var(--line);padding:9px;text-align:left;vertical-align:middle}
+.adminTable th{background:#f3eee3;color:var(--b)}
+.adminRole{display:inline-block;padding:4px 7px;border:1px solid var(--line);font-weight:bold}
+.adminRole.user{background:#f3f3f3}
+.adminActions{display:flex;gap:6px;flex-wrap:wrap}
+.adminBtn{min-height:34px;padding:7px 10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:12px}
+.adminBtn.grant{border-color:#9fbd8e;background:var(--okbg);color:var(--ok)}
+.adminBtn.revoke{border-color:#d5a0a0;background:var(--badbg);color:var(--bad)}
+.adminBtn:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:700px){
+ .adminTable{min-width:650px}
+ .adminNotice{font-size:11px}
+}
+</style>
 </head>
 <body>
 <header class="top">
@@ -655,6 +770,9 @@ body.menuOpen #app{
     <button type="button" class="sideItem" data-panel="settingsPanel">
       <span class="menuIcon">⚙</span><span class="menuLabel">Ustawienia</span>
     </button>
+    <button type="button" class="sideItem" data-panel="rodoPanel">
+      <span class="menuIcon">✓</span><span class="menuLabel">RODO</span>
+    </button>
   </nav>
 
   <div class="menuBottom">
@@ -672,7 +790,7 @@ body.menuOpen #app{
 <main id="app" class="wrap hidden">
 <div id="sync" class="notice">● Połączono z bazą online</div>
 <nav class="tabs">
-<button class="tab active" data-tab="calendarPanel">TERMINARZ</button><button class="tab" data-tab="visitsPanel">WIZYTY</button><button class="tab" data-tab="servicesPanel">USŁUGI</button><button class="tab" data-tab="hoursPanel">GODZINY PRACY</button><button class="tab" data-tab="offPanel">DNI WOLNE</button><button class="tab" data-tab="settingsPanel">USTAWIENIA</button>
+<button class="tab active" data-tab="calendarPanel">TERMINARZ</button><button class="tab" data-tab="visitsPanel">WIZYTY</button><button class="tab" data-tab="servicesPanel">USŁUGI</button><button class="tab" data-tab="hoursPanel">GODZINY PRACY</button><button class="tab" data-tab="offPanel">DNI WOLNE</button><button class="tab" data-tab="settingsPanel">USTAWIENIA</button><button class="tab" data-tab="rodoPanel">RODO</button>
 </nav>
 <section id="calendarPanel" class="panel active">
 <div class="grid2">
@@ -691,7 +809,56 @@ body.menuOpen #app{
 <section id="servicesPanel" class="panel"><section class="card"><h2>Usługi</h2><form id="serviceForm"><div class="row"><div><label>Nazwa usługi</label><input id="serviceName" required></div><div><label>Czas trwania (min)</label><input id="serviceMinutes" type="number" min="5" step="5" value="30" required></div></div><label class="toggle"><input id="serviceActive" type="checkbox" checked> Usługa aktywna</label><div class="actions"><button id="serviceSaveBtn">Dodaj usługę</button><button type="button" id="serviceCancel" class="secondary hidden">Anuluj edycję</button></div><div id="serviceMsg" class="help"></div></form><div id="servicesList"></div></section></section>
 <section id="hoursPanel" class="panel"><section class="card"><h2>Godziny pracy</h2><div class="help">Ustaw godziny dla każdego dnia. Wyłącz dzień, jeśli nie przyjmujesz wtedy wizyt.</div><div id="hoursList"></div><div class="actions"><button id="saveHours">Zapisz godziny pracy</button></div><div id="hoursMsg" class="help"></div></section></section>
 <section id="offPanel" class="panel"><section class="card"><h2>Dni wolne / urlop</h2><form id="offForm"><div class="row"><div><label>Od</label><input id="offFrom" type="date" required></div><div><label>Do</label><input id="offTo" type="date" required></div></div><label>Opis</label><input id="offDesc" placeholder="np. Urlop"><div class="actions"><button>Dodaj dzień wolny</button></div><div id="offMsg" class="help"></div></form><div id="offList"></div></section></section>
-<section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div><div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div></section></section>
+<section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div><div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div>
+<div class="adminBox"><div class="adminHeader"><h3>Administratorzy</h3></div><div class="adminNotice">Tutaj zarządzamy uprawnieniami administratorów zalogowanych użytkowników. <b>Etap 1</b> przygotowuje wygląd panelu. Nadawanie uprawnień zostanie podłączone bezpiecznie do Supabase w <b>Etapie 2</b>.</div><div class="adminTableWrap"><table class="adminTable"><thead><tr><th>Użytkownik</th><th>E-mail</th><th>Rola</th><th>Akcje</th></tr></thead><tbody id="adminUsersTable"><tr><td colspan="4" class="empty">Ładowanie użytkownika...</td></tr></tbody></table></div><div id="adminMsg" class="help" style="margin-top:8px"></div></div></section></section>
+<section id="rodoPanel" class="panel">
+<section class="card">
+  <div class="sectionTitle">
+    <h2>Zgody RODO</h2>
+    <span class="count" id="rodoCount"></span>
+  </div>
+
+  <div class="help" style="margin-bottom:12px">
+    Dane są pobierane wyłącznie przez bezpieczną funkcję administracyjną
+    <b>pobierz_zgody_rodo_admin</b>. Panel nie odczytuje bezpośrednio tabeli
+    <b>zgody_rodo</b>.
+  </div>
+
+  <div class="rodoSummary">
+    <div class="rodoStat"><strong id="rodoTotal">0</strong><span>Wszystkich zgód</span></div>
+    <div class="rodoStat"><strong id="rodoConfirmed">0</strong><span>Potwierdzone RODO</span></div>
+    <div class="rodoStat"><strong id="rodoMarketing">0</strong><span>Zgód marketingowych</span></div>
+  </div>
+
+  <div class="rodoToolbar">
+    <input id="rodoSearch" placeholder="Szukaj: klient, telefon, e-mail">
+    <input id="rodoFrom" type="date" title="Od">
+    <input id="rodoTo" type="date" title="Do">
+    <button id="rodoRefresh" class="secondary smallBtn" type="button">Odśwież</button>
+  </div>
+
+  <div id="rodoMsg" class="help" style="margin-bottom:8px"></div>
+
+  <div class="tableWrap">
+    <table class="table rodoTable">
+      <thead>
+        <tr>
+          <th>Data zgody</th>
+          <th>Klient</th>
+          <th>Telefon</th>
+          <th>E-mail</th>
+          <th>RODO</th>
+          <th>Wersja</th>
+          <th>Marketing</th>
+          <th>Data marketingu</th><th>Akcje</th>
+        </tr>
+      </thead>
+      <tbody id="rodoTable"></tbody>
+    </table>
+  </div>
+  <div id="rodoDetail" class="rodoDetail hidden"></div>
+</section>
+</section>
 </main>
 <script>
 
@@ -783,14 +950,35 @@ const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const plDate=s=>new Intl.DateTimeFormat('pl-PL',{dateStyle:'full'}).format(new Date(s+'T12:00:00'));
 const shortDate=s=>new Intl.DateTimeFormat('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(s+'T12:00:00'));
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-let view=new Date(),selected=new Date(),rows=[],services=[],hours=[],daysOff=[],editingServiceId=null;
-const days=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+let view=new Date(),selected=new Date(),rows=[],services=[],hours=[],daysOff=[],editingServiceId=null,rodoRows=[],rodoLoaded=false;
+const days=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
+document.querySelectorAll('.tab').forEach(b=>b.onclick=async()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $(b.dataset.tab).classList.add('active');
+  if(b.dataset.tab==='rodoPanel'&&!rodoLoaded) await loadRodo();
+  if(b.dataset.tab==='settingsPanel') await loadAdminPanel();
+});
 function statusClass(s){return s==='oczekuje'?'pending':s==='odrzucona'?'rejected':'confirmed'}
 function statusLabel(s){return s==='oczekuje'?'oczekuje':s==='odrzucona'?'odrzucona':'potwierdzona'}
 function showMsg(id,text,err=false){$(id).textContent=text;$(id).className='help'+(err?' err':'')}
 function dayIndex(s){return (new Date(s+'T12:00:00').getDay()+6)%7}
 function isOff(s){return daysOff.find(x=>s>=x.od&&s<=x.do)}
 async function logged(){const {data}=await sb.auth.getSession();const user=data?.session?.user;if(user){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');await refreshAll()}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden')}}
+function renderAdminUsers(user){
+  const email=user?.email||'—';
+  const name=user?.user_metadata?.full_name||user?.user_metadata?.name||email.split('@')[0]||'Zalogowany użytkownik';
+  $('adminUsersTable').innerHTML='<tr><td><b>'+esc(name)+'</b></td><td>'+esc(email)+'</td><td><span class="adminRole user">Użytkownik</span></td><td><div class="adminActions"><button type="button" class="adminBtn grant" data-admin-action="grant">Nadaj administratora</button><button type="button" class="adminBtn revoke" data-admin-action="revoke" disabled>Odbierz administratora</button></div></td></tr>';
+  $('adminUsersTable').querySelector('[data-admin-action="grant"]').onclick=()=>{
+    $('adminMsg').textContent='Etap 1: przycisk jest przygotowany. Nadawanie uprawnień podłączymy w Etapie 2 przez bezpieczną funkcję Supabase.';
+  };
+  $('adminUsersTable').querySelector('[data-admin-action="revoke"]').onclick=()=>{
+    $('adminMsg').textContent='Etap 1: odbieranie uprawnień zostanie podłączone w Etapie 2.';
+  };
+}
+
+async function loadAdminPanel(){const {data}=await sb.auth.getSession();renderAdminUsers(data?.session?.user)}
 async function refreshAll(){await Promise.all([loadVisits(),loadServices(),loadHours(),loadOff(),loadSettings()]);renderCalendar();renderDayList();renderVisitsTable();renderServices();renderHours();renderOff()}
 async function loadVisits(){const r=await sb.from('wizyty').select('*').eq('workspace_id',WORKSPACE).order('data').order('godzina');if(r.error){$('sync').textContent='Błąd wizyt: '+r.error.message;return}rows=r.data||[]}
 async function loadServices(){const r=await sb.from('uslugi').select('id,nazwa,czas_trwania,aktywna').eq('workspace_id',WORKSPACE).order('nazwa');if(!r.error)services=r.data||[]}
@@ -804,10 +992,259 @@ function renderVisitsTable(){let a=[...rows];const q=$('visitSearch').value.trim
 function renderServices(){const l=$('servicesList');l.innerHTML=services.length?services.map(s=>'<div class="serviceRow"><div><b>'+esc(s.nazwa)+'</b></div><div>'+esc(s.czas_trwania)+' min</div><div><span class="statusBadge '+(s.aktywna?'confirmed':'rejected')+'">'+(s.aktywna?'aktywna':'nieaktywna')+'</span></div><div class="actions" style="margin:0"><button class="smallBtn" data-service-edit="'+s.id+'">Edytuj</button><button class="smallBtn danger" data-service-delete="'+s.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak usług.</div>';l.querySelectorAll('[data-service-edit]').forEach(b=>b.onclick=()=>{const s=services.find(x=>String(x.id)===b.dataset.serviceEdit);if(!s)return;editingServiceId=s.id;$('serviceName').value=s.nazwa;$('serviceMinutes').value=s.czas_trwania;$('serviceActive').checked=!!s.aktywna;$('serviceSaveBtn').textContent='Zapisz zmiany';$('serviceCancel').classList.remove('hidden')});l.querySelectorAll('[data-service-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć tę usługę?'))return;const r=await sb.from('uslugi').delete().eq('id',b.dataset.serviceDelete);if(r.error)showMsg('serviceMsg',r.error.message,true);else{showMsg('serviceMsg','Usługa usunięta.');await loadServices();renderServices()}})}
 function renderHours(){const defaults=[...Array(7)].map((_,i)=>hours.find(h=>Number(h.dzien_tygodnia)===i)||{dzien_tygodnia:i,od:'09:00',do:'17:00',aktywne:false});$('hoursList').innerHTML=defaults.map((h,i)=>'<div class="hourRow"><b>'+days[i]+'</b><input type="time" data-hour-from="'+i+'" value="'+esc((h.od||'').slice(0,5))+'"><input type="time" data-hour-to="'+i+'" value="'+esc((h.do||'').slice(0,5))+'"><label class="toggle"><input type="checkbox" data-hour-active="'+i+'" '+(h.aktywne?'checked':'')+'> Aktywny</label></div>').join('')}
 function renderOff(){const l=$('offList');l.innerHTML=daysOff.length?daysOff.map(x=>'<div class="offRow"><div><b>'+shortDate(x.od)+'</b></div><div><b>'+shortDate(x.do)+'</b></div><div>'+esc(x.opis||'Dzień wolny')+'</div><div class="actions" style="margin:0"><button class="smallBtn danger" data-off-delete="'+x.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak ustawionych dni wolnych.</div>';l.querySelectorAll('[data-off-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć ten okres wolny?'))return;const r=await sb.from('dni_wolne').delete().eq('id',b.dataset.offDelete);if(r.error)showMsg('offMsg',r.error.message,true);else{showMsg('offMsg','Okres usunięty.');await loadOff();renderOff();renderCalendar()}})}
+
+/* ===== RODO ADMIN — bezpośredni odczyt tabeli ZABRONIONY.
+   Panel korzysta wyłącznie z funkcji pobierz_zgody_rodo_admin. ===== */
+function rodoValue(x,names){
+  for(const n of names){
+    if(x && x[n]!==undefined && x[n]!==null) return x[n];
+  }
+  return null;
+}
+function rodoBool(v){ return v===true || v==='true' || v===1 || v==='1'; }
+function rodoDateTime(v){
+  if(!v) return '—';
+  try{return new Intl.DateTimeFormat('pl-PL',{dateStyle:'short',timeStyle:'short'}).format(new Date(v));}
+  catch(e){return String(v)}
+}
+function rodoDateOnly(v){
+  if(!v) return '';
+  const s=String(v);
+  return s.length>=10?s.slice(0,10):s;
+}
+function rodoId(x){
+  return rodoValue(x,['id','zgoda_id','consent_id','rodo_id']);
+}
+function hideRodoDetail(){
+  $('rodoDetail').classList.add('hidden');
+  $('rodoDetail').innerHTML='';
+}
+function clearRodoSelection(){
+  hideRodoDetail();
+  document.querySelectorAll('#rodoTable tr.rodoSelected').forEach(tr=>tr.classList.remove('rodoSelected'));
+}
+function rodoEditRow(x, i){
+  const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'';
+  const tel=rodoValue(x,['klient_telefon','telefon'])||'';
+  const email=rodoValue(x,['klient_email','email'])||'';
+  const rg=rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']));
+  const mg=rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']));
+  const rv=rodoValue(x,['rodo_wersja','rodoWersja'])||'';
+  return '<tr class="rodoEditRow" data-rodo-edit-index="'+i+'">'+
+    '<td>'+esc(rodoDateTime(rodoValue(x,['rodo_data','created_at','createdAt'])))+'</td>'+
+    '<td><input data-edit="klient" value="'+esc(klient)+'" aria-label="Klient"></td>'+
+    '<td><input data-edit="telefon" value="'+esc(tel)+'" aria-label="Telefon"></td>'+
+    '<td><input type="email" data-edit="email" value="'+esc(email)+'" aria-label="E-mail"></td>'+
+    '<td><select data-edit="rodo" aria-label="RODO"><option value="1" '+(rg?'selected':'')+'>TAK</option><option value="0" '+(!rg?'selected':'')+'>NIE</option></select></td>'+
+    '<td><input class="rodoReadonly" readonly value="'+esc(rv)+'" aria-label="Wersja RODO"></td>'+
+    '<td><select data-edit="marketing" aria-label="Marketing"><option value="1" '+(mg?'selected':'')+'>TAK</option><option value="0" '+(!mg?'selected':'')+'>NIE</option></select></td>'+
+    '<td>—</td>'+
+    '<td><div class="rodoActions"><button type="button" class="rodoAction save" title="Zapisz zmiany" aria-label="Zapisz zmiany" data-rodo-save="'+i+'">✓</button><button type="button" class="rodoAction cancel" title="Anuluj edycję" aria-label="Anuluj edycję" data-rodo-cancel="'+i+'">×</button></div></td>'+
+    '</tr>';
+}
+function renderRodo(){
+  const all=Array.isArray(rodoRows)?rodoRows:[];
+  const q=$('rodoSearch').value.trim().toLowerCase();
+  const from=$('rodoFrom').value;
+  const to=$('rodoTo').value;
+
+  let a=all.filter(x=>{
+    const klient=String(rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'');
+    const tel=String(rodoValue(x,['klient_telefon','telefon'])||'');
+    const email=String(rodoValue(x,['klient_email','email'])||'');
+    if(q && ![klient,tel,email].some(v=>v.toLowerCase().includes(q))) return false;
+    const dt=rodoValue(x,['rodo_data','created_at','createdAt']);
+    const day=rodoDateOnly(dt);
+    if(from && day<from) return false;
+    if(to && day>to) return false;
+    return true;
+  });
+
+  a.sort((x,y)=>{
+    const dx=String(rodoValue(x,['rodo_data','created_at','createdAt'])||'');
+    const dy=String(rodoValue(y,['rodo_data','created_at','createdAt'])||'');
+    return dy.localeCompare(dx);
+  });
+
+  const total=all.length;
+  const confirmed=all.filter(x=>rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']))).length;
+  const marketing=all.filter(x=>rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']))).length;
+  $('rodoTotal').textContent=total;
+  $('rodoConfirmed').textContent=confirmed;
+  $('rodoMarketing').textContent=marketing;
+  $('rodoCount').textContent=a.length+' '+(a.length===1?'zgoda':'zgód');
+
+  $('rodoTable').innerHTML=a.length?a.map((x,i)=>{
+    const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'—';
+    const tel=rodoValue(x,['klient_telefon','telefon'])||'—';
+    const email=rodoValue(x,['klient_email','email'])||'—';
+    const rd=rodoValue(x,['rodo_data','created_at','createdAt']);
+    const rv=rodoValue(x,['rodo_wersja','rodoWersja'])||'—';
+    const rg=rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']));
+    const mg=rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']));
+    const md=rodoValue(x,['marketing_data','marketingData']);
+    return '<tr data-rodo-index="'+i+'">'+
+      '<td>'+esc(rodoDateTime(rd))+'</td>'+
+      '<td><b>'+esc(klient)+'</b></td>'+
+      '<td>'+esc(tel)+'</td>'+
+      '<td>'+esc(email)+'</td>'+
+      '<td class="'+(rg?'rodoYes':'rodoNo')+'">'+(rg?'TAK':'NIE')+'</td>'+
+      '<td>'+esc(rv)+'</td>'+
+      '<td class="'+(mg?'rodoYes':'rodoNo')+'">'+(mg?'TAK':'NIE')+'</td>'+
+      '<td>'+esc(rodoDateTime(md))+'</td>'+
+      '<td><div class="rodoActions">'+
+        '<button type="button" class="rodoAction edit" title="Edytuj" aria-label="Edytuj" data-rodo-edit="'+i+'">✎</button>'+
+        '<button type="button" class="rodoAction delete" title="Usuń" aria-label="Usuń" data-rodo-delete="'+i+'">×</button>'+
+      '</div></td>'+
+      '</tr>';
+  }).join(''):'<tr><td colspan="9" class="empty">Brak zgód spełniających kryteria.</td></tr>';
+
+  clearRodoSelection();
+
+  $('rodoTable').querySelectorAll('[data-rodo-index]').forEach(tr=>{
+    tr.onclick=(ev)=>{
+      if(ev.target.closest('[data-rodo-edit],[data-rodo-delete]')) return;
+      const x=a[Number(tr.dataset.rodoIndex)];
+      if(!x)return;
+      const wasSelected=tr.classList.contains('rodoSelected');
+      if(wasSelected){
+        clearRodoSelection();
+        return;
+      }
+      $('rodoTable').querySelectorAll('tr.rodoSelected').forEach(r=>r.classList.remove('rodoSelected'));
+      tr.classList.add('rodoSelected');
+      const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'—';
+      const tel=rodoValue(x,['klient_telefon','telefon'])||'—';
+      const email=rodoValue(x,['klient_email','email'])||'—';
+      const rid=rodoValue(x,['rezerwacja_id','rezerwacjaId','reservation_id'])||'—';
+      const wid=rodoValue(x,['workspace_id','workspaceId'])||WORKSPACE;
+      const rd=rodoValue(x,['rodo_data','created_at','createdAt']);
+      const rv=rodoValue(x,['rodo_wersja','rodoWersja'])||'—';
+      const rg=rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']));
+      const mg=rodoBool(rodoValue(x,['marketing_zgoda','marketingZgoda']));
+      const md=rodoValue(x,['marketing_data','marketingData']);
+      const mv=rodoValue(x,['marketing_wersja','marketingWersja'])||'—';
+      $('rodoDetail').classList.remove('hidden');
+      $('rodoDetail').innerHTML='<b>Szczegóły zgody</b>'+
+        '<div class="rodoDetailGrid" style="margin-top:7px">'+
+        '<div><b>Klient:</b> '+esc(klient)+'</div><div><b>Telefon:</b> '+esc(tel)+'</div>'+
+        '<div><b>E-mail:</b> '+esc(email)+'</div><div><b>Rezerwacja ID:</b> '+esc(rid)+'</div>'+
+        '<div><b>RODO potwierdzone:</b> '+(rg?'TAK':'NIE')+'</div><div><b>Data RODO:</b> '+esc(rodoDateTime(rd))+'</div>'+
+        '<div><b>Wersja RODO:</b> '+esc(rv)+'</div><div><b>Marketing:</b> '+(mg?'TAK':'NIE')+'</div>'+
+        '<div><b>Data marketingu:</b> '+esc(rodoDateTime(md))+'</div><div><b>Wersja marketingu:</b> '+esc(mv)+'</div>'+
+        '<div><b>Workspace:</b> '+esc(wid)+'</div></div>';
+    };
+  });
+
+  $('rodoTable').querySelectorAll('[data-rodo-edit]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const i=Number(b.dataset.rodoEdit),x=a[i];
+    if(!x)return;
+    const tr=b.closest('tr');
+    tr.outerHTML=rodoEditRow(x,i);
+    clearRodoSelection();
+    const row=$('rodoTable').querySelector('[data-rodo-edit-index="'+i+'"]');
+    row.querySelector('[data-rodo-save]').onclick=()=>saveRodoEdit(x,row);
+    row.querySelector('[data-rodo-cancel]').onclick=()=>renderRodo();
+  });
+
+  $('rodoTable').querySelectorAll('[data-rodo-delete]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const i=Number(b.dataset.rodoDelete),x=a[i];
+    if(!x)return;
+    const klient=rodoValue(x,['klient_imie_nazwisko','klient','imie_nazwisko'])||'ten rekord';
+    if(!confirm('Usunąć zgodę RODO dla „'+klient+'”?')) return;
+    deleteRodoConsent(x);
+  });
+}
+async function saveRodoEdit(x,row){
+  const payload={
+    id:rodoId(x),
+    klient:row.querySelector('[data-edit="klient"]').value.trim(),
+    telefon:row.querySelector('[data-edit="telefon"]').value.trim(),
+    email:row.querySelector('[data-edit="email"]').value.trim(),
+    rodo_potwierdzone:row.querySelector('[data-edit="rodo"]').value==='1',
+    marketing_zgoda:row.querySelector('[data-edit="marketing"]').value==='1'
+  };
+  if(!payload.id){
+    showMsg('rodoMsg','Nie można zapisać: rekord nie zawiera identyfikatora zgody.',true);
+    return;
+  }
+  if(!payload.klient || !payload.telefon || !payload.email){
+    showMsg('rodoMsg','Uzupełnij klienta, telefon i e-mail.',true);
+    return;
+  }
+  showMsg('rodoMsg','Zapisywanie zmian...');
+  const r=await sb.rpc('edytuj_zgode_rodo_admin',{
+    p_id:payload.id,
+    p_workspace_id:WORKSPACE,
+    p_klient:payload.klient,
+    p_telefon:payload.telefon,
+    p_email:payload.email,
+    p_rodo_potwierdzone:payload.rodo_potwierdzone,
+    p_marketing_zgoda:payload.marketing_zgoda
+  });
+  if(r.error){
+    showMsg('rodoMsg','Nie udało się zapisać zmian: '+r.error.message,true);
+    return;
+  }
+  showMsg('rodoMsg','Zmiany zapisane.');
+  await loadRodo();
+}
+async function deleteRodoConsent(x){
+  const id=rodoId(x);
+  if(!id){showMsg('rodoMsg','Nie można usunąć: rekord nie zawiera identyfikatora zgody.',true);return;}
+  showMsg('rodoMsg','Usuwanie zgody...');
+  const r=await sb.rpc('usun_zgode_rodo_admin',{
+    p_id:id,
+    p_workspace_id:WORKSPACE
+  });
+  if(r.error){
+    showMsg('rodoMsg','Nie udało się usunąć zgody: '+r.error.message,true);
+    return;
+  }
+  showMsg('rodoMsg','Zgoda została usunięta.');
+  await loadRodo();
+}
+async function loadRodo(){
+  $('rodoMsg').textContent='Ładowanie zgód RODO...';
+  $('rodoRefresh').disabled=true;
+  $('rodoTable').innerHTML='<tr><td colspan="9" class="rodoLoading">Ładowanie...</td></tr>';
+  try{
+    const r=await sb.rpc('pobierz_zgody_rodo_admin',{p_workspace_id:WORKSPACE});
+    if(r.error){
+      rodoRows=[];
+      rodoLoaded=false;
+      $('rodoMsg').textContent='Nie udało się pobrać zgód RODO: '+r.error.message;
+      $('rodoMsg').className='help err';
+      $('rodoTable').innerHTML='<tr><td colspan="9" class="empty">Brak danych.</td></tr>';
+      $('rodoTotal').textContent='0';
+      $('rodoConfirmed').textContent='0';
+      $('rodoMarketing').textContent='0';
+      $('rodoCount').textContent='';
+      return;
+    }
+    rodoRows=Array.isArray(r.data)?r.data:[];
+    rodoLoaded=true;
+    $('rodoMsg').textContent='Zgody zostały pobrane bezpiecznie z funkcji administracyjnej.';
+    $('rodoMsg').className='help';
+    $('rodoDetail').classList.add('hidden');
+    renderRodo();
+  }catch(e){
+    rodoRows=[];
+    rodoLoaded=false;
+    $('rodoMsg').textContent='Błąd połączenia z funkcją RODO: '+(e?.message||e);
+    $('rodoMsg').className='help err';
+    $('rodoTable').innerHTML='<tr><td colspan="9" class="empty">Brak danych.</td></tr>';
+  }finally{
+    $('rodoRefresh').disabled=false;
+  }
+}
+
 async function loadSettings(){const r=await sb.from('ustawienia').select('*').eq('workspace_id',WORKSPACE).maybeSingle();if(r.error){showMsg('settingsMsg','Nie udało się wczytać ustawień: '+r.error.message,true);return}const x=r.data||{};$('setName').value=x.nazwa_terminarza||'Terminarz wizyt';$('setOwner').value=x.nazwa_osoby||'';$('setPhone').value=x.telefon||'';$('setEmail').value=x.email||'';$('setMessage').value=x.informacja_dla_klienta||''}
 $('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={workspace_id:WORKSPACE,nazwa_terminarza:$('setName').value.trim()||'Terminarz wizyt',nazwa_osoby:$('setOwner').value.trim(),telefon:$('setPhone').value.trim(),email:$('setEmail').value.trim(),informacja_dla_klienta:$('setMessage').value.trim(),updated_at:new Date().toISOString()};const r=await sb.from('ustawienia').upsert(payload,{onConflict:'workspace_id'});if(r.error)showMsg('settingsMsg','Nie udało się zapisać ustawień: '+r.error.message,true);else showMsg('settingsMsg','Ustawienia zapisane w bazie Supabase.')};
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}const btn=$('loginBtn');showMsg('loginMsg','Logowanie...');btn.disabled=true;try{const r=await sb.auth.signInWithPassword({email,password});if(r.error){showMsg('loginMsg','Błąd logowania: '+r.error.message,true);return}showMsg('loginMsg','Zalogowano.');await logged()}catch(e){showMsg('loginMsg','Błąd połączenia z bazą: '+(e?.message||e),true)}finally{btn.disabled=false}};
-$('signupBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}if(password.length<6){showMsg('loginMsg','Hasło musi mieć co najmniej 6 znaków.',true);return}showMsg('loginMsg','Tworzenie konta...');$('signupBtn').disabled=true;const r=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://aj-gabinetmasazu.github.io/terminarz-wizyt/'}});$('signupBtn').disabled=false;if(r.error){showMsg('loginMsg','Błąd tworzenia konta: '+r.error.message,true);return}if(r.data?.session){showMsg('loginMsg','Konto utworzone.');await logged()}else showMsg('loginMsg','Konto utworzone. Sprawdź e-mail, jeśli wymagana jest jego weryfikacja.');};
+$('signupBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}if(password.length<6){showMsg('loginMsg','Hasło musi mieć co najmniej 6 znaków.',true);return}showMsg('loginMsg','Tworzenie konta...');$('signupBtn').disabled=true;const r=await sb.auth.signUp({email,password});$('signupBtn').disabled=false;if(r.error){showMsg('loginMsg','Błąd tworzenia konta: '+r.error.message,true);return}if(r.data?.session){showMsg('loginMsg','Konto utworzone.');await logged()}else showMsg('loginMsg','Konto utworzone. Sprawdź e-mail, jeśli wymagana jest jego weryfikacja.');};
 
 
 /* ===== NAPRAWA: NOWA WIZYTA + STRZAŁKI KALENDARZA ===== */
@@ -878,6 +1315,17 @@ $('form').onsubmit=async function(e){
     if(btn) btn.disabled=false;
   }
 };
+
+
+$('rodoSearch').oninput=renderRodo;
+$('rodoFrom').onchange=renderRodo;
+$('rodoTo').onchange=renderRodo;
+$('rodoRefresh').onclick=loadRodo;
+document.querySelectorAll('.sideItem[data-panel="rodoPanel"]').forEach(b=>{
+  b.addEventListener('click',async()=>{
+    if(!rodoLoaded) await loadRodo();
+  });
+});
 
 sb.channel('terminarz-wizyty').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+WORKSPACE},()=>refreshAll()).subscribe();$('logout').onclick=async()=>{const r=await sb.auth.signOut();if(r.error)alert('Nie udało się wylogować: '+r.error.message);else await logged()};sb.auth.onAuthStateChange(()=>logged());$('date').value=iso(selected);logged();
 </script></body></html>
