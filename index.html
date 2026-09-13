@@ -704,25 +704,24 @@ body.menuOpen #app{
 </style>
 
 
-<style id="admin-users-v1">
+<style id="admin-users-v2">
+/* ===== ADMINISTRATORZY — ETAP 2 ===== */
 .adminBox{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
 .adminHeader h3{margin:0 0 8px;color:var(--b);font-size:18px}
 .adminNotice{padding:10px;border:1px solid var(--line);background:#f8f3e9;font-size:12px;line-height:1.5;margin-bottom:12px}
-.adminTableWrap{overflow-x:auto}
-.adminTable{width:100%;border-collapse:collapse;font-size:12px}
-.adminTable th,.adminTable td{border:1px solid var(--line);padding:9px;text-align:left;vertical-align:middle}
-.adminTable th{background:#f3eee3;color:var(--b)}
-.adminRole{display:inline-block;padding:4px 7px;border:1px solid var(--line);font-weight:bold}
-.adminRole.user{background:#f3f3f3}
-.adminActions{display:flex;gap:6px;flex-wrap:wrap}
-.adminBtn{min-height:34px;padding:7px 10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:12px}
+.adminStatus{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px;border:1px solid var(--line);background:#fff}
+.adminStatusLabel{font-size:12px;color:var(--muted)}
+.adminRole{display:inline-block;padding:4px 8px;border:1px solid var(--line);font-weight:bold}
+.adminRole.user{background:#f3f3f3;color:#555}
+.adminRole.admin{background:var(--okbg);color:var(--ok);border-color:#9fbd8e}
+.adminForm{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:end}
+.adminForm label{margin:0}
+.adminBtn{min-height:42px;padding:9px 12px;border:1px solid var(--line);cursor:pointer;font-size:12px;font-weight:bold}
 .adminBtn.grant{border-color:#9fbd8e;background:var(--okbg);color:var(--ok)}
 .adminBtn.revoke{border-color:#d5a0a0;background:var(--badbg);color:var(--bad)}
 .adminBtn:disabled{opacity:.5;cursor:not-allowed}
-@media(max-width:700px){
- .adminTable{min-width:650px}
- .adminNotice{font-size:11px}
-}
+.adminHint{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.45}
+@media(max-width:700px){.adminForm{grid-template-columns:1fr}.adminBtn{width:100%}}
 </style>
 </head>
 <body>
@@ -810,7 +809,7 @@ body.menuOpen #app{
 <section id="hoursPanel" class="panel"><section class="card"><h2>Godziny pracy</h2><div class="help">Ustaw godziny dla każdego dnia. Wyłącz dzień, jeśli nie przyjmujesz wtedy wizyt.</div><div id="hoursList"></div><div class="actions"><button id="saveHours">Zapisz godziny pracy</button></div><div id="hoursMsg" class="help"></div></section></section>
 <section id="offPanel" class="panel"><section class="card"><h2>Dni wolne / urlop</h2><form id="offForm"><div class="row"><div><label>Od</label><input id="offFrom" type="date" required></div><div><label>Do</label><input id="offTo" type="date" required></div></div><label>Opis</label><input id="offDesc" placeholder="np. Urlop"><div class="actions"><button>Dodaj dzień wolny</button></div><div id="offMsg" class="help"></div></form><div id="offList"></div></section></section>
 <section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div><div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div>
-<div class="adminBox"><div class="adminHeader"><h3>Administratorzy</h3></div><div class="adminNotice">Tutaj zarządzamy uprawnieniami administratorów zalogowanych użytkowników. <b>Etap 1</b> przygotowuje wygląd panelu. Nadawanie uprawnień zostanie podłączone bezpiecznie do Supabase w <b>Etapie 2</b>.</div><div class="adminTableWrap"><table class="adminTable"><thead><tr><th>Użytkownik</th><th>E-mail</th><th>Rola</th><th>Akcje</th></tr></thead><tbody id="adminUsersTable"><tr><td colspan="4" class="empty">Ładowanie użytkownika...</td></tr></tbody></table></div><div id="adminMsg" class="help" style="margin-top:8px"></div></div></section></section>
+<div class="adminBox"><div class="adminHeader"><h3>Administratorzy</h3></div><div class="adminNotice">Zarządzanie administratorami odbywa się przez bezpieczne funkcje Supabase. Nie odczytujemy bezpośrednio tabeli <b>auth.users</b> w przeglądarce.</div><div class="adminStatus"><div><div class="adminStatusLabel">Zalogowany użytkownik</div><b id="adminCurrentEmail">—</b></div><span id="adminCurrentRole" class="adminRole user">Sprawdzanie roli…</span></div><div class="adminForm"><div><label for="adminTargetEmail">E-mail użytkownika</label><input id="adminTargetEmail" type="email" autocomplete="off" placeholder="np. użytkownik@example.com"></div><button type="button" id="adminGrantBtn" class="adminBtn grant">Nadaj administratora</button><button type="button" id="adminRevokeBtn" class="adminBtn revoke">Odbierz administratora</button></div><div class="adminHint">Wpisz dokładny e-mail konta, któremu chcesz nadać albo odebrać uprawnienia. Operację może wykonać wyłącznie administrator.</div><div id="adminMsg" class="help" style="margin-top:8px"></div></div></section></section>
 <section id="rodoPanel" class="panel">
 <section class="card">
   <div class="sectionTitle">
@@ -965,20 +964,62 @@ function statusLabel(s){return s==='oczekuje'?'oczekuje':s==='odrzucona'?'odrzuc
 function showMsg(id,text,err=false){$(id).textContent=text;$(id).className='help'+(err?' err':'')}
 function dayIndex(s){return (new Date(s+'T12:00:00').getDay()+6)%7}
 function isOff(s){return daysOff.find(x=>s>=x.od&&s<=x.do)}
-async function logged(){const {data}=await sb.auth.getSession();const user=data?.session?.user;if(user){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');await refreshAll()}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden')}}
-function renderAdminUsers(user){
-  const email=user?.email||'—';
-  const name=user?.user_metadata?.full_name||user?.user_metadata?.name||email.split('@')[0]||'Zalogowany użytkownik';
-  $('adminUsersTable').innerHTML='<tr><td><b>'+esc(name)+'</b></td><td>'+esc(email)+'</td><td><span class="adminRole user">Użytkownik</span></td><td><div class="adminActions"><button type="button" class="adminBtn grant" data-admin-action="grant">Nadaj administratora</button><button type="button" class="adminBtn revoke" data-admin-action="revoke" disabled>Odbierz administratora</button></div></td></tr>';
-  $('adminUsersTable').querySelector('[data-admin-action="grant"]').onclick=()=>{
-    $('adminMsg').textContent='Etap 1: przycisk jest przygotowany. Nadawanie uprawnień podłączymy w Etapie 2 przez bezpieczną funkcję Supabase.';
-  };
-  $('adminUsersTable').querySelector('[data-admin-action="revoke"]').onclick=()=>{
-    $('adminMsg').textContent='Etap 1: odbieranie uprawnień zostanie podłączone w Etapie 2.';
+async function logged(){const {data}=await sb.auth.getSession();const user=data?.session?.user;if(user){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');await refreshAll();await loadAdminPanel()}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden')}}
+async function loadAdminPanel(){
+  const {data}=await sb.auth.getSession();
+  const user=data?.session?.user;
+  if(!user){return}
+  const email=user.email||'—';
+  $('adminCurrentEmail').textContent=email;
+  $('adminMsg').textContent='';
+  const grantBtn=$('adminGrantBtn'),revokeBtn=$('adminRevokeBtn');
+  grantBtn.disabled=true;
+  revokeBtn.disabled=true;
+  $('adminCurrentRole').className='adminRole user';
+  $('adminCurrentRole').textContent='Sprawdzanie roli…';
+  try{
+    const r=await sb.rpc('czy_uzytkownik_jest_adminem',{p_user_id:user.id,p_workspace_id:WORKSPACE});
+    if(r.error) throw r.error;
+    const isAdmin=!!r.data;
+    $('adminCurrentRole').className='adminRole '+(isAdmin?'admin':'user');
+    $('adminCurrentRole').textContent=isAdmin?'Administrator':'Użytkownik';
+    grantBtn.disabled=!isAdmin;
+    revokeBtn.disabled=!isAdmin;
+    if(!isAdmin) $('adminMsg').textContent='Tylko administrator może nadawać i odbierać uprawnienia.';
+  }catch(e){
+    $('adminCurrentRole').className='adminRole user';
+    $('adminCurrentRole').textContent='Nie udało się sprawdzić';
+    $('adminMsg').textContent='Nie udało się sprawdzić uprawnień: '+(e?.message||e);
+  }
+
+  async function adminAction(action){
+    const target=$('adminTargetEmail').value.trim().toLowerCase();
+    if(!target){showMsg('adminMsg','Wpisz e-mail użytkownika.',true);return}
+    if(!target.includes('@')){showMsg('adminMsg','Wpisz poprawny adres e-mail.',true);return}
+    grantBtn.disabled=true;revokeBtn.disabled=true;
+    showMsg('adminMsg',action==='grant'?'Nadawanie uprawnień…':'Odbieranie uprawnień…');
+    try{
+      const fn=action==='grant'?'nadaj_admina_email':'odbierz_admina_email';
+      const r=await sb.rpc(fn,{p_email:target,p_workspace_id:WORKSPACE});
+      if(r.error) throw r.error;
+      showMsg('adminMsg',action==='grant'?'Administrator został nadany dla: '+target:'Uprawnienia administratora zostały odebrane dla: '+target);
+      if(target===email.toLowerCase()){
+        setTimeout(loadAdminPanel,250);
+      }else{
+        grantBtn.disabled=false;revokeBtn.disabled=false;
+      }
+    }catch(e){
+      showMsg('adminMsg','Operacja nie została wykonana: '+(e?.message||e),true);
+      grantBtn.disabled=!isAdmin;revokeBtn.disabled=!isAdmin;
+    }
+  }
+  grantBtn.onclick=()=>adminAction('grant');
+  revokeBtn.onclick=()=>{
+    if(!confirm('Czy na pewno odebrać uprawnienia administratora temu użytkownikowi?')) return;
+    adminAction('revoke');
   };
 }
 
-async function loadAdminPanel(){const {data}=await sb.auth.getSession();renderAdminUsers(data?.session?.user)}
 async function refreshAll(){await Promise.all([loadVisits(),loadServices(),loadHours(),loadOff(),loadSettings()]);renderCalendar();renderDayList();renderVisitsTable();renderServices();renderHours();renderOff()}
 async function loadVisits(){const r=await sb.from('wizyty').select('*').eq('workspace_id',WORKSPACE).order('data').order('godzina');if(r.error){$('sync').textContent='Błąd wizyt: '+r.error.message;return}rows=r.data||[]}
 async function loadServices(){const r=await sb.from('uslugi').select('id,nazwa,czas_trwania,aktywna').eq('workspace_id',WORKSPACE).order('nazwa');if(!r.error)services=r.data||[]}
