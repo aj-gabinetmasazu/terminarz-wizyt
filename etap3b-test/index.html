@@ -17,10 +17,10 @@ window.TERM_CONFIG={
 button,input,select,textarea{font:inherit}button{border:1px solid var(--g);background:linear-gradient(#8b2443,var(--b));color:#fff;padding:10px 13px;font-weight:bold;border-radius:0;min-height:42px;cursor:pointer}button.secondary{background:#fff;color:var(--b);border-color:var(--line)}button.danger{background:#7a2424;border-color:#b87979}button.smallBtn{min-height:36px;padding:7px 10px;font-size:12px}button:disabled{opacity:.55;cursor:not-allowed}input,select,textarea{width:100%;padding:10px;border:1px solid #bfae8f;background:#fff;border-radius:0;color:var(--ink)}textarea{min-height:70px;resize:vertical}label{display:block;font-size:13px;font-weight:bold;margin:9px 0 4px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions>*{flex:1}.wrap{max-width:1200px;margin:auto;padding:10px}.hidden{display:none!important}.notice{font-size:12px;padding:9px 10px;border:1px solid var(--g);background:var(--pendbg);color:var(--b);margin-bottom:12px}.notice.err{border-color:#d5a0a0;background:var(--badbg);color:var(--bad)}
 .tabs{display:none}.tab{white-space:nowrap;background:#eee5d5;color:var(--b);border:1px solid var(--line);border-bottom:0}.tab.active{background:var(--b);color:#fff}.panel{display:none}.panel.active{display:block}.grid2{display:grid;grid-template-columns:330px 1fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);padding:14px;box-shadow:0 2px 8px #0001}.card h2{margin:0 0 12px;color:var(--b);font-size:18px}.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:8px}.muted{color:var(--muted);font-size:12px}.count{font-size:12px;color:var(--pend);font-weight:bold}.tableWrap{overflow:auto}.table{width:100%;border-collapse:collapse;background:#fff}.table th,.table td{border-bottom:1px solid #e4dac7;padding:9px;text-align:left;vertical-align:top;font-size:13px}.table th{color:var(--b);background:#f3eee5}.statusBadge{display:inline-block;padding:4px 8px;border:1px solid var(--line);font-size:11px;font-weight:bold}.statusBadge.pending{background:var(--pendbg);color:var(--pend);border-color:var(--g)}.statusBadge.confirmed{background:var(--okbg);color:var(--ok);border-color:#9fbd8e}.statusBadge.rejected{background:var(--badbg);color:var(--bad);border-color:#d5a0a0}
 .monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.monthbar strong{text-transform:capitalize;color:var(--b);font-size:18px}.monthbar button{width:45px}.week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.dow{text-align:center;font-size:11px;font-weight:bold;color:#765b36;padding:4px}.day{min-height:96px;background:#fff;border:1px solid var(--line);padding:5px;cursor:pointer}.day.muted{background:#f3eee5;color:#aaa}.day.today{outline:2px solid var(--g);outline-offset:-2px}.day.sel{background:#fff2c8}.num{font-weight:bold;font-size:12px}.appt{font-size:10px;margin-top:4px;padding:3px 4px;color:#fff;border-left:3px solid var(--g);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.appt.pending{background:#8a683b}.appt.confirmed{background:#3d6b36}.appt.rejected{background:#7a2424}.dayOff{background:#f8e7e7!important;border-color:#d5a0a0!important}.dayOff .num{color:var(--bad)}
-.filters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.serviceRow,.offRow,.hourRow{display:grid;grid-template-columns:1.5fr .7fr .7fr auto;gap:8px;align-items:end;border-bottom:1px solid #e4dac7;padding:10px 0}.hourRow{grid-template-columns:1.2fr .8fr .8fr .7fr}.offRow{grid-template-columns:1fr 1fr 1.5fr auto}.toggle{display:flex;align-items:center;gap:6px;font-size:13px}.toggle input{width:auto}.empty{text-align:center;padding:22px;color:#887d70}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px}.dot{display:inline-block;width:10px;height:10px;border:1px solid #777;margin-right:4px;vertical-align:middle}.dot.pending{background:#8a683b}.dot.confirmed{background:#3d6b36}.dot.rejected{background:#7a2424}.dot.off{background:#f8e7e7;border-color:#d5a0a0}
+.filters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.serviceRow,.offRow,.hourRow{display:grid;grid-template-columns:1.5fr .7fr .7fr auto;gap:8px;align-items:end;border-bottom:1px solid #e4dac7;padding:10px 0}.hourRow{grid-template-columns:1.2fr .8fr .8fr .7fr}.offRow{grid-template-columns:1fr 1fr 1.5fr auto}.toggle{display:flex;align-items:center;gap:6px;font-size:13px}.toggle input{width:auto}.empty{text-align:center;padding:22px;color:#887d70}.slotPicker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;min-height:42px}.slotPicker button{margin:0;min-height:42px;background:#fff;color:var(--b);border-color:var(--line)}.slotPicker button.selected{background:var(--b);color:#fff;border-color:var(--b)}.slotPicker .empty{grid-column:1/-1;border:1px solid var(--line);background:#f8f3ea;padding:12px;font-size:12px}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px}.dot{display:inline-block;width:10px;height:10px;border:1px solid #777;margin-right:4px;vertical-align:middle}.dot.pending{background:#8a683b}.dot.confirmed{background:#3d6b36}.dot.rejected{background:#7a2424}.dot.off{background:#f8e7e7;border-color:#d5a0a0}
 #login{max-width:420px;margin:70px auto}.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.help{font-size:12px;color:var(--muted);margin-top:5px}
 @media(max-width:900px){.grid2{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.serviceRow,.hourRow,.offRow{grid-template-columns:1fr 1fr}.serviceRow .actions,.hourRow .actions,.offRow .actions{grid-column:1/-1}}
-@media(max-width:560px){body{padding-top:58px}.top{height:58px}.top h1{font-size:15px}.wrap{padding:7px}.row,.settingsGrid,.filters{grid-template-columns:1fr}.day{min-height:68px}.appt{display:none}.day.has:after{content:"•";display:block;color:var(--b);font-size:22px}.table th,.table td{font-size:12px;padding:7px}.tabs{margin-left:-7px;margin-right:-7px;padding-left:7px}}
+@media(max-width:560px){.slotPicker{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding-top:58px}.top{height:58px}.top h1{font-size:15px}.wrap{padding:7px}.row,.settingsGrid,.filters{grid-template-columns:1fr}.day{min-height:68px}.appt{display:none}.day.has:after{content:"•";display:block;color:var(--b);font-size:22px}.table th,.table td{font-size:12px;padding:7px}.tabs{margin-left:-7px;margin-right:-7px;padding-left:7px}}
 
 
 
@@ -835,8 +835,8 @@ body.menuOpen #app{
 <div class="grid2">
 <section class="card"><h2>Nowa wizyta</h2><form id="form">
 <label>Imię i nazwisko klienta</label><input id="client" required>
-<div class="row"><div><label>Data</label><input id="date" type="date" required></div><div><label>Godzina</label><input id="time" type="time" required></div></div>
-<label>Rodzaj wizyty</label><input id="service" placeholder="np. konsultacja">
+<div class="row"><div><label>Data</label><input id="date" type="date" required></div><div><label>Dostępna godzina wizyty</label><div id="availableTimes" class="slotPicker"><div class="empty">Wybierz datę i rodzaj wizyty.</div></div><div id="timeHelp" class="help">Godziny są pobierane tak samo jak w „Umów wizytę”. Dla dzisiejszego dnia minione godziny są ukrywane.</div></div></div>
+<label>Rodzaj wizyty</label><select id="service" required><option value="">— wybierz rodzaj wizyty —</option><option value="masaż ciała">masaż ciała</option><option value="masaż twarzy">masaż twarzy</option><option value="masaż gorącymi kamieniami">masaż gorącymi kamieniami</option><option value="masaż z maseczką/ maskalat">masaż z maseczką/ maskalat</option></select>
 <div class="row"><div><label>Czas trwania</label><select id="duration"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
 <label>E-mail klienta</label><input id="clientEmail" type="email" autocomplete="email"><label>Notatka</label><textarea id="note"></textarea>
 <div class="actions"><button>+ Umów wizytę</button><button type="button" id="clear" class="secondary">Wyczyść</button></div></form></section>
@@ -1192,7 +1192,7 @@ async function loadVisits(){const r=await sb.from('wizyty').select('*').eq('work
 async function loadServices(){const r=await sb.from('uslugi').select('id,nazwa,czas_trwania,aktywna').eq('workspace_id',WORKSPACE).order('nazwa');if(!r.error)services=r.data||[]}
 async function loadHours(){const r=await sb.from('godziny_pracy').select('id,dzien_tygodnia,od,do,aktywne').eq('workspace_id',WORKSPACE).order('dzien_tygodnia');if(!r.error)hours=r.data||[]}
 async function loadOff(){const r=await sb.from('dni_wolne').select('id,od,do,opis').eq('workspace_id',WORKSPACE).order('od');if(!r.error)daysOff=r.data||[]}
-function renderCalendar(){const y=view.getFullYear(),m=view.getMonth(),first=new Date(y,m,1),start=(first.getDay()+6)%7,daysIn=new Date(y,m+1,0).getDate(),c=$('calendar');c.innerHTML='';$('title').textContent=new Intl.DateTimeFormat('pl-PL',{month:'long',year:'numeric'}).format(first);['Pn','Wt','Śr','Cz','Pt','Sb','Nd'].forEach(x=>{const e=document.createElement('div');e.className='dow';e.textContent=x;c.appendChild(e)});for(let i=0;i<42;i++){const n=i-start+1,d=new Date(y,m,n),s=iso(d),e=document.createElement('div');e.className='day'+(n<1||n>daysIn?' muted':'')+(s===iso(new Date())?' today':'')+(s===iso(selected)?' sel':'');if(isOff(s))e.classList.add('dayOff');const a=rows.filter(x=>x.data===s);if(a.length)e.classList.add('has');e.innerHTML='<div class="num">'+d.getDate()+'</div>'+a.slice(0,3).map(x=>'<div class="appt '+statusClass(x.status)+'">'+esc((x.godzina||'').slice(0,5))+' '+esc(x.klient)+'</div>').join('');e.onclick=()=>{if(n>=1&&n<=daysIn){selected=d;$('date').value=s;renderCalendar();renderDayList()}};c.appendChild(e)}}
+function renderCalendar(){const y=view.getFullYear(),m=view.getMonth(),first=new Date(y,m,1),start=(first.getDay()+6)%7,daysIn=new Date(y,m+1,0).getDate(),c=$('calendar');c.innerHTML='';$('title').textContent=new Intl.DateTimeFormat('pl-PL',{month:'long',year:'numeric'}).format(first);['Pn','Wt','Śr','Cz','Pt','Sb','Nd'].forEach(x=>{const e=document.createElement('div');e.className='dow';e.textContent=x;c.appendChild(e)});for(let i=0;i<42;i++){const n=i-start+1,d=new Date(y,m,n),s=iso(d),e=document.createElement('div');e.className='day'+(n<1||n>daysIn?' muted':'')+(s===iso(new Date())?' today':'')+(s===iso(selected)?' sel':'');if(isOff(s))e.classList.add('dayOff');const a=rows.filter(x=>x.data===s);if(a.length)e.classList.add('has');e.innerHTML='<div class="num">'+d.getDate()+'</div>'+a.slice(0,3).map(x=>'<div class="appt '+statusClass(x.status)+'">'+esc((x.godzina||'').slice(0,5))+' '+esc(x.klient)+'</div>').join('');e.onclick=()=>{if(n>=1&&n<=daysIn){selected=d;$('date').value=s;renderCalendar();renderDayList();loadAvailableTimes()}};c.appendChild(e)}}
 function actionButtons(x){const id=x.id,s=x.status||'potwierdzona';let h='<button class="smallBtn" data-action="delete" data-id="'+id+'">Usuń</button>';if(s==='oczekuje')h='<button class="smallBtn" data-action="confirm" data-id="'+id+'">Potwierdź</button><button class="smallBtn" data-action="reject" data-id="'+id+'">Odrzuć</button>'+h;else if(s==='potwierdzona')h='<button class="smallBtn" data-action="reject" data-id="'+id+'">Odrzuć</button>'+h;else h='<button class="smallBtn" data-action="confirm" data-id="'+id+'">Potwierdź</button>'+h;return h}
 function bindActions(root){root.querySelectorAll('[data-action]').forEach(b=>b.onclick=async()=>{const id=b.dataset.id,a=b.dataset.action;if(a==='delete'){if(!confirm('Usunąć tę wizytę?'))return;const r=await sb.from('wizyty').delete().eq('id',id);if(r.error)alert(r.error.message);else await refreshAll();return}const ns=a==='confirm'?'potwierdzona':'odrzucona';if(!confirm(ns==='potwierdzona'?'Potwierdzić tę wizytę?':'Odrzucić tę wizytę?'))return;const r=await sb.from('wizyty').update({status:ns}).eq('id',id);if(r.error)alert(r.error.message);else await refreshAll()})}
 function renderDayList(){const s=iso(selected),a=rows.filter(x=>x.data===s).sort((x,y)=>(x.godzina||'').localeCompare(y.godzina||''));$('selectedLabel').textContent=plDate(s);$('count').textContent=a.length?a.length+' '+(a.length===1?'wizyta':'wizyty'):'';$('dayList').innerHTML=a.length?a.map(x=>'<div class="item" style="border-top:1px solid #e4dac7;padding:11px 0"><b>'+esc((x.godzina||'').slice(0,5))+' — '+esc(x.klient)+'</b> <span class="muted">('+esc(x.czas_trwania??x.duration??x.czas??60)+' min)</span><div>'+esc(x.usluga||'Wizyta')+(x.telefon?' · '+esc(x.telefon):'')+'</div>'+(x.email?'<div class="muted">E-mail: <a href="mailto:'+encodeURIComponent(x.email)+'">'+esc(x.email)+'</a></div>':'')+'<div style="margin-top:5px"><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></div>'+(x.notatka?'<div class="muted" style="margin-top:5px">'+esc(x.notatka)+'</div>':'')+'<div class="actions">'+actionButtons(x)+'</div></div>').join(''):'<div class="empty">Brak wizyt na ten dzień.</div>';bindActions($('dayList'))}
@@ -1465,25 +1465,122 @@ $('next').onclick=function(){
   renderCalendar();
 };
 
+let selectedTime='';
+let slotRequestNo=0;
+
+function normalizeSlotTime(value){
+  const m=String(value??'').match(/(\d{1,2}):(\d{2})/);
+  return m ? String(m[1]).padStart(2,'0')+':'+m[2] : '';
+}
+function timeToMinutes(value){
+  const t=normalizeSlotTime(value),p=t.split(':');
+  return p.length===2 ? Number(p[0])*60+Number(p[1]) : -1;
+}
+function isPastSlot(date,time){
+  const today=iso(new Date());
+  if(date!==today) return false;
+  const now=new Date();
+  return timeToMinutes(time) <= now.getHours()*60+now.getMinutes();
+}
+function selectedServiceRow(){
+  const name=String($('service').value||'').trim().toLowerCase();
+  if(!name) return null;
+  return services.find(x=>String(x.nazwa||'').trim().toLowerCase()===name) || null;
+}
+function syncDurationToService(){
+  const svc=selectedServiceRow();
+  if(svc && Number(svc.czas_trwania)>0) $('duration').value=String(svc.czas_trwania);
+}
+function clearSelectedTime(){
+  selectedTime='';
+  document.querySelectorAll('#availableTimes button[data-time]').forEach(x=>x.classList.remove('selected'));
+}
+async function loadAvailableTimes(){
+  const requestNo=++slotRequestNo;
+  clearSelectedTime();
+  const date=$('date').value;
+  const service=String($('service').value||'').trim();
+  const duration=Number($('duration').value||60);
+  const box=$('availableTimes');
+  if(!date || !service){
+    box.innerHTML='<div class="empty">Wybierz datę i rodzaj wizyty.</div>';
+    return;
+  }
+  if(isOff(date)){
+    box.innerHTML='<div class="empty"><b>Brak terminów.</b><br>Wybrany dzień jest wolny.</div>';
+    return;
+  }
+  const day=dayIndex(date);
+  const work=hours.find(h=>Number(h.dzien_tygodnia)===day && h.aktywne===true);
+  if(!work){
+    box.innerHTML='<div class="empty"><b>Brak terminów.</b><br>W tym dniu nie ma aktywnych godzin pracy.</div>';
+    return;
+  }
+  box.innerHTML='<div class="empty">Pobieram dostępne godziny…</div>';
+  try{
+    const r=await sb.rpc('get_available_slots',{p_workspace_id:WORKSPACE,p_date:date,p_duration:duration});
+    if(requestNo!==slotRequestNo)return;
+    if(r.error){
+      box.innerHTML='<div class="empty"><span class="help err">Nie udało się pobrać dostępnych godzin: '+esc(r.error.message)+'</span></div>';
+      return;
+    }
+    let list=(r.data||[]).map(x=>typeof x==='string'?x:x?.slot_time).map(normalizeSlotTime).filter(Boolean);
+    list=[...new Set(list)].filter(t=>!isPastSlot(date,t));
+    if(!list.length){
+      box.innerHTML='<div class="empty"><b>Brak dostępnych godzin.</b><br>Wybierz inny dzień lub rodzaj wizyty.</div>';
+      return;
+    }
+    box.innerHTML=list.map(t=>'<button type="button" data-time="'+esc(t)+'">'+esc(t)+'</button>').join('');
+    box.querySelectorAll('button[data-time]').forEach(btn=>btn.onclick=()=>{
+      clearSelectedTime();
+      btn.classList.add('selected');
+      selectedTime=btn.dataset.time;
+    });
+  }catch(e){
+    if(requestNo!==slotRequestNo)return;
+    box.innerHTML='<div class="empty"><span class="help err">Błąd pobierania godzin: '+esc(e?.message||e)+'</span></div>';
+  }
+}
+
+$('prev').onclick=function(){
+  view=new Date(view.getFullYear(),view.getMonth()-1,1);
+  renderCalendar();
+};
+$('next').onclick=function(){
+  view=new Date(view.getFullYear(),view.getMonth()+1,1);
+  renderCalendar();
+};
+
+$('date').onchange=loadAvailableTimes;
+$('service').onchange=async()=>{syncDurationToService();await loadAvailableTimes();};
+$('duration').onchange=loadAvailableTimes;
+
 $('clear').onclick=function(){
   $('form').reset();
   $('duration').value='60';
   $('date').value=iso(selected);
+  clearSelectedTime();
+  $('availableTimes').innerHTML='<div class="empty">Wybierz rodzaj wizyty.</div>';
 };
 
 $('form').onsubmit=async function(e){
   e.preventDefault();
   const client=$('client').value.trim();
   const date=$('date').value;
-  const time=$('time').value;
-  const service=$('service').value.trim() || 'Wizyta';
+  const time=selectedTime;
+  const service=$('service').value.trim();
   const duration=Number($('duration').value||60);
   const phone=$('phone').value.trim();
   const email=$('clientEmail').value.trim();
   const note=$('note').value.trim();
 
-  if(!client||!date||!time){
-    alert('Uzupełnij klienta, datę i godzinę.');
+  if(!client||!date||!time||!service){
+    alert('Uzupełnij klienta, datę, rodzaj wizyty i wybierz dostępną godzinę.');
+    return;
+  }
+  if(isPastSlot(date,time)){
+    alert('Wybrana godzina już minęła. Wybierz aktualnie dostępną godzinę.');
+    await loadAvailableTimes();
     return;
   }
 
@@ -1515,7 +1612,9 @@ $('form').onsubmit=async function(e){
     $('form').reset();
     $('duration').value='60';
     $('date').value=date;
+    clearSelectedTime();
     await refreshAll();
+    await loadAvailableTimes();
     alert('Wizyta została dodana.');
   }catch(err){
     alert('Błąd dodawania wizyty: '+(err?.message||err));
@@ -1523,7 +1622,6 @@ $('form').onsubmit=async function(e){
     if(btn) btn.disabled=false;
   }
 };
-
 
 $('rodoSearch').oninput=renderRodo;
 $('rodoFrom').onchange=renderRodo;
