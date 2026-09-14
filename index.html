@@ -722,6 +722,34 @@ body.menuOpen #app{
 .adminBtn:disabled{opacity:.5;cursor:not-allowed}
 .adminHint{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.45}
 @media(max-width:700px){.adminForm{grid-template-columns:1fr}.adminBtn{width:100%}}
+
+/* =========================================================
+   ETAP 3B — UŻYTKOWNICY / HASŁA
+   ========================================================= */
+.passwordBox{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.passwordBox h3,.usersBox h3{margin:0 0 8px;color:var(--b);font-size:18px}
+.passwordGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.passwordGrid .full{grid-column:1/-1}
+.passwordHint{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.45}
+.usersBox{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.usersToolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.usersStats{display:flex;gap:8px;flex-wrap:wrap}
+.userStat{padding:6px 9px;border:1px solid var(--line);background:#fff;font-size:11px;font-weight:bold;color:var(--muted)}
+.userStat strong{color:var(--b);font-size:13px}
+.userTable td,.userTable th{white-space:nowrap}
+.userEmail{font-weight:bold;color:var(--b)}
+.onlineBadge{display:inline-block;padding:4px 8px;border:1px solid var(--line);font-size:11px;font-weight:bold}
+.onlineBadge.online{background:var(--okbg);color:var(--ok);border-color:#9fbd8e}
+.onlineBadge.offline{background:#f3f3f3;color:#666}
+.adminMini{display:inline-block;padding:4px 8px;border:1px solid #9fbd8e;background:var(--okbg);color:var(--ok);font-size:11px;font-weight:bold}
+.userMini{display:inline-block;padding:4px 8px;border:1px solid var(--line);background:#f7f4ee;color:#666;font-size:11px;font-weight:bold}
+.usersEmpty{padding:14px;text-align:center;color:var(--muted);font-size:12px}
+.recoveryWrap{max-width:520px;margin:30px auto;padding:10px}
+.recoveryCard{background:var(--card);border:1px solid var(--line);padding:18px;box-shadow:0 2px 8px #0001}
+.recoveryCard h2{margin:0 0 12px;color:var(--b);font-size:20px}
+.recoveryActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.recoveryActions>*{flex:1}
+@media(max-width:700px){.passwordGrid{grid-template-columns:1fr}.passwordGrid .full{grid-column:auto}.userTable td,.userTable th{white-space:normal}}
 </style>
 </head>
 <body>
@@ -784,7 +812,19 @@ body.menuOpen #app{
 <h2>Logowanie</h2><div class="notice">Wspólna baza online – zaloguj się swoim kontem.</div>
 <label>E-mail</label><input id="email" type="email" autocomplete="username">
 <label>Hasło</label><input id="password" type="password" autocomplete="current-password">
-<div class="actions"><button id="loginBtn">Zaloguj</button><button id="signupBtn" class="secondary">Utwórz konto</button></div><div id="loginMsg" class="muted"></div>
+<div class="actions"><button id="loginBtn">Zaloguj</button><button id="signupBtn" class="secondary">Utwórz konto</button></div>
+<div class="actions" style="margin-top:8px"><button type="button" id="forgotPasswordBtn" class="secondary smallBtn">Nie pamiętasz hasła?</button></div>
+<div id="loginMsg" class="muted"></div>
+</section>
+<section id="recoveryPanel" class="recoveryWrap hidden">
+  <div class="recoveryCard">
+    <h2>Ustaw nowe hasło</h2>
+    <div class="notice">Ustaw nowe hasło do swojego konta. Hasło nie jest zapisywane przez aplikację — obsługuje je bezpiecznie Supabase Auth.</div>
+    <label>Nowe hasło</label><input id="recoveryPassword" type="password" autocomplete="new-password">
+    <label>Powtórz nowe hasło</label><input id="recoveryPassword2" type="password" autocomplete="new-password">
+    <div class="recoveryActions"><button type="button" id="recoverySaveBtn">Zapisz nowe hasło</button></div>
+    <div id="recoveryMsg" class="help"></div>
+  </div>
 </section>
 <main id="app" class="wrap hidden">
 <div id="sync" class="notice">● Połączono z bazą online</div>
@@ -809,7 +849,11 @@ body.menuOpen #app{
 <section id="hoursPanel" class="panel"><section class="card"><h2>Godziny pracy</h2><div class="help">Ustaw godziny dla każdego dnia. Wyłącz dzień, jeśli nie przyjmujesz wtedy wizyt.</div><div id="hoursList"></div><div class="actions"><button id="saveHours">Zapisz godziny pracy</button></div><div id="hoursMsg" class="help"></div></section></section>
 <section id="offPanel" class="panel"><section class="card"><h2>Dni wolne / urlop</h2><form id="offForm"><div class="row"><div><label>Od</label><input id="offFrom" type="date" required></div><div><label>Do</label><input id="offTo" type="date" required></div></div><label>Opis</label><input id="offDesc" placeholder="np. Urlop"><div class="actions"><button>Dodaj dzień wolny</button></div><div id="offMsg" class="help"></div></form><div id="offList"></div></section></section>
 <section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div><div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div>
-<div class="adminBox"><div class="adminHeader"><h3>Administratorzy</h3></div><div class="adminNotice">Zarządzanie administratorami odbywa się przez bezpieczne funkcje Supabase. Nie odczytujemy bezpośrednio tabeli <b>auth.users</b> w przeglądarce.</div><div class="adminStatus"><div><div class="adminStatusLabel">Zalogowany użytkownik</div><b id="adminCurrentEmail">—</b></div><span id="adminCurrentRole" class="adminRole user">Sprawdzanie roli…</span></div><div class="adminForm"><div><label for="adminTargetEmail">E-mail użytkownika</label><input id="adminTargetEmail" type="email" autocomplete="off" placeholder="np. użytkownik@example.com"></div><button type="button" id="adminGrantBtn" class="adminBtn grant">Nadaj administratora</button><button type="button" id="adminRevokeBtn" class="adminBtn revoke">Odbierz administratora</button></div><div class="adminHint">Wpisz dokładny e-mail konta, któremu chcesz nadać albo odebrać uprawnienia. Operację może wykonać wyłącznie administrator.</div><div id="adminMsg" class="help" style="margin-top:8px"></div></div></section></section>
+<div class="passwordBox"><h3>Zmiana hasła</h3><div class="help">Po zalogowaniu możesz ustawić nowe hasło do swojego konta.</div><form id="changePasswordForm" class="passwordGrid"><div><label>Nowe hasło</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6"></div><div><label>Powtórz nowe hasło</label><input id="newPassword2" type="password" autocomplete="new-password" minlength="6"></div><div class="full"><div class="passwordHint">Hasła muszą być identyczne. Hasło obsługuje Supabase Auth — aplikacja nie zapisuje go w tabelach.</div></div><div class="full actions"><button type="submit">Zmień hasło</button></div></form><div id="passwordMsg" class="help"></div></div>
+<div class="adminBox"><div class="adminHeader"><h3>Administratorzy</h3></div><div class="adminNotice">Zarządzanie administratorami odbywa się przez bezpieczne funkcje Supabase. Nie odczytujemy bezpośrednio tabeli <b>auth.users</b> w przeglądarce.</div><div class="adminStatus"><div><div class="adminStatusLabel">Zalogowany użytkownik</div><b id="adminCurrentEmail">—</b></div><span id="adminCurrentRole" class="adminRole user">Sprawdzanie roli…</span></div><div class="adminForm"><div><label for="adminTargetEmail">E-mail użytkownika</label><input id="adminTargetEmail" type="email" autocomplete="off" placeholder="np. użytkownik@example.com"></div><button type="button" id="adminGrantBtn" class="adminBtn grant">Nadaj administratora</button><button type="button" id="adminRevokeBtn" class="adminBtn revoke">Odbierz administratora</button></div><div class="adminHint">Wpisz dokładny e-mail konta, któremu chcesz nadać albo odebrać uprawnienia. Operację może wykonać wyłącznie administrator.</div><div id="adminMsg" class="help" style="margin-top:8px"></div></div>
+<div id="usersAdminArea" class="usersBox hidden"><div class="usersToolbar"><div><h3>Użytkownicy systemu</h3><div class="help">Lista widoczna wyłącznie dla administratora. Dane są pobierane przez bezpieczną funkcję Supabase.</div></div><button type="button" id="usersRefreshBtn" class="secondary smallBtn">Odśwież listę</button></div><div class="usersStats"><span class="userStat">Wszyscy: <strong id="usersTotal">0</strong></span><span class="userStat">Aktywni: <strong id="usersOnline">0</strong></span><span class="userStat">Administratorzy: <strong id="usersAdmins">0</strong></span></div><div class="tableWrap"><table class="table userTable"><thead><tr><th>E-mail</th><th>Status</th><th>Uprawnienia</th><th>Utworzono</th><th>Ostatnie logowanie</th><th>Ostatnia aktywność</th></tr></thead><tbody id="usersTable"></tbody></table></div><div id="usersMsg" class="help"></div></div>
+<div id="adminsListArea" class="usersBox hidden"><div class="usersToolbar"><div><h3>Administratorzy</h3><div class="help">Osoby posiadające uprawnienia administratora w tym terminarzu.</div></div></div><div class="tableWrap"><table class="table userTable"><thead><tr><th>E-mail</th><th>Status</th><th>Utworzono</th><th>Ostatnie logowanie</th><th>Ostatnia aktywność</th></tr></thead><tbody id="adminsTable"></tbody></table></div><div id="adminsMsg" class="help"></div></div>
+</section></section>
 <section id="rodoPanel" class="panel">
 <section class="card">
   <div class="sectionTitle">
@@ -949,7 +993,14 @@ const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const plDate=s=>new Intl.DateTimeFormat('pl-PL',{dateStyle:'full'}).format(new Date(s+'T12:00:00'));
 const shortDate=s=>new Intl.DateTimeFormat('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(s+'T12:00:00'));
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-let view=new Date(),selected=new Date(),rows=[],services=[],hours=[],daysOff=[],editingServiceId=null,rodoRows=[],rodoLoaded=false;
+const initialAuthHash=window.location.hash||'';
+const initialAuthSearch=window.location.search||'';
+/* Supabase może użyć starszego linku z #type=recovery albo nowszego
+   linku PKCE z ?code=... . Oba traktujemy jako tryb odzyskiwania. */
+const isRecoveryLink=/(?:^|[&#?])type(?:%3D|=)recovery(?:[&#]|$)/i.test(initialAuthHash+'\n'+initialAuthSearch)
+  ||/(?:^|[?&])code=[^&]+/i.test(initialAuthSearch)
+  ||/(?:^|[&#])access_token=[^&#]+/i.test(initialAuthHash);
+let view=new Date(),selected=new Date(),rows=[],services=[],hours=[],daysOff=[],editingServiceId=null,rodoRows=[],rodoLoaded=false,usersRows=[],activityTimer=null,recoveryMode=isRecoveryLink,recoveryPanelShown=false;
 const days=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
 document.querySelectorAll('.tab').forEach(b=>b.onclick=async()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
@@ -964,7 +1015,112 @@ function statusLabel(s){return s==='oczekuje'?'oczekuje':s==='odrzucona'?'odrzuc
 function showMsg(id,text,err=false){$(id).textContent=text;$(id).className='help'+(err?' err':'')}
 function dayIndex(s){return (new Date(s+'T12:00:00').getDay()+6)%7}
 function isOff(s){return daysOff.find(x=>s>=x.od&&s<=x.do)}
-async function logged(){const {data}=await sb.auth.getSession();const user=data?.session?.user;if(user){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');await refreshAll();await loadAdminPanel()}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden')}}
+function showRecoveryPanel(){
+  recoveryMode=true;
+  $('login').classList.add('hidden');
+  $('app').classList.add('hidden');
+  $('logout').classList.add('hidden');
+  $('recoveryPanel').classList.remove('hidden');
+  if(!recoveryPanelShown){
+    $('recoveryPassword').value='';
+    $('recoveryPassword2').value='';
+    showMsg('recoveryMsg','');
+    recoveryPanelShown=true;
+  }
+}
+
+async function hideRecoveryPanel(){
+  recoveryMode=false;
+  recoveryPanelShown=false;
+  $('recoveryPanel').classList.add('hidden');
+  $('login').classList.remove('hidden');
+  $('app').classList.add('hidden');
+  $('logout').classList.add('hidden');
+}
+
+async function registerActivity(){
+  const {data}=await sb.auth.getSession();
+  if(!data?.session?.user) return;
+  const r=await sb.rpc('rejestruj_aktywnosc_uzytkownika',{p_workspace_id:WORKSPACE});
+  if(r.error) console.warn('Nie udało się zapisać aktywności użytkownika:',r.error.message);
+}
+
+function startActivityHeartbeat(){
+  if(activityTimer) clearInterval(activityTimer);
+  registerActivity();
+  activityTimer=setInterval(registerActivity,60000);
+}
+
+function stopActivityHeartbeat(){
+  if(activityTimer){clearInterval(activityTimer);activityTimer=null;}
+}
+
+function fmtDateTime(v){
+  if(!v) return '—';
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime())) return '—';
+  return new Intl.DateTimeFormat('pl-PL',{dateStyle:'short',timeStyle:'short'}).format(d);
+}
+function fmtDate(v){
+  if(!v) return '—';
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime())) return '—';
+  return new Intl.DateTimeFormat('pl-PL',{dateStyle:'short'}).format(d);
+}
+function renderUsers(){
+  const all=Array.isArray(usersRows)?usersRows:[];
+  const admins=all.filter(x=>x.is_admin);
+  $('usersTotal').textContent=all.length;
+  $('usersOnline').textContent=all.filter(x=>x.is_online).length;
+  $('usersAdmins').textContent=admins.length;
+  $('usersTable').innerHTML=all.length?all.map(x=>`<tr><td><span class="userEmail">${esc(x.email||'—')}</span></td><td><span class="onlineBadge ${x.is_online?'online':'offline'}">${x.is_online?'🟢 Aktywny':'⚪ Nieaktywny'}</span></td><td>${x.is_admin?'<span class="adminMini">Administrator</span>':'<span class="userMini">Użytkownik</span>'}</td><td>${esc(fmtDate(x.created_at))}</td><td>${esc(fmtDateTime(x.last_sign_in_at))}</td><td>${esc(fmtDateTime(x.last_seen_at))}</td></tr>`).join(''):'<tr><td colspan="6" class="usersEmpty">Brak użytkowników do wyświetlenia.</td></tr>';
+  $('adminsTable').innerHTML=admins.length?admins.map(x=>`<tr><td><span class="userEmail">${esc(x.email||'—')}</span></td><td><span class="onlineBadge ${x.is_online?'online':'offline'}">${x.is_online?'🟢 Aktywny':'⚪ Nieaktywny'}</span></td><td>${esc(fmtDate(x.created_at))}</td><td>${esc(fmtDateTime(x.last_sign_in_at))}</td><td>${esc(fmtDateTime(x.last_seen_at))}</td></tr>`).join(''):'<tr><td colspan="5" class="usersEmpty">Brak administratorów.</td></tr>';
+}
+
+async function loadUsersAdmin(){
+  $('usersAdminArea').classList.add('hidden');
+  $('adminsListArea').classList.add('hidden');
+  $('usersTable').innerHTML='<tr><td colspan="6" class="usersEmpty">Ładowanie listy użytkowników…</td></tr>';
+  $('adminsTable').innerHTML='<tr><td colspan="5" class="usersEmpty">Ładowanie listy administratorów…</td></tr>';
+  showMsg('usersMsg','Ładowanie listy użytkowników…');
+  showMsg('adminsMsg','');
+  try{
+    const r=await sb.rpc('pobierz_uzytkownikow_admin',{p_workspace_id:WORKSPACE});
+    if(r.error) throw r.error;
+    usersRows=Array.isArray(r.data)?r.data:[];
+    renderUsers();
+    $('usersAdminArea').classList.remove('hidden');
+    $('adminsListArea').classList.remove('hidden');
+    showMsg('usersMsg','Lista użytkowników została pobrana bezpiecznie.');
+  }catch(e){
+    usersRows=[];
+    $('usersTable').innerHTML='<tr><td colspan="6" class="usersEmpty">Brak danych.</td></tr>';
+    $('adminsTable').innerHTML='<tr><td colspan="5" class="usersEmpty">Brak danych.</td></tr>';
+    showMsg('usersMsg','Nie udało się pobrać listy użytkowników: '+(e?.message||e),true);
+  }
+}
+
+async function logged(){
+  const {data}=await sb.auth.getSession();
+  const user=data?.session?.user;
+  if(recoveryMode) return;
+  if(user){
+    $('login').classList.add('hidden');
+    $('recoveryPanel').classList.add('hidden');
+    $('app').classList.remove('hidden');
+    $('logout').classList.remove('hidden');
+    startActivityHeartbeat();
+    await refreshAll();
+    await loadAdminPanel();
+  }else{
+    stopActivityHeartbeat();
+    $('login').classList.remove('hidden');
+    $('recoveryPanel').classList.add('hidden');
+    $('app').classList.add('hidden');
+    $('logout').classList.add('hidden');
+  }
+}
+
 async function loadAdminPanel(){
   const {data}=await sb.auth.getSession();
   const user=data?.session?.user;
@@ -973,6 +1129,7 @@ async function loadAdminPanel(){
   $('adminCurrentEmail').textContent=email;
   $('adminMsg').textContent='';
   const grantBtn=$('adminGrantBtn'),revokeBtn=$('adminRevokeBtn');
+  let isAdmin=false;
   grantBtn.disabled=true;
   revokeBtn.disabled=true;
   $('adminCurrentRole').className='adminRole user';
@@ -980,16 +1137,24 @@ async function loadAdminPanel(){
   try{
     const r=await sb.rpc('czy_uzytkownik_jest_adminem',{p_user_id:user.id,p_workspace_id:WORKSPACE});
     if(r.error) throw r.error;
-    const isAdmin=!!r.data;
+    isAdmin=!!r.data;
     $('adminCurrentRole').className='adminRole '+(isAdmin?'admin':'user');
     $('adminCurrentRole').textContent=isAdmin?'Administrator':'Użytkownik';
     grantBtn.disabled=!isAdmin;
     revokeBtn.disabled=!isAdmin;
-    if(!isAdmin) $('adminMsg').textContent='Tylko administrator może nadawać i odbierać uprawnienia.';
+    if(!isAdmin){
+      $('adminMsg').textContent='Tylko administrator może nadawać i odbierać uprawnienia.';
+      $('usersAdminArea').classList.add('hidden');
+      $('adminsListArea').classList.add('hidden');
+      return;
+    }
+    await loadUsersAdmin();
   }catch(e){
     $('adminCurrentRole').className='adminRole user';
     $('adminCurrentRole').textContent='Nie udało się sprawdzić';
     $('adminMsg').textContent='Nie udało się sprawdzić uprawnień: '+(e?.message||e);
+    $('usersAdminArea').classList.add('hidden');
+    $('adminsListArea').classList.add('hidden');
   }
 
   async function adminAction(action){
@@ -1007,10 +1172,12 @@ async function loadAdminPanel(){
         setTimeout(loadAdminPanel,250);
       }else{
         grantBtn.disabled=false;revokeBtn.disabled=false;
+        await loadUsersAdmin();
       }
     }catch(e){
       showMsg('adminMsg','Operacja nie została wykonana: '+(e?.message||e),true);
-      grantBtn.disabled=!isAdmin;revokeBtn.disabled=!isAdmin;
+      grantBtn.disabled=!isAdmin;
+      revokeBtn.disabled=!isAdmin;
     }
   }
   grantBtn.onclick=()=>adminAction('grant');
@@ -1368,5 +1535,90 @@ document.querySelectorAll('.sideItem[data-panel="rodoPanel"]').forEach(b=>{
   });
 });
 
-sb.channel('terminarz-wizyty').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+WORKSPACE},()=>refreshAll()).subscribe();$('logout').onclick=async()=>{const r=await sb.auth.signOut();if(r.error)alert('Nie udało się wylogować: '+r.error.message);else await logged()};sb.auth.onAuthStateChange(()=>logged());$('date').value=iso(selected);logged();
+$('usersRefreshBtn').onclick=async()=>{
+  const {data}=await sb.auth.getSession();
+  if(data?.session?.user) await loadUsersAdmin();
+};
+
+$('changePasswordForm').onsubmit=async e=>{
+  e.preventDefault();
+  const p1=$('newPassword').value;
+  const p2=$('newPassword2').value;
+  if(!p1||!p2){showMsg('passwordMsg','Wpisz nowe hasło dwa razy.',true);return;}
+  if(p1.length<6){showMsg('passwordMsg','Hasło musi mieć co najmniej 6 znaków.',true);return;}
+  if(p1!==p2){showMsg('passwordMsg','Hasła nie są identyczne.',true);return;}
+  const btn=e.target.querySelector('button[type="submit"]');
+  btn.disabled=true;
+  showMsg('passwordMsg','Zmiana hasła…');
+  try{
+    const r=await sb.auth.updateUser({password:p1});
+    if(r.error) throw r.error;
+    $('newPassword').value='';$('newPassword2').value='';
+    showMsg('passwordMsg','Hasło zostało zmienione.');
+  }catch(e){
+    showMsg('passwordMsg','Nie udało się zmienić hasła: '+(e?.message||e),true);
+  }finally{btn.disabled=false;}
+};
+
+$('forgotPasswordBtn').onclick=async()=>{
+  const email=$('email').value.trim();
+  if(!email){showMsg('loginMsg','Najpierw wpisz swój adres e-mail.',true);$('email').focus();return;}
+  const btn=$('forgotPasswordBtn');btn.disabled=true;
+  showMsg('loginMsg','Jeżeli konto z tym adresem istnieje, otrzymasz wiadomość z instrukcją odzyskania hasła.');
+  try{
+    const redirectTo='https://aj-gabinetmasazu.github.io/terminarz-wizyt/etap3b-test/';
+    const r=await sb.auth.resetPasswordForEmail(email,{redirectTo});
+    if(r.error) throw r.error;
+    showMsg('loginMsg','Jeżeli konto z tym adresem istnieje, otrzymasz wiadomość z instrukcją odzyskania hasła. Sprawdź także folder SPAM.');
+  }catch(e){
+    showMsg('loginMsg','Nie udało się wysłać wiadomości: '+(e?.message||e),true);
+  }finally{btn.disabled=false;}
+};
+
+$('recoverySaveBtn').onclick=async()=>{
+  const p1=$('recoveryPassword').value;
+  const p2=$('recoveryPassword2').value;
+  if(!p1||!p2){showMsg('recoveryMsg','Wpisz nowe hasło dwa razy.',true);return;}
+  if(p1.length<6){showMsg('recoveryMsg','Hasło musi mieć co najmniej 6 znaków.',true);return;}
+  if(p1!==p2){showMsg('recoveryMsg','Hasła nie są identyczne.',true);return;}
+  const btn=$('recoverySaveBtn');btn.disabled=true;
+  showMsg('recoveryMsg','Zapisywanie nowego hasła…');
+  try{
+    const r=await sb.auth.updateUser({password:p1});
+    if(r.error) throw r.error;
+    showMsg('recoveryMsg','Hasło zostało zmienione. Za chwilę wrócisz do logowania.');
+    setTimeout(async()=>{await sb.auth.signOut();await hideRecoveryPanel();showMsg('loginMsg','Hasło zostało zmienione. Możesz teraz zalogować się nowym hasłem.');},900);
+  }catch(e){
+    showMsg('recoveryMsg','Nie udało się ustawić nowego hasła: '+(e?.message||e),true);
+  }finally{btn.disabled=false;}
+};
+
+sb.channel('terminarz-wizyty').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+WORKSPACE},()=>refreshAll()).subscribe();
+$('logout').onclick=async()=>{const r=await sb.auth.signOut();if(r.error)alert('Nie udało się wylogować: '+r.error.message);else await logged()};
+
+/*
+  Odzyskiwanie hasła ma pierwszeństwo przed normalnym otwarciem aplikacji.
+  Supabase może podczas wejścia z linku wysłać kilka zdarzeń auth (m.in.
+  INITIAL_SESSION / SIGNED_IN oraz PASSWORD_RECOVERY). Nie wolno wtedy
+  pozwolić, aby zwykłe logged() otworzyło program przed ekranem zmiany hasła.
+*/
+sb.auth.onAuthStateChange((event)=>{
+  /* Każde zdarzenie auth podczas powrotu z resetu hasła ma pozostać
+     na ekranie odzyskiwania. Szczególnie nie wpuszczamy tu SIGNED_IN. */
+  if(event==='PASSWORD_RECOVERY' || recoveryMode || isRecoveryLink){
+    recoveryMode=true;
+    showRecoveryPanel();
+    return;
+  }
+  logged();
+});
+
+$('date').value=iso(selected);
+
+/* Pierwsza inicjalizacja jest blokowana dla linku recovery. */
+if(isRecoveryLink){
+  showRecoveryPanel();
+}else{
+  logged();
+}
 </script></body></html>
