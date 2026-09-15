@@ -896,6 +896,7 @@ body.menuOpen #app{
 <section class="card"><h2>Nowa wizyta</h2><form id="form">
 <label>Imię i nazwisko klienta</label><input id="client" required>
 <label>Data</label><input id="date" type="date" required><div id="availableTimesWrap" class="availableTimesWrap"><label>Dostępna godzina wizyty</label><div id="availableTimes" class="slotPicker"><div class="empty">Najpierw wybierz datę.</div></div><div id="timeHelp" class="help">Po wybraniu daty zostaną pokazane dostępne godziny. Dla dzisiejszego dnia minione godziny są ukrywane.</div></div>
+<label>Wybierz Masażystę</label><select id="masseur" required><option value="">— wybierz masażystę —</option><option value="Agata Jankowska">Agata Jankowska</option><option value="Andrzej Jankowski">Andrzej Jankowski</option></select>
 <label>Rodzaj wizyty</label><select id="service" required><option value="">— wybierz rodzaj wizyty —</option><option value="masaż ciała">masaż ciała</option><option value="masaż twarzy">masaż twarzy</option><option value="masaż gorącymi kamieniami">masaż gorącymi kamieniami</option><option value="masaż z maseczką/ maskalat">masaż z maseczką/ maskalat</option></select>
 <div class="row"><div><label>Czas trwania</label><select id="duration"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
 <label>E-mail klienta</label><input id="clientEmail" type="email" autocomplete="email"><label>Notatka</label><textarea id="note"></textarea>
@@ -1978,6 +1979,31 @@ $('form').onsubmit=async function(e){
     if(btn) btn.disabled=false;
   }
 };
+
+/* ===== NAPRAWA FILTRÓW WIZYT =====
+   Filtry były narysowane w HTML i renderVisitsTable() je obsługiwał,
+   ale brakowało podpięcia zdarzeń do pól. W efekcie wpisanie tekstu,
+   zmiana statusu lub zakresu dat nie odświeżała tabeli.
+*/
+function bindVisitFilters(){
+  const search=$('visitSearch');
+  const status=$('visitStatus');
+  const from=$('visitFrom');
+  const to=$('visitTo');
+  const clear=$('clearVisitFilters');
+  if(search) search.addEventListener('input',renderVisitsTable);
+  if(status) status.addEventListener('change',renderVisitsTable);
+  if(from) from.addEventListener('change',renderVisitsTable);
+  if(to) to.addEventListener('change',renderVisitsTable);
+  if(clear) clear.addEventListener('click',()=>{
+    if(search) search.value='';
+    if(status) status.value='';
+    if(from) from.value='';
+    if(to) to.value='';
+    renderVisitsTable();
+  });
+}
+bindVisitFilters();
 
 $('rodoSearch').oninput=renderRodo;
 $('rodoFrom').onchange=renderRodo;
