@@ -17,7 +17,7 @@ window.TERM_CONFIG={
 button,input,select,textarea{font:inherit}button{border:1px solid var(--g);background:linear-gradient(#8b2443,var(--b));color:#fff;padding:10px 13px;font-weight:bold;border-radius:0;min-height:42px;cursor:pointer}button.secondary{background:#fff;color:var(--b);border-color:var(--line)}button.danger{background:#7a2424;border-color:#b87979}button.smallBtn{min-height:36px;padding:7px 10px;font-size:12px}button:disabled{opacity:.55;cursor:not-allowed}input,select,textarea{width:100%;padding:10px;border:1px solid #bfae8f;background:#fff;border-radius:0;color:var(--ink)}textarea{min-height:70px;resize:vertical}label{display:block;font-size:13px;font-weight:bold;margin:9px 0 4px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions>*{flex:1}.wrap{max-width:1200px;margin:auto;padding:10px}.hidden{display:none!important}.notice{font-size:12px;padding:9px 10px;border:1px solid var(--g);background:var(--pendbg);color:var(--b);margin-bottom:12px}.notice.err{border-color:#d5a0a0;background:var(--badbg);color:var(--bad)}
 .tabs{display:none}.tab{white-space:nowrap;background:#eee5d5;color:var(--b);border:1px solid var(--line);border-bottom:0}.tab.active{background:var(--b);color:#fff}.panel{display:none}.panel.active{display:block}.grid2{display:grid;grid-template-columns:330px 1fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);padding:14px;box-shadow:0 2px 8px #0001}.card h2{margin:0 0 12px;color:var(--b);font-size:18px}.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:8px}.muted{color:var(--muted);font-size:12px}.count{font-size:12px;color:var(--pend);font-weight:bold}.tableWrap{overflow:auto}.table{width:100%;border-collapse:collapse;background:#fff}.table th,.table td{border-bottom:1px solid #e4dac7;padding:9px;text-align:left;vertical-align:top;font-size:13px}.table th{color:var(--b);background:#f3eee5}.statusBadge{display:inline-block;padding:4px 8px;border:1px solid var(--line);font-size:11px;font-weight:bold}.statusBadge.pending{background:var(--pendbg);color:var(--pend);border-color:var(--g)}.statusBadge.confirmed{background:var(--okbg);color:var(--ok);border-color:#9fbd8e}.statusBadge.rejected{background:var(--badbg);color:var(--bad);border-color:#d5a0a0}
 .monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.monthbar strong{text-transform:capitalize;color:var(--b);font-size:18px}.monthbar button{width:45px}.week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.dow{text-align:center;font-size:11px;font-weight:bold;color:#765b36;padding:4px}.day{min-height:96px;background:#fff;border:1px solid var(--line);padding:5px;cursor:pointer}.day.muted{background:#f3eee5;color:#aaa}.day.today{outline:2px solid var(--g);outline-offset:-2px}.day.sel{background:#fff2c8}.num{font-weight:bold;font-size:12px}.appt{font-size:10px;margin-top:4px;padding:3px 4px;color:#fff;border-left:3px solid var(--g);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.appt.pending{background:#8a683b}.appt.confirmed{background:#3d6b36}.appt.rejected{background:#7a2424}.dayOff{background:#f8e7e7!important;border-color:#d5a0a0!important}.dayOff .num{color:var(--bad)}
-.filters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.serviceRow,.offRow,.hourRow{display:grid;grid-template-columns:1.5fr .7fr .7fr auto;gap:8px;align-items:end;border-bottom:1px solid #e4dac7;padding:10px 0}.hourRow{grid-template-columns:1.2fr .8fr .8fr .7fr}.offRow{grid-template-columns:1fr 1fr 1.5fr auto}.toggle{display:flex;align-items:center;gap:6px;font-size:13px}.toggle input{width:auto}.empty{text-align:center;padding:22px;color:#887d70}.availableTimesWrap{margin-top:10px}.slotPicker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;min-height:42px}.slotPicker button{margin:0;min-height:42px;background:#fff;color:var(--b);border-color:var(--line)}.slotPicker button.selected{background:var(--b);color:#fff;border-color:var(--b)}.slotPicker .empty{grid-column:1/-1;border:1px solid var(--line);background:#f8f3ea;padding:12px;font-size:12px}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px}.dot{display:inline-block;width:10px;height:10px;border:1px solid #777;margin-right:4px;vertical-align:middle}.dot.pending{background:#8a683b}.dot.confirmed{background:#3d6b36}.dot.rejected{background:#7a2424}.dot.off{background:#f8e7e7;border-color:#d5a0a0}
+.filters{display:grid;grid-template-columns:1.15fr 2fr 1.15fr 1fr 1fr;gap:8px;margin-bottom:12px;align-items:end}.serviceRow,.offRow,.hourRow{display:grid;grid-template-columns:1.5fr .7fr .7fr auto;gap:8px;align-items:end;border-bottom:1px solid #e4dac7;padding:10px 0}.hourRow{grid-template-columns:1.2fr .8fr .8fr .7fr}.offRow{grid-template-columns:1fr 1fr 1.5fr auto}.toggle{display:flex;align-items:center;gap:6px;font-size:13px}.toggle input{width:auto}.empty{text-align:center;padding:22px;color:#887d70}.availableTimesWrap{margin-top:10px}.slotPicker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;min-height:42px}.slotPicker button{margin:0;min-height:42px;background:#fff;color:var(--b);border-color:var(--line)}.slotPicker button.selected{background:var(--b);color:#fff;border-color:var(--b)}.slotPicker .empty{grid-column:1/-1;border:1px solid var(--line);background:#f8f3ea;padding:12px;font-size:12px}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px}.dot{display:inline-block;width:10px;height:10px;border:1px solid #777;margin-right:4px;vertical-align:middle}.dot.pending{background:#8a683b}.dot.confirmed{background:#3d6b36}.dot.rejected{background:#7a2424}.dot.off{background:#f8e7e7;border-color:#d5a0a0}
 #login{max-width:420px;margin:70px auto}.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.help{font-size:12px;color:var(--muted);margin-top:5px}
 @media(max-width:900px){.grid2{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.serviceRow,.hourRow,.offRow{grid-template-columns:1fr 1fr}.serviceRow .actions,.hourRow .actions,.offRow .actions{grid-column:1/-1}}
 @media(max-width:560px){.slotPicker{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding-top:58px}.top{height:58px}.top h1{font-size:15px}.wrap{padding:7px}.row,.settingsGrid,.filters{grid-template-columns:1fr}.day{min-height:68px}.appt{display:none}.day.has:after{content:"•";display:block;color:var(--b);font-size:22px}.table th,.table td{font-size:12px;padding:7px}.tabs{margin-left:-7px;margin-right:-7px;padding-left:7px}}
@@ -526,6 +526,9 @@ body.menuOpen .menuToggle span:nth-child(3){
   .sideNav{transition:transform .28s cubic-bezier(.22,.61,.36,1) !important;}
   body .top,body #login,body #app{transition:transform .28s cubic-bezier(.22,.61,.36,1) !important;}
 }
+
+@media(max-width:900px){.filters{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:560px){.filters{grid-template-columns:1fr;}}
 </style>
 <style id="new-visit-rodo">
 .newVisitRodo{margin-top:14px;padding:13px;background:#fbf7ef;border:1px solid #d8c8aa}
@@ -779,7 +782,7 @@ body.menuOpen #app{
     <div >
 
       <div>
-<span><img src="./terminarz_1.png" style="height: 3.0rem;"><span>
+<span><img src="./images/terminarz_1.png" style="height: 3.0rem;"><span>
         
 
 
@@ -859,7 +862,7 @@ body.menuOpen #app{
     <div class="menuLine"></div>
 
 <div class="dm-brand-title" style="display: inline-flex; align-items: center; gap: 8px;">
-    autor: <img src="./imie-i-nazwisko-2.png" style="height: 1.5rem; width: 10rem;" alt="Imię i nazwisko autora">
+    autor: <img src="./images/imie-i-nazwisko-2.png" style="height: 1.5rem; width: 10rem;" alt="Imię i nazwisko autora">
 </div>
 
 </div>
@@ -896,7 +899,7 @@ body.menuOpen #app{
 <section class="card"><h2>Nowa wizyta</h2><form id="form">
 <label>Imię i nazwisko klienta</label><input id="client" required>
 <label>Data</label><input id="date" type="date" required><div id="availableTimesWrap" class="availableTimesWrap"><label>Dostępna godzina wizyty</label><div id="availableTimes" class="slotPicker"><div class="empty">Najpierw wybierz datę.</div></div><div id="timeHelp" class="help">Po wybraniu daty zostaną pokazane dostępne godziny. Dla dzisiejszego dnia minione godziny są ukrywane.</div></div>
-<label>Wybierz Masażystę</label><select id="masseur" required><option value="">— wybierz masażystę —</option><option value="Agata">Agata</option><option value="Andrzej">Andrzej</option></select>
+<label>Wybierz Masażystę</label><select id="masseur" required><option value="">— wybierz masażystę —</option><option value="Agata Jankowska">Agata Jankowska</option><option value="Andrzej Jankowski">Andrzej Jankowski</option></select>
 <label>Rodzaj wizyty</label><select id="service" required><option value="">— wybierz rodzaj wizyty —</option><option value="masaż ciała">masaż ciała</option><option value="masaż twarzy">masaż twarzy</option><option value="masaż gorącymi kamieniami">masaż gorącymi kamieniami</option><option value="masaż z maseczką/ maskalat">masaż z maseczką/ maskalat</option></select>
 <div class="row"><div><label>Czas trwania</label><select id="duration"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
 <label>E-mail klienta</label><input id="clientEmail" type="email" autocomplete="email"><label>Notatka</label><textarea id="note"></textarea>
@@ -934,11 +937,19 @@ Pomorskie.</b></p>
 <section class="card" style="grid-column:1/-1"><div class="sectionTitle"><h2>Wizyty: <span id="selectedLabel"></span></h2><span class="count" id="count"></span></div><div id="dayList"></div></section>
 </div></section>
 <section id="visitsPanel" class="panel"><section class="card"><div class="sectionTitle"><h2>Wszystkie wizyty</h2><span class="count" id="allCount"></span></div>
-<div class="filters"><input id="visitSearch" placeholder="Szukaj: klient, telefon, e-mail"><select id="visitStatus"><option value="">Wszystkie statusy</option><option value="oczekuje">Oczekujące</option><option value="potwierdzona">Potwierdzone</option><option value="odrzucona">Odrzucone</option></select><input id="visitFrom" type="date" title="Od"><input id="visitTo" type="date" title="Do"></div><div class="actions" style="margin-top:0"><button id="clearVisitFilters" class="secondary smallBtn">Wyczyść filtry</button></div><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>Godzina</th><th>Klient</th><th>Masażysta</th><th>Usługa</th><th>Kontakt</th><th>Status</th><th>Akcje</th></tr></thead><tbody id="visitsTable"></tbody></table></div></section></section>
+<div class="filters"><select id="visitMasseur" aria-label="Filtruj po masażyście">
+<option value="">Wszyscy masażyści</option>
+<option value="Agata Jankowska">Agata Jankowska</option>
+<option value="Andrzej Jankowski">Andrzej Jankowski</option>
+</select>
+<input id="visitSearch" placeholder="Szukaj: klient, telefon, e-mail"><select id="visitStatus"><option value="">Wszystkie statusy</option><option value="oczekuje">Oczekujące</option><option value="potwierdzona">Potwierdzone</option><option value="odrzucona">Odrzucone</option></select><input id="visitFrom" type="date" title="Od"><input id="visitTo" type="date" title="Do"></div><div class="actions" style="margin-top:0"><button id="clearVisitFilters" class="secondary smallBtn">Wyczyść filtry</button></div><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>Godzina</th><th>Klient</th><th>Masażysta</th><th>Usługa</th><th>Kontakt</th><th>Status</th><th>Akcje</th></tr></thead><tbody id="visitsTable"></tbody></table></div></section></section>
 <section id="servicesPanel" class="panel"><section class="card"><h2>Usługi</h2><form id="serviceForm"><div class="row"><div><label>Nazwa usługi</label><input id="serviceName" required></div><div><label>Czas trwania (min)</label><input id="serviceMinutes" type="number" min="5" step="5" value="30" required></div></div><label class="toggle"><input id="serviceActive" type="checkbox" checked> Usługa aktywna</label><div class="actions"><button type="submit" id="serviceSaveBtn">Dodaj usługę</button><button type="button" id="serviceCancel" class="secondary hidden">Anuluj edycję</button></div><div id="serviceMsg" class="help"></div></form><div id="servicesList"></div></section></section>
 <section id="hoursPanel" class="panel"><section class="card"><h2>Godziny pracy</h2><div class="help">Ustaw godziny dla każdego dnia. Wyłącz dzień, jeśli nie przyjmujesz wtedy wizyt.</div><div id="hoursList"></div><div class="actions"><button id="saveHours">Zapisz godziny pracy</button></div><div id="hoursMsg" class="help"></div></section></section>
 <section id="offPanel" class="panel"><section class="card"><h2>Dni wolne / urlop</h2><form id="offForm"><div class="row"><div><label>Od</label><input id="offFrom" type="date" required></div><div><label>Do</label><input id="offTo" type="date" required></div></div><label>Opis</label><input id="offDesc" placeholder="np. Urlop"><div class="actions"><button type="submit">Dodaj dzień wolny</button></div><div id="offMsg" class="help"></div></form><div id="offList"></div></section></section>
-<section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div><div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div>
+<section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta 1</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div>
+<div style="grid-column:1/-1"><label>Informacja dla klienta 2</label><textarea id="setMessage2" placeholder="Dodatkowa informacja dla klienta."></textarea></div>
+<div style="grid-column:1/-1"><label>Informacja dla klienta 3</label><textarea id="setMessage3" placeholder="Kolejna dodatkowa informacja dla klienta."></textarea></div>
+<div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div>
 <div class="passwordBox"><h3>Zmiana hasła</h3><div class="help">Po zalogowaniu możesz ustawić nowe hasło do swojego konta.</div><form id="changePasswordForm" class="passwordGrid"><div><label>Nowe hasło</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6"></div><div><label>Powtórz nowe hasło</label><input id="newPassword2" type="password" autocomplete="new-password" minlength="6"></div><div class="full"><div class="passwordHint">Hasła muszą być identyczne. Hasło obsługuje Supabase Auth — aplikacja nie zapisuje go w tabelach.</div></div><div class="full actions"><button type="submit">Zmień hasło</button></div></form><div id="passwordMsg" class="help"></div></div>
 <div class="adminBox"><div class="adminHeader"><h3>Administratorzy</h3></div><div class="adminNotice">Zarządzanie administratorami odbywa się przez bezpieczne funkcje Supabase. Nie odczytujemy bezpośrednio tabeli <b>auth.users</b> w przeglądarce.</div><div class="adminStatus"><div><div class="adminStatusLabel">Zalogowany użytkownik</div><b id="adminCurrentEmail">—</b></div><span id="adminCurrentRole" class="adminRole user">Sprawdzanie roli…</span></div><div class="adminForm"><div><label for="adminTargetEmail">E-mail użytkownika</label><input id="adminTargetEmail" type="email" autocomplete="off" placeholder="np. użytkownik@example.com"></div><button type="button" id="adminGrantBtn" class="adminBtn grant">Nadaj administratora</button><button type="button" id="adminRevokeBtn" class="adminBtn revoke">Odbierz administratora</button></div><div class="adminHint">Wpisz dokładny e-mail konta, któremu chcesz nadać albo odebrać uprawnienia. Operację może wykonać wyłącznie administrator.</div><div id="adminMsg" class="help" style="margin-top:8px"></div></div>
 <div id="usersAdminArea" class="usersBox hidden"><div class="usersToolbar"><div><h3>Użytkownicy systemu</h3><div class="help">Lista widoczna wyłącznie dla administratora. Dane są pobierane przez bezpieczną funkcję Supabase.</div></div><button type="button" id="usersRefreshBtn" class="secondary smallBtn">Odśwież listę</button></div><div class="usersStats"><span class="userStat">Wszyscy: <strong id="usersTotal">0</strong></span><span class="userStat">Aktywni: <strong id="usersOnline">0</strong></span><span class="userStat">Administratorzy: <strong id="usersAdmins">0</strong></span></div><div class="tableWrap"><table class="table userTable"><thead><tr><th>E-mail</th><th>Status</th><th>Uprawnienia</th><th>Utworzono</th><th>Ostatnie logowanie</th><th>Ostatnia aktywność</th></tr></thead><tbody id="usersTable"></tbody></table></div><div id="usersMsg" class="help"></div></div>
@@ -1375,7 +1386,7 @@ async function loadAdminPanel(){
   };
 }
 
-async function refreshAll(){await Promise.all([loadVisits(),loadServices(),loadHours(),loadOff(),loadSettings()]);renderCalendar();renderDayList();renderVisitsTable();renderServices();renderHours();renderOff()}
+async function refreshAll(){await Promise.all([loadVisits(),loadServices(),loadHours(),loadOff(),loadSettings()]);populateVisitMasseurFilter();renderCalendar();renderDayList();renderVisitsTable();renderServices();renderHours();renderOff()}
 async function loadVisits(){const r=await sb.from('wizyty').select('*').eq('workspace_id',WORKSPACE).order('data').order('godzina');if(r.error){$('sync').textContent='Błąd wizyt: '+r.error.message;return}rows=r.data||[]}
 async function loadServices(){const r=await sb.from('uslugi').select('id,nazwa,czas_trwania,aktywna').eq('workspace_id',WORKSPACE).order('nazwa');if(!r.error)services=r.data||[]}
 async function loadHours(){const r=await sb.from('godziny_pracy').select('id,dzien_tygodnia,od,do,aktywne').eq('workspace_id',WORKSPACE).order('dzien_tygodnia');if(!r.error)hours=r.data||[]}
@@ -1384,7 +1395,7 @@ function renderCalendar(){const y=view.getFullYear(),m=view.getMonth(),first=new
 function actionButtons(x){const id=x.id,s=x.status||'potwierdzona';let h='<button class="smallBtn" data-action="delete" data-id="'+id+'">Usuń</button>';if(s==='oczekuje')h='<button class="smallBtn" data-action="confirm" data-id="'+id+'">Potwierdź</button><button class="smallBtn" data-action="reject" data-id="'+id+'">Odrzuć</button>'+h;else if(s==='potwierdzona')h='<button class="smallBtn" data-action="reject" data-id="'+id+'">Odrzuć</button>'+h;else h='<button class="smallBtn" data-action="confirm" data-id="'+id+'">Potwierdź</button>'+h;return h}
 function bindActions(root){root.querySelectorAll('[data-action]').forEach(b=>b.onclick=async()=>{const id=b.dataset.id,a=b.dataset.action;if(a==='delete'){if(!confirm('Usunąć tę wizytę?'))return;const r=await sb.from('wizyty').delete().eq('id',id);if(r.error)alert(r.error.message);else await refreshAll();return}const ns=a==='confirm'?'potwierdzona':'odrzucona';if(!confirm(ns==='potwierdzona'?'Potwierdzić tę wizytę?':'Odrzucić tę wizytę?'))return;const r=await sb.from('wizyty').update({status:ns}).eq('id',id);if(r.error)alert(r.error.message);else await refreshAll()})}
 function renderDayList(){const s=iso(selected),a=rows.filter(x=>x.data===s).sort((x,y)=>(x.godzina||'').localeCompare(y.godzina||''));$('selectedLabel').textContent=plDate(s);$('count').textContent=a.length?a.length+' '+(a.length===1?'wizyta':'wizyty'):'';$('dayList').innerHTML=a.length?a.map(x=>'<div class="item" style="border-top:1px solid #e4dac7;padding:11px 0"><b>'+esc((x.godzina||'').slice(0,5))+' — '+esc(x.klient)+'</b> <span class="muted">('+esc(x.czas_trwania??x.duration??x.czas??60)+' min)</span><div>'+esc(x.usluga||'Wizyta')+(x.masazysta?' · Masażysta: '+esc(x.masazysta):'')+(x.telefon?' · '+esc(x.telefon):'')+'</div>'+(x.email?'<div class="muted">E-mail: <a href="mailto:'+encodeURIComponent(x.email)+'">'+esc(x.email)+'</a></div>':'')+'<div style="margin-top:5px"><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></div>'+(x.notatka?'<div class="muted" style="margin-top:5px">'+esc(x.notatka)+'</div>':'')+'<div class="actions">'+actionButtons(x)+'</div></div>').join(''):'<div class="empty">Brak wizyt na ten dzień.</div>';bindActions($('dayList'))}
-function renderVisitsTable(){let a=[...rows];const q=$('visitSearch').value.trim().toLowerCase(),st=$('visitStatus').value,from=$('visitFrom').value,to=$('visitTo').value;if(q)a=a.filter(x=>[x.klient,x.telefon,x.email].some(v=>String(v||'').toLowerCase().includes(q)));if(st)a=a.filter(x=>(x.status||'potwierdzona')===st);if(from)a=a.filter(x=>x.data>=from);if(to)a=a.filter(x=>x.data<=to);a.sort((x,y)=>(x.data+x.godzina).localeCompare(y.data+y.godzina));$('allCount').textContent=a.length+' '+(a.length===1?'wizyta':'wizyt');$('visitsTable').innerHTML=a.length?a.map(x=>'<tr><td>'+shortDate(x.data)+'</td><td>'+esc((x.godzina||'').slice(0,5))+'</td><td><b>'+esc(x.klient)+'</b></td><td>'+esc(x.masazysta||'')+'</td><td>'+esc(x.usluga||'Wizyta')+'<br><span class="muted">'+esc(x.czas_trwania??x.duration??x.czas??60)+' min</span></td><td>'+esc(x.telefon||'')+(x.email?'<br>'+esc(x.email):'')+'</td><td><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></td><td><div class="actions" style="margin:0">'+actionButtons(x)+'</div></td></tr>').join(''):'<tr><td colspan="8" class="empty">Brak wizyt spełniających kryteria.</td></tr>';bindActions($('visitsTable'))}
+function renderVisitsTable(){let a=[...rows];const q=$('visitSearch').value.trim().toLowerCase(),st=$('visitStatus').value,from=$('visitFrom').value,to=$('visitTo').value,masseur=$('visitMasseur')?.value||'';if(q)a=a.filter(x=>[x.klient,x.telefon,x.email].some(v=>String(v||'').toLowerCase().includes(q)));if(st)a=a.filter(x=>(x.status||'potwierdzona')===st);if(from)a=a.filter(x=>x.data>=from);if(to)a=a.filter(x=>x.data<=to);if(masseur)a=a.filter(x=>String(x.masazysta||'').trim().toLowerCase()===masseur.trim().toLowerCase());a.sort((x,y)=>(x.data+x.godzina).localeCompare(y.data+y.godzina));$('allCount').textContent=a.length+' '+(a.length===1?'wizyta':'wizyt');$('visitsTable').innerHTML=a.length?a.map(x=>'<tr><td>'+shortDate(x.data)+'</td><td>'+esc((x.godzina||'').slice(0,5))+'</td><td><b>'+esc(x.klient)+'</b></td><td>'+esc(x.masazysta||'')+'</td><td>'+esc(x.usluga||'Wizyta')+'<br><span class="muted">'+esc(x.czas_trwania??x.duration??x.czas??60)+' min</span></td><td>'+esc(x.telefon||'')+(x.email?'<br>'+esc(x.email):'')+'</td><td><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></td><td><div class="actions" style="margin:0">'+actionButtons(x)+'</div></td></tr>').join(''):'<tr><td colspan="8" class="empty">Brak wizyt spełniających kryteria.</td></tr>';bindActions($('visitsTable'))}
 function renderServices(){const l=$('servicesList');l.innerHTML=services.length?services.map(s=>'<div class="serviceRow"><div><b>'+esc(s.nazwa)+'</b></div><div>'+esc(s.czas_trwania)+' min</div><div><span class="statusBadge '+(s.aktywna?'confirmed':'rejected')+'">'+(s.aktywna?'aktywna':'nieaktywna')+'</span></div><div class="actions" style="margin:0"><button class="smallBtn" data-service-edit="'+s.id+'">Edytuj</button><button class="smallBtn danger" data-service-delete="'+s.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak usług.</div>';l.querySelectorAll('[data-service-edit]').forEach(b=>b.onclick=()=>{const s=services.find(x=>String(x.id)===b.dataset.serviceEdit);if(!s)return;editingServiceId=s.id;$('serviceName').value=s.nazwa;$('serviceMinutes').value=s.czas_trwania;$('serviceActive').checked=!!s.aktywna;$('serviceSaveBtn').textContent='Zapisz zmiany';$('serviceCancel').classList.remove('hidden')});l.querySelectorAll('[data-service-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć tę usługę?'))return;const r=await sb.from('uslugi').delete().eq('id',b.dataset.serviceDelete).eq('workspace_id',WORKSPACE);if(r.error)showMsg('serviceMsg',r.error.message,true);else{showMsg('serviceMsg','Usługa usunięta.');await loadServices();renderServices()}})}
 
 /* ===== NAPRAWA: USŁUGI — DODAWANIE / EDYCJA / USUWANIE ===== */
@@ -1778,8 +1789,8 @@ async function loadRodo(){
   }
 }
 
-async function loadSettings(){const r=await sb.from('ustawienia').select('*').eq('workspace_id',WORKSPACE).maybeSingle();if(r.error){showMsg('settingsMsg','Nie udało się wczytać ustawień: '+r.error.message,true);return}const x=r.data||{};$('setName').value=x.nazwa_terminarza||'Terminarz wizyt';$('setOwner').value=x.nazwa_osoby||'';$('setPhone').value=x.telefon||'';$('setEmail').value=x.email||'';$('setMessage').value=x.informacja_dla_klienta||''}
-$('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={workspace_id:WORKSPACE,nazwa_terminarza:$('setName').value.trim()||'Terminarz wizyt',nazwa_osoby:$('setOwner').value.trim(),telefon:$('setPhone').value.trim(),email:$('setEmail').value.trim(),informacja_dla_klienta:$('setMessage').value.trim(),updated_at:new Date().toISOString()};const r=await sb.from('ustawienia').upsert(payload,{onConflict:'workspace_id'});if(r.error)showMsg('settingsMsg','Nie udało się zapisać ustawień: '+r.error.message,true);else showMsg('settingsMsg','Ustawienia zapisane w bazie Supabase.')};
+async function loadSettings(){const r=await sb.from('ustawienia').select('*').eq('workspace_id',WORKSPACE).maybeSingle();if(r.error){showMsg('settingsMsg','Nie udało się wczytać ustawień: '+r.error.message,true);return}const x=r.data||{};$('setName').value=x.nazwa_terminarza||'Terminarz wizyt';$('setOwner').value=x.nazwa_osoby||'';$('setPhone').value=x.telefon||'';$('setEmail').value=x.email||'';$('setMessage').value=x.informacja_dla_klienta||'';$('setMessage2').value=x.informacja_dla_klienta_2||'';$('setMessage3').value=x.informacja_dla_klienta_3||''}
+$('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={workspace_id:WORKSPACE,nazwa_terminarza:$('setName').value.trim()||'Terminarz wizyt',nazwa_osoby:$('setOwner').value.trim(),telefon:$('setPhone').value.trim(),email:$('setEmail').value.trim(),informacja_dla_klienta:$('setMessage').value.trim(),informacja_dla_klienta_2:$('setMessage2').value.trim(),informacja_dla_klienta_3:$('setMessage3').value.trim(),updated_at:new Date().toISOString()};const r=await sb.from('ustawienia').upsert(payload,{onConflict:'workspace_id'});if(r.error)showMsg('settingsMsg','Nie udało się zapisać ustawień. Jeśli tabela nie ma jeszcze pól informacja_dla_klienta_2 i informacja_dla_klienta_3, dodaj je w Supabase.',true);else showMsg('settingsMsg','Ustawienia zapisane w bazie Supabase.')};
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}const btn=$('loginBtn');showMsg('loginMsg','Logowanie...');btn.disabled=true;try{const r=await sb.auth.signInWithPassword({email,password});if(r.error){showMsg('loginMsg','Błąd logowania: '+r.error.message,true);return}showMsg('loginMsg','Zalogowano.');await logged()}catch(e){showMsg('loginMsg','Błąd połączenia z bazą: '+(e?.message||e),true)}finally{btn.disabled=false}};
 $('signupBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}if(password.length<6){showMsg('loginMsg','Hasło musi mieć co najmniej 6 znaków.',true);return}showMsg('loginMsg','Tworzenie konta...');$('signupBtn').disabled=true;const r=await sb.auth.signUp({email,password});$('signupBtn').disabled=false;if(r.error){showMsg('loginMsg','Błąd tworzenia konta: '+r.error.message,true);return}if(r.data?.session){showMsg('loginMsg','Konto utworzone.');await logged()}else showMsg('loginMsg','Konto utworzone. Sprawdź e-mail, jeśli wymagana jest jego weryfikacja.');};
 
@@ -1898,6 +1909,15 @@ $('clear').onclick=function(){
   $('availableTimes').innerHTML='<div class="empty">Wybierz rodzaj wizyty.</div>';
 };
 
+$('masseur').addEventListener('change',function(){
+  const value=this.value.trim();
+  this.dataset.selectedMasseur=value;
+});
+
+$('service').addEventListener('change',function(){
+  this.dataset.selectedService=this.value.trim();
+});
+
 $('form').onsubmit=async function(e){
   e.preventDefault();
   const client=$('client').value.trim();
@@ -1953,6 +1973,31 @@ $('form').onsubmit=async function(e){
       return;
     }
 
+    /*
+      Dodatkowe utrwalenie pól wyboru.
+      Admin ma zapisać dokładnie tę wartość, którą wybrano w formularzu.
+      Dzięki temu masażysta i usługa pozostają zapisane również wtedy,
+      gdy tabela posiada istniejący trigger/default modyfikujący rekord.
+    */
+    const confirmSave=await sb.from('wizyty')
+      .update({masazysta:masseur, usluga:service})
+      .eq('id',reservationId)
+      .eq('workspace_id',WORKSPACE);
+    if(confirmSave.error){
+      alert('Wizyta została dodana, ale nie udało się utrwalić wyboru masażysty/usługi: '+confirmSave.error.message);
+      return;
+    }
+
+    const verify=await sb.from('wizyty')
+      .select('masazysta,usluga')
+      .eq('id',reservationId)
+      .eq('workspace_id',WORKSPACE)
+      .maybeSingle();
+    if(verify.error || !verify.data || String(verify.data.masazysta||'').trim()!==masseur || String(verify.data.usluga||'').trim()!==service){
+      alert('Wizyta została dodana, ale baza nie potwierdziła wybranego masażysty/usługi. Sprawdź zapis w Supabase.');
+      return;
+    }
+
     const rodoResult=await sb.rpc('zapisz_zgode_rodo',{
       p_rezerwacja_id:reservationId,
       p_workspace_id:WORKSPACE,
@@ -1987,21 +2032,33 @@ $('form').onsubmit=async function(e){
    ale brakowało podpięcia zdarzeń do pól. W efekcie wpisanie tekstu,
    zmiana statusu lub zakresu dat nie odświeżała tabeli.
 */
+function populateVisitMasseurFilter(){
+  const sel=$('visitMasseur');
+  if(!sel) return;
+  const current=sel.value;
+  const names=[...new Set((rows||[]).map(x=>String(x.masazysta||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pl'));
+  sel.innerHTML='<option value="">Wszyscy masażyści</option>'+names.map(n=>'<option value="'+esc(n).replace(/\"/g,'&quot;')+'">'+esc(n)+'</option>').join('');
+  if(names.some(n=>n.toLowerCase()===current.toLowerCase())) sel.value=names.find(n=>n.toLowerCase()===current.toLowerCase());
+}
+
 function bindVisitFilters(){
   const search=$('visitSearch');
   const status=$('visitStatus');
   const from=$('visitFrom');
   const to=$('visitTo');
+  const masseur=$('visitMasseur');
   const clear=$('clearVisitFilters');
   if(search) search.addEventListener('input',renderVisitsTable);
   if(status) status.addEventListener('change',renderVisitsTable);
   if(from) from.addEventListener('change',renderVisitsTable);
   if(to) to.addEventListener('change',renderVisitsTable);
+  if(masseur) masseur.addEventListener('change',renderVisitsTable);
   if(clear) clear.addEventListener('click',()=>{
     if(search) search.value='';
     if(status) status.value='';
     if(from) from.value='';
     if(to) to.value='';
+    if(masseur) masseur.value='';
     renderVisitsTable();
   });
 }
