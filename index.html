@@ -782,7 +782,7 @@ body.menuOpen #app{
     <div >
 
       <div>
-<span><img src="./images/terminarz_1.png" style="height: 3.0rem;"><span>
+<span><img src="./terminarz_1.png" style="height: 3.0rem;"><span>
         
 
 
@@ -862,7 +862,7 @@ body.menuOpen #app{
     <div class="menuLine"></div>
 
 <div class="dm-brand-title" style="display: inline-flex; align-items: center; gap: 8px;">
-    autor: <img src="./images/imie-i-nazwisko-2.png" style="height: 1.5rem; width: 10rem;" alt="Imię i nazwisko autora">
+    autor: <img src="./imie-i-nazwisko-2.png" style="height: 1.5rem; width: 10rem;" alt="Imię i nazwisko autora">
 </div>
 
 </div>
@@ -899,7 +899,7 @@ body.menuOpen #app{
 <section class="card"><h2>Nowa wizyta</h2><form id="form">
 <label>Imię i nazwisko klienta</label><input id="client" required>
 <label>Data</label><input id="date" type="date" required><div id="availableTimesWrap" class="availableTimesWrap"><label>Dostępna godzina wizyty</label><div id="availableTimes" class="slotPicker"><div class="empty">Najpierw wybierz datę.</div></div><div id="timeHelp" class="help">Po wybraniu daty zostaną pokazane dostępne godziny. Dla dzisiejszego dnia minione godziny są ukrywane.</div></div>
-<label>Wybierz Masażystę</label><select id="masseur" required><option value="">— wybierz masażystę —</option><option value="Agata Jankowska">Agata Jankowska</option><option value="Andrzej Jankowski">Andrzej Jankowski</option></select>
+<label>Wybierz Masażystę</label><select id="masseur" required><option value="">— wybierz masażystę —</option><option value="Agata Jankowska">Agata</option><option value="Andrzej Jankowski">Andrzej</option></select>
 <label>Rodzaj wizyty</label><select id="service" required><option value="">— wybierz rodzaj wizyty —</option><option value="masaż ciała">masaż ciała</option><option value="masaż twarzy">masaż twarzy</option><option value="masaż gorącymi kamieniami">masaż gorącymi kamieniami</option><option value="masaż z maseczką/ maskalat">masaż z maseczką/ maskalat</option></select>
 <div class="row"><div><label>Czas trwania</label><select id="duration"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
 <label>E-mail klienta</label><input id="clientEmail" type="email" autocomplete="email"><label>Notatka</label><textarea id="note"></textarea>
@@ -939,8 +939,8 @@ Pomorskie.</b></p>
 <section id="visitsPanel" class="panel"><section class="card"><div class="sectionTitle"><h2>Wszystkie wizyty</h2><span class="count" id="allCount"></span></div>
 <div class="filters"><select id="visitMasseur" aria-label="Filtruj po masażyście">
 <option value="">Wszyscy masażyści</option>
-<option value="Agata Jankowska">Agata Jankowska</option>
-<option value="Andrzej Jankowski">Andrzej Jankowski</option>
+<option value="Agata Jankowska">Agata</option>
+<option value="Andrzej Jankowski">Andrzej</option>
 </select>
 <input id="visitSearch" placeholder="Szukaj: klient, telefon, e-mail"><select id="visitStatus"><option value="">Wszystkie statusy</option><option value="oczekuje">Oczekujące</option><option value="potwierdzona">Potwierdzone</option><option value="odrzucona">Odrzucone</option></select><input id="visitFrom" type="date" title="Od"><input id="visitTo" type="date" title="Do"></div><div class="actions" style="margin-top:0"><button id="clearVisitFilters" class="secondary smallBtn">Wyczyść filtry</button></div><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>Godzina</th><th>Klient</th><th>Masażysta</th><th>Usługa</th><th>Kontakt</th><th>Status</th><th>Akcje</th></tr></thead><tbody id="visitsTable"></tbody></table></div></section></section>
 <section id="servicesPanel" class="panel"><section class="card"><h2>Usługi</h2><form id="serviceForm"><div class="row"><div><label>Nazwa usługi</label><input id="serviceName" required></div><div><label>Czas trwania (min)</label><input id="serviceMinutes" type="number" min="5" step="5" value="30" required></div></div><label class="toggle"><input id="serviceActive" type="checkbox" checked> Usługa aktywna</label><div class="actions"><button type="submit" id="serviceSaveBtn">Dodaj usługę</button><button type="button" id="serviceCancel" class="secondary hidden">Anuluj edycję</button></div><div id="serviceMsg" class="help"></div></form><div id="servicesList"></div></section></section>
