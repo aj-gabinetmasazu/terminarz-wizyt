@@ -1,16 +1,13 @@
+<!-- ETAP 4B: Atica-Projekty podłączona przez public.workspaces + RLS; test izolacji firm -->
 <!doctype html>
 <html lang="pl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#64152d"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>Terminarz wizyt – panel</title>
+<meta name="admin-version" content="ADMIN_MULTI_FIRMA_V1_F8-1-LICENCJE-NAPRAWA-ADMIN-FIRMY-FIX-2026-09-21">
+<title>Terminarz wizyt – panel — Multi-Firma V1 — F8-1 Licencje</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-window.TERM_CONFIG={
-  SUPABASE_URL:"https://oiabhlviecdkstuedmdp.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY:"sb_publishable_IoteuBlBG9exrD5ubm-z4A_9szDC9Md",
-  WORKSPACE_ID:"11111111-1111-1111-1111-111111111111"
-};
-</script>
+<script src="./config.js"></script>
+<link rel="manifest" href="./manifest.webmanifest">
 <style>
 :root{--b:#64152d;--bd:#3d0b1c;--g:#d7ad55;--bg:#f6f0e5;--card:#fffdf8;--ink:#24151a;--line:#d8c8aa;--muted:#74695d;--ok:#315b2c;--okbg:#edf5e8;--bad:#7a2424;--badbg:#f8e7e7;--pend:#765b36;--pendbg:#fff4cf}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}body{padding-top:64px}.top{position:fixed;z-index:30;top:0;left:0;right:0;height:64px;background:linear-gradient(90deg,var(--bd),var(--b));color:#fff;display:flex;align-items:center;padding:0 12px;box-shadow:0 2px 10px #0003}.top h1{font-size:18px;margin:0}.top .spacer{flex:1}.top button{margin-left:8px}
@@ -529,7 +526,57 @@ body.menuOpen .menuToggle span:nth-child(3){
 
 @media(max-width:900px){.filters{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:560px){.filters{grid-template-columns:1fr;}}
+
+/* PŁATNOŚCI LICENCYJNE — modal zakupowy */
+.licenseModal{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(36,21,26,.58)}
+.licenseModal.open{display:flex}
+.licenseModalBox{width:min(560px,calc(100vw - 28px));max-height:calc(100vh - 40px);overflow:auto;background:var(--card);border:2px solid var(--g);box-shadow:0 18px 60px #0006;position:relative;padding:22px}
+.licenseModalBox h2{margin:0 42px 8px 0;color:var(--b)}
+.licenseModalClose{position:absolute;right:10px;top:10px;width:42px;height:42px;min-height:42px;padding:0;background:#fff;color:var(--b);border:1px solid var(--line);font-size:22px}
+.licenseChoice{border:1px solid var(--line);background:#fff;padding:13px;margin:12px 0}
+.licenseModalActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.licenseModalActions button{flex:1;min-width:180px}
+@media(max-width:560px){.licenseModal{padding:10px}.licenseModalBox{width:100%;max-height:calc(100vh - 20px);padding:16px}.licenseModalActions{display:grid;grid-template-columns:1fr}.licenseModalActions button{width:100%}}
 </style>
+<style id="etap8e-edit-user-style">
+#editUserModal{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:clamp(10px,3vw,28px);box-sizing:border-box;overflow:hidden}
+#editUserModal.hidden{display:none}
+#editUserModal .editUserBox{width:min(680px,100%);max-height:min(92vh,860px);overflow:auto;background:#fff;border:1px solid rgba(100,21,45,.12);border-radius:20px;padding:clamp(18px,3vw,30px);box-shadow:0 24px 80px rgba(0,0,0,.28);box-sizing:border-box;position:relative;overscroll-behavior:contain}
+#editUserModal .editUserBox::-webkit-scrollbar{width:8px}
+#editUserModal .editUserBox::-webkit-scrollbar-thumb{background:rgba(100,21,45,.22);border-radius:20px}
+#editUserModal #editUserTitle{margin:0 0 4px;font-size:clamp(1.15rem,2.5vw,1.45rem);line-height:1.25;color:var(--b,#64152d)}
+#editUserModal .editUserGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+#editUserModal .editUserGrid .full{grid-column:1/-1}
+#editUserModal label{display:block;font-weight:700;font-size:.88rem;margin:0 0 6px}
+#editUserModal select,#editUserModal input{width:100%;min-height:44px;box-sizing:border-box;border:1px solid #d8d0c8;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
+#editUserModal select:focus,#editUserModal input:focus{outline:2px solid rgba(100,21,45,.16);border-color:#64152d}
+#editUserModal .editUserHint{font-size:.82rem;line-height:1.45;margin-top:7px;color:var(--muted,#766e67)}
+#editUserModal .f81PermissionsBox{border:1px solid #e4ddd5;border-radius:0;padding:15px;background:#fffdf9;margin-top:0}
+#editUserModal .f81PermissionsTitle{font-size:1rem;margin-bottom:6px}
+#editUserModal .f81PermissionsHint{font-size:.8rem;line-height:1.5;margin-bottom:12px}
+#editUserModal .f81PermissionsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#editUserModal .f81PermItem{min-height:46px;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid #e8e1da;border-radius:0;background:#fff;cursor:pointer;user-select:none}
+#editUserModal .f81PermItem input[type="checkbox"]{appearance:auto;-webkit-appearance:checkbox;width:18px;height:18px;min-height:18px;flex:0 0 18px;margin:0;padding:0;accent-color:#64152d;cursor:pointer}
+#editUserModal .f81PermItem.disabled{opacity:.55;cursor:not-allowed;background:#f7f5f2}
+#editUserModal .f81PermItem span{line-height:1.35}
+#editUserModal .editUserActions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:14px;border-top:1px solid #eee7df;flex-wrap:wrap;position:sticky;bottom:-1px;background:#fff}
+#editUserModal .editUserActions button{min-width:120px}
+@media(max-width:700px){
+  #editUserModal{align-items:flex-end;padding:0}
+  #editUserModal .editUserBox{width:100%;max-height:94vh;border-radius:0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -12px 50px rgba(0,0,0,.25)}
+  #editUserModal .editUserGrid{grid-template-columns:1fr;gap:13px;margin-top:15px}
+  #editUserModal .editUserGrid .full{grid-column:auto}
+  #editUserModal .f81PermissionsGrid{grid-template-columns:1fr}
+  #editUserModal .editUserActions{margin-left:-16px;margin-right:-16px;padding:12px 16px calc(10px + env(safe-area-inset-bottom));}
+  #editUserModal .editUserActions button{flex:1;min-width:0}
+}
+@media(max-width:390px){
+  #editUserModal .editUserBox{padding-left:12px;padding-right:12px}
+  #editUserModal .editUserActions{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
+  #editUserModal .editUserActions button{font-size:.88rem;padding-left:9px;padding-right:9px}
+}
+</style>
+
 <style id="new-visit-rodo">
 .newVisitRodo{margin-top:14px;padding:13px;background:#fbf7ef;border:1px solid #d8c8aa}
 .newVisitRodoTitle{font-weight:700;margin-bottom:8px}
@@ -768,13 +815,107 @@ body.menuOpen #app{
 .recoveryActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .recoveryActions>*{flex:1}
 @media(max-width:700px){.passwordGrid{grid-template-columns:1fr}.passwordGrid .full{grid-column:auto}.userTable td,.userTable th{white-space:normal}}
+/* ===== F8-1 — uporządkowana tabela Administratorzy ===== */
+.usersBox .tableWrap{margin-top:12px;border:1px solid var(--line);background:#fff;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+.usersBox .userTable{min-width:980px;margin:0;border:0;table-layout:auto}
+.usersBox .userTable th{position:sticky;top:0;z-index:1;padding:11px 10px;background:#f3eee5;border-bottom:2px solid var(--line);font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.usersBox .userTable td{padding:10px;border-bottom:1px solid #e4dac7;font-size:12px;vertical-align:middle;white-space:nowrap}
+.usersBox .userTable tbody tr:last-child td{border-bottom:0}
+.usersBox .userTable tbody tr:hover td{background:#faf8f3}
+.usersBox .userTable th:first-child,.usersBox .userTable td:first-child{min-width:190px}
+.usersBox .userTable th:nth-child(2),.usersBox .userTable td:nth-child(2){min-width:90px}
+.usersBox .userTable th:nth-child(3),.usersBox .userTable td:nth-child(3){min-width:78px}
+.usersBox .userTable th:nth-child(4),.usersBox .userTable td:nth-child(4){min-width:145px}
+.usersBox .userTable th:nth-child(5),.usersBox .userTable td:nth-child(5){min-width:105px}
+.usersBox .userTable th:nth-child(6),.usersBox .userTable td:nth-child(6){min-width:125px}
+.usersBox .userTable th:nth-child(7),.usersBox .userTable td:nth-child(7){min-width:125px}
+.usersBox .userTable th:last-child,.usersBox .userTable td:last-child{min-width:190px}
+.usersBox .userEmail{display:block;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.usersBox .adminMini,.usersBox .userMini,.usersBox .onlineBadge{white-space:nowrap}
+@media(max-width:700px){
+  .usersBox .tableWrap{margin-left:-1px;margin-right:-1px;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+  .usersBox .userTable{min-width:900px}
+  .usersBox .userTable th,.usersBox .userTable td{padding:9px 8px;font-size:11px}
+  .usersBox .userTable th:first-child,.usersBox .userTable td:first-child{min-width:170px}
+  .usersBox .userEmail{max-width:220px}
+}
+
 </style>
+
+<style id="multi-company-v1">
+.companySwitcher{display:flex;align-items:center;gap:7px;margin-left:10px}
+.companySwitcher label{margin:0;color:#ead8a9;font-size:10px;letter-spacing:.7px;text-transform:uppercase;white-space:nowrap}
+.companySwitcher select{width:auto;min-width:180px;max-width:280px;min-height:38px;padding:7px 9px;border:1px solid var(--g);background:#fff;color:var(--b);font-weight:bold}
+.companyInfo{margin-bottom:12px;padding:10px 12px;border:1px solid var(--g);background:#fff8e6;color:var(--b);font-size:12px}
+.companyInfo strong{font-size:13px}
+@media(max-width:700px){.companySwitcher{max-width:46vw}.companySwitcher label{display:none}.companySwitcher select{min-width:0;width:100%;max-width:46vw;font-size:12px}}
+@media(max-width:560px){.companySwitcher{max-width:38vw;margin-left:5px}.companySwitcher select{max-width:38vw;min-height:38px;padding:6px;font-size:11px}.top .spacer{min-width:4px}}
+</style>
+
+<style id="workspace-switch-style">
+  body.workspaceSwitching .wrap{opacity:.35;pointer-events:none;user-select:none}
+  body.workspaceSwitching .panel{visibility:hidden}
+  body.workspaceSwitching #calendarPanel{visibility:visible}
+  body.workspaceSwitching #calendarPanel::before{content:"Ładowanie danych wybranej firmy…";display:block;position:relative;z-index:20;margin:0 0 12px;padding:12px;border:1px solid var(--g);background:#fff8e6;color:var(--b);font-weight:700;text-align:center}
+</style>
+
+<style id="companies-panel-style">
+.companiesListBox{margin-top:22px;border-top:1px solid #e4dac7;padding-top:18px}
+.companiesListBox h3{margin:0 0 10px;color:var(--b)}
+.companyRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #eee4d5}
+.companyRow:first-child{border-top:0}
+.companyRowName{font-weight:700;color:var(--b)}
+.companyRowMeta{font-size:12px;color:#6d6255;margin-top:3px}
+.companyActive{font-size:12px;font-weight:700;white-space:nowrap}
+.companyActive.yes{color:#26734d}
+.companyActive.no{color:#8a4b25}
+.companyActions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}.companyBtn{font-size:12px;padding:7px 9px}.companyBtn.danger{border-color:#b44a4a;color:#9a2f2f;background:#fff}
+@media(max-width:650px){.companyRow{grid-template-columns:1fr}.companyActions{justify-content:flex-start}.companyActive{justify-self:start}}
+</style>
+<style id="workers-panel-style">
+.workerRow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid #e4dac7}
+.workerName{font-weight:700;color:var(--b)}
+.workerStatus{font-size:12px}
+@media(max-width:650px){.workerRow{grid-template-columns:1fr auto}.workerStatus{grid-column:1/-1;grid-row:2}.workerRow .actions{grid-column:2;grid-row:1}}
+</style>
+<style id="etap-10g-final-lock">
+/* ETAP F8 — Administrator ograniczony: Terminarz, Wizyty oraz podgląd Usług i Rodzajów wizyt. */
+/* F8-1: zakładki i ich zawartość pozostają widoczne. Konkretne akcje
+   są blokowane osobnym mechanizmem uprawnień; nie chowamy całych formularzy. */
+</style>
+
+<style id="f81-hierarchy-notice">
+  .f81HierarchyNotice{
+    margin:8px 0 12px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    background:#fffaf0;
+    font-size:12px;
+    line-height:1.45;
+  }
+  .f81HierarchyNotice strong{color:var(--b)}
+  .f81PermissionsBox{border:1px solid var(--line);padding:10px;background:#fffdf8;margin-top:2px}
+  .f81PermissionsTitle{font-weight:700;color:var(--b);margin-bottom:4px}
+  .f81PermissionsHint{font-size:12px;line-height:1.4;color:var(--muted);margin-bottom:8px}
+  .f81PermissionsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px}
+  .f81PermItem{display:flex;align-items:center;gap:7px;font-size:13px;padding:4px 0}
+  .f81PermItem input{width:16px;height:16px}
+  .f81PermItem.disabled{opacity:.55}
+  .f81PermLock{font-size:11px;color:var(--muted)}
+  .f81PermSummary{font-size:11px;color:var(--muted);margin-top:2px}
+  @media(max-width:700px){.f81PermissionsGrid{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <header class="top">
 <button type="button" id="menuToggle" class="menuToggle" aria-label="Otwórz menu"><span></span><span></span><span></span></button>
-<h1>TERMINARZ WIZYT</h1>
+<h1>WIZYTY</h1>
 <div class="spacer"></div>
+<div id="companySwitcher" class="companySwitcher hidden">
+  <label for="companySelect">Firma</label>
+  <select id="companySelect" aria-label="Aktywna firma"></select>
+</div>
 <button id="logout" class="hidden">Wyloguj</button>
 </header>
 <aside id="sideNav" class="sideNav">
@@ -813,6 +954,12 @@ body.menuOpen #app{
     <button type="button" class="sideItem" data-panel="servicesPanel">
       <span class="menuIcon">✦</span><span class="menuLabel">Usługi</span>
     </button>
+    <button type="button" class="sideItem" data-panel="visitTypesPanel">
+      <span class="menuIcon">◈</span><span class="menuLabel">Rodzaj wizyty</span>
+    </button>
+    <button type="button" class="sideItem" data-panel="workersPanel">
+      <span class="menuIcon">♙</span><span class="menuLabel">Pracownicy</span>
+    </button>
     <button type="button" class="sideItem" data-panel="hoursPanel">
       <span class="menuIcon">◷</span><span class="menuLabel">Godziny pracy</span>
     </button>
@@ -822,11 +969,15 @@ body.menuOpen #app{
     <button type="button" class="sideItem" data-panel="settingsPanel">
       <span class="menuIcon">⚙</span><span class="menuLabel">Ustawienia</span>
     </button>
+    <button type="button" class="sideItem" data-panel="companiesPanel">
+      <span class="menuIcon">🏢</span><span class="menuLabel">Firmy</span>
+    </button>
     <button type="button" class="sideItem" data-panel="rodoPanel">
       <span class="menuIcon">✓</span><span class="menuLabel">RODO</span>
     </button>
 
 
+    <button type="button" class="sideItem" data-panel="licensePaymentsPanel"><span class="menuIcon">💳</span><span class="menuLabel">Płatności licencyjne</span></button>
 
 
 
@@ -841,7 +992,7 @@ body.menuOpen #app{
   <button type="button" class="sideItem" data-panel="" onclick="window.location.href='o_programie.htm'">
     <span class="menu-icon">ⓘ</span>
   </button>
-    <button type="button" class="sideItem" data-panel="licencePanel">
+<button type="button" class="sideItem" data-panel="licencePanel">
       <span class="menuIcon">▤</span>
     </button>
 
@@ -891,7 +1042,8 @@ body.menuOpen #app{
 <main id="app" class="wrap hidden">
 <div id="sync" class="notice">● Połączono z bazą online</div>
 <nav class="tabs">
-<button class="tab active" data-tab="calendarPanel">TERMINARZ</button><button class="tab" data-tab="visitsPanel">WIZYTY</button><button class="tab" data-tab="servicesPanel">USŁUGI</button><button class="tab" data-tab="hoursPanel">GODZINY PRACY</button><button class="tab" data-tab="offPanel">DNI WOLNE</button><button class="tab" data-tab="settingsPanel">USTAWIENIA</button><button class="tab" data-tab="rodoPanel">RODO</button><button class="tab" data-tab="licencePanel">RODO</button>
+<button class="tab active" data-tab="calendarPanel">TERMINARZ</button><button class="tab" data-tab="visitsPanel">WIZYTY</button><button class="tab" data-tab="servicesPanel">USŁUGI</button><button class="tab" data-tab="visitTypesPanel">RODZAJ WIZYTY</button><button class="tab" data-tab="workersPanel">PRACOWNICY</button><button class="tab" data-tab="hoursPanel">GODZINY PRACY</button><button class="tab" data-tab="offPanel">DNI WOLNE</button><button class="tab" data-tab="settingsPanel">USTAWIENIA</button><button class="tab" data-tab="companiesPanel">FIRMY</button><button class="tab" data-tab="rodoPanel">RODO</button><button class="tab" data-tab="licensePaymentsPanel">PŁATNOŚCI LICENCYJNE</button>
+<button class="tab" data-tab="licencePanel">LICENCJE</button>
 
 </nav>
 <section id="calendarPanel" class="panel active">
@@ -899,9 +1051,10 @@ body.menuOpen #app{
 <section class="card"><h2>Nowa wizyta</h2><form id="form">
 <label>Imię i nazwisko klienta</label><input id="client" required>
 <label>Data</label><input id="date" type="date" required><div id="availableTimesWrap" class="availableTimesWrap"><label>Dostępna godzina wizyty</label><div id="availableTimes" class="slotPicker"><div class="empty">Najpierw wybierz datę.</div></div><div id="timeHelp" class="help">Po wybraniu daty zostaną pokazane dostępne godziny. Dla dzisiejszego dnia minione godziny są ukrywane.</div></div>
-<label>Wybierz Masażystę</label><select id="masseur" required><option value="">— wybierz masażystę —</option><option value="Agata">Agata</option><option value="Andrzej">Andrzej</option></select>
-<label>Rodzaj wizyty</label><select id="service" required><option value="">— wybierz rodzaj wizyty —</option><option value="masaż ciała">masaż ciała</option><option value="masaż twarzy">masaż twarzy</option><option value="masaż gorącymi kamieniami">masaż gorącymi kamieniami</option><option value="masaż z maseczką/ maskalat">masaż z maseczką/ maskalat</option></select>
-<div class="row"><div><label>Czas trwania</label><select id="duration"><option>30</option><option selected>60</option><option>90</option></select></div><div><label>Telefon</label><input id="phone" type="tel"></div></div>
+<label>Wybierz Masażystę</label><select id="masseur" required><option value="">— wybierz masażystę —</option></select>
+<label>Rodzaj wizyty</label><select id="visitType" required><option value="">— wybierz rodzaj wizyty —</option></select>
+<label>Usługa</label><select id="service" required><option value="">— wybierz usługę —</option></select>
+<label>Telefon</label><input id="phone" type="tel">
 <label>E-mail klienta</label><input id="clientEmail" type="email" autocomplete="email"><label>Notatka</label><textarea id="note"></textarea>
 <div class="newVisitRodo">
   <div class="newVisitRodoTitle">🔒 Informacja o danych osobowych</div>
@@ -942,8 +1095,10 @@ Pomorskie.</b></p>
 <option value="Agata">Agata</option>
 <option value="Andrzej">Andrzej</option>
 </select>
-<input id="visitSearch" placeholder="Szukaj: klient, telefon, e-mail"><select id="visitStatus"><option value="">Wszystkie statusy</option><option value="oczekuje">Oczekujące</option><option value="potwierdzona">Potwierdzone</option><option value="odrzucona">Odrzucone</option></select><input id="visitFrom" type="date" title="Od"><input id="visitTo" type="date" title="Do"></div><div class="actions" style="margin-top:0"><button id="clearVisitFilters" class="secondary smallBtn">Wyczyść filtry</button></div><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>Godzina</th><th>Klient</th><th>Masażysta</th><th>Usługa</th><th>Kontakt</th><th>Status</th><th>Akcje</th></tr></thead><tbody id="visitsTable"></tbody></table></div></section></section>
+<input id="visitSearch" placeholder="Szukaj: klient, telefon, e-mail"><select id="visitStatus"><option value="">Wszystkie statusy</option><option value="oczekuje">Oczekujące</option><option value="potwierdzona">Potwierdzone</option><option value="odrzucona">Odrzucone</option></select><input id="visitFrom" type="date" title="Od"><input id="visitTo" type="date" title="Do"></div><div class="actions" style="margin-top:0"><button id="clearVisitFilters" class="secondary smallBtn">Wyczyść filtry</button></div><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>Godzina</th><th>Klient</th><th>Masażysta</th><th>Rodzaj wizyty</th><th>Usługa</th><th>Kontakt</th><th>Status</th><th>Akcje</th></tr></thead><tbody id="visitsTable"></tbody></table></div></section></section>
 <section id="servicesPanel" class="panel"><section class="card"><h2>Usługi</h2><form id="serviceForm"><div class="row"><div><label>Nazwa usługi</label><input id="serviceName" required></div><div><label>Czas trwania (min)</label><input id="serviceMinutes" type="number" min="5" step="5" value="30" required></div></div><label class="toggle"><input id="serviceActive" type="checkbox" checked> Usługa aktywna</label><div class="actions"><button type="submit" id="serviceSaveBtn">Dodaj usługę</button><button type="button" id="serviceCancel" class="secondary hidden">Anuluj edycję</button></div><div id="serviceMsg" class="help"></div></form><div id="servicesList"></div></section></section>
+<section id="visitTypesPanel" class="panel"><section class="card"><h2>Rodzaj wizyty</h2><div class="help">Tutaj zarządzasz nazwami rodzajów wizyt. Zmiany są zapisywane w bazie dla aktywnej firmy.</div><form id="visitTypeForm"><div><label>Nazwa rodzaju wizyty</label><input id="visitTypeName" required placeholder="np. masaż ciała"></div><label class="toggle"><input id="visitTypeActive" type="checkbox" checked> Rodzaj wizyty aktywny</label><div class="actions"><button type="submit" id="visitTypeSaveBtn">Dodaj rodzaj wizyty</button><button type="button" id="visitTypeCancel" class="secondary hidden">Anuluj edycję</button></div><div id="visitTypeMsg" class="help"></div></form><div id="visitTypesList"></div></section></section>
+<section id="workersPanel" class="panel"><section class="card"><h2>Pracownicy</h2><div class="help">Pracownicy są przypisani wyłącznie do aktualnie wybranej firmy. Możesz dodać, edytować lub usunąć pracownika.</div><form id="workerForm"><div class="row"><div><label>Imię</label><input id="workerFirstName" required maxlength="100"></div><div><label>Nazwisko</label><input id="workerLastName" required maxlength="100"></div></div><label class="toggle"><input id="workerActive" type="checkbox" checked> Pracownik aktywny</label><div class="actions"><button type="submit" id="workerSaveBtn">Dodaj pracownika</button><button type="button" id="workerCancel" class="secondary hidden">Anuluj edycję</button></div><div id="workerMsg" class="help"></div></form><div id="workersList"></div></section></section>
 <section id="hoursPanel" class="panel"><section class="card"><h2>Godziny pracy</h2><div class="help">Ustaw godziny dla każdego dnia. Wyłącz dzień, jeśli nie przyjmujesz wtedy wizyt.</div><div id="hoursList"></div><div class="actions"><button id="saveHours">Zapisz godziny pracy</button></div><div id="hoursMsg" class="help"></div></section></section>
 <section id="offPanel" class="panel"><section class="card"><h2>Dni wolne / urlop</h2><form id="offForm"><div class="row"><div><label>Od</label><input id="offFrom" type="date" required></div><div><label>Do</label><input id="offTo" type="date" required></div></div><label>Opis</label><input id="offDesc" placeholder="np. Urlop"><div class="actions"><button type="submit">Dodaj dzień wolny</button></div><div id="offMsg" class="help"></div></form><div id="offList"></div></section></section>
 <section id="settingsPanel" class="panel"><section class="card"><h2>Ustawienia</h2><div class="help">Te podstawowe dane są zapisywane w bazie Supabase dla tego terminarza. Dzięki temu ustawienia są wspólne dla urządzeń.</div><form id="settingsForm" class="settingsGrid"><div><label>Nazwa terminarza</label><input id="setName"></div><div><label>Nazwa osoby / gabinetu</label><input id="setOwner"></div><div><label>Telefon kontaktowy</label><input id="setPhone"></div><div><label>E-mail kontaktowy</label><input id="setEmail" type="email"></div><div style="grid-column:1/-1"><label>Informacja dla klienta 1</label><textarea id="setMessage" placeholder="Np. Wybierz dogodny termin i usługę."></textarea></div>
@@ -952,9 +1107,24 @@ Pomorskie.</b></p>
 <div style="grid-column:1/-1" class="actions"><button>Zapisz ustawienia</button></div></form><div id="settingsMsg" class="help"></div>
 <div class="passwordBox"><h3>Zmiana hasła</h3><div class="help">Po zalogowaniu możesz ustawić nowe hasło do swojego konta.</div><form id="changePasswordForm" class="passwordGrid"><div><label>Nowe hasło</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6"></div><div><label>Powtórz nowe hasło</label><input id="newPassword2" type="password" autocomplete="new-password" minlength="6"></div><div class="full"><div class="passwordHint">Hasła muszą być identyczne. Hasło obsługuje Supabase Auth — aplikacja nie zapisuje go w tabelach.</div></div><div class="full actions"><button type="submit">Zmień hasło</button></div></form><div id="passwordMsg" class="help"></div></div>
 <div class="adminBox"><div class="adminHeader"><h3>Administratorzy</h3></div><div class="adminNotice">Zarządzanie administratorami odbywa się przez bezpieczne funkcje Supabase. Nie odczytujemy bezpośrednio tabeli <b>auth.users</b> w przeglądarce.</div><div class="adminStatus"><div><div class="adminStatusLabel">Zalogowany użytkownik</div><b id="adminCurrentEmail">—</b></div><span id="adminCurrentRole" class="adminRole user">Sprawdzanie roli…</span></div><div class="adminForm"><div><label for="adminTargetEmail">E-mail użytkownika</label><input id="adminTargetEmail" type="email" autocomplete="off" placeholder="np. użytkownik@example.com"></div><button type="button" id="adminGrantBtn" class="adminBtn grant">Nadaj administratora</button><button type="button" id="adminRevokeBtn" class="adminBtn revoke">Odbierz administratora</button></div><div class="adminHint">Wpisz dokładny e-mail konta, któremu chcesz nadać albo odebrać uprawnienia. Operację może wykonać wyłącznie administrator.</div><div id="adminMsg" class="help" style="margin-top:8px"></div></div>
-<div id="usersAdminArea" class="usersBox hidden"><div class="usersToolbar"><div><h3>Użytkownicy systemu</h3><div class="help">Lista widoczna wyłącznie dla administratora. Dane są pobierane przez bezpieczną funkcję Supabase.</div></div><button type="button" id="usersRefreshBtn" class="secondary smallBtn">Odśwież listę</button></div><div class="usersStats"><span class="userStat">Wszyscy: <strong id="usersTotal">0</strong></span><span class="userStat">Aktywni: <strong id="usersOnline">0</strong></span><span class="userStat">Administratorzy: <strong id="usersAdmins">0</strong></span></div><div class="tableWrap"><table class="table userTable"><thead><tr><th>E-mail</th><th>Status</th><th>Uprawnienia</th><th>Utworzono</th><th>Ostatnie logowanie</th><th>Ostatnia aktywność</th></tr></thead><tbody id="usersTable"></tbody></table></div><div id="usersMsg" class="help"></div></div>
-<div id="adminsListArea" class="usersBox hidden"><div class="usersToolbar"><div><h3>Administratorzy</h3><div class="help">Osoby posiadające uprawnienia administratora w tym terminarzu.</div></div></div><div class="tableWrap"><table class="table userTable"><thead><tr><th>E-mail</th><th>Status</th><th>Utworzono</th><th>Ostatnie logowanie</th><th>Ostatnia aktywność</th></tr></thead><tbody id="adminsTable"></tbody></table></div><div id="adminsMsg" class="help"></div></div>
+<div id="usersAdminArea" class="usersBox hidden"><div class="f81HierarchyNotice"><strong>F8-1 — hierarchia zarządzania:</strong> Program Admin ustala uprawnienia i role Company Admin, Limited Admin i User. Company Admin zarządza tylko Limited Admin i User w swojej firmie. Zakładka Firmy jest dostępna wyłącznie dla Admina Programu (Atica Projekty). Zmiana uprawnień nie zmienia roli użytkownika.</div><div class="usersToolbar"><div><h3>Użytkownicy systemu</h3><div class="help">Lista widoczna wyłącznie dla administratora. Dane są pobierane przez bezpieczną funkcję Supabase.</div></div><div class="usersToolbarActions"><button type="button" id="usersRefreshBtn" class="secondary smallBtn">Odśwież listę</button><button type="button" id="addUserBtn" class="secondary smallBtn">+ Dodaj użytkownika</button></div></div><div class="usersStats"><span class="userStat">Wszyscy: <strong id="usersTotal">0</strong></span><span class="userStat">Dostęp aktywny: <strong id="usersOnline">0</strong></span><span class="userStat">Administratorzy: <strong id="usersAdmins">0</strong></span></div><div class="tableWrap"><table class="table userTable"><thead><tr><th>E-mail</th><th>Dostęp</th><th>Online</th><th>Uprawnienia</th><th>Utworzono</th><th>Ostatnie logowanie</th><th>Ostatnia aktywność</th><th>Zarządzanie</th></tr></thead><tbody id="usersTable"></tbody></table></div><div id="usersMsg" class="help"></div></div>
+<div id="adminsListArea" class="usersBox hidden"><div class="usersToolbar"><div><h3>Administratorzy</h3><div class="help">Osoby posiadające uprawnienia administratora w tym terminarzu.</div></div></div><div class="tableWrap"><table class="table userTable"><thead><tr><th>E-mail</th><th>Dostęp</th><th>Online</th><th>Utworzono</th><th>Ostatnie logowanie</th></tr></thead><tbody id="adminsTable"></tbody></table></div><div id="adminsMsg" class="help"></div></div>
 </section></section>
+<section id="companiesPanel" class="panel">
+<section class="card">
+  <div class="sectionTitle"><h2>Firmy</h2><span class="count" id="companiesCount"></span></div>
+  <div class="help" style="margin-bottom:12px">Tutaj zarządzamy firmami. Każda operacja jest wykonywana przez zabezpieczoną funkcję administracyjną Supabase. Usunięcie jest możliwe wyłącznie dla firmy bez zapisanych danych.</div>
+  <form id="companyForm">
+    <div class="row"><div><label for="companyNameInput">Nazwa nowej firmy</label><input id="companyNameInput" maxlength="200" required placeholder="np. Salon Anna"></div></div>
+    <div class="actions"><button type="submit" id="companyCreateBtn">+ Utwórz firmę</button><button type="button" id="companyClearBtn" class="secondary">Wyczyść</button></div>
+    <div id="companyMsg" class="help"></div>
+  </form>
+  <div class="companiesListBox">
+    <h3>Istniejące firmy</h3>
+    <div id="companiesList"></div>
+  </div>
+</section>
+</section>
 <section id="rodoPanel" class="panel">
 <section class="card">
   <div class="sectionTitle">
@@ -1004,10 +1174,26 @@ Pomorskie.</b></p>
 </section>
 </section>
 
+<section id="licensePaymentsPanel" class="panel">
+<section class="card">
+  <div class="sectionTitle"><h2>Płatności licencyjne</h2><span class="count">ABONAMENT</span></div>
+  <div class="notice"><strong>Zakup, odnowienie i przedłużenie licencji</strong><br>Wybierz okres licencji. Ten moduł przygotowuje obsługę abonamentu; rzeczywista płatność zostanie podłączona do operatora płatności.</div>
+  <div class="grid2">
+    <div class="card"><h3>Licencja miesięczna</h3><p>Abonament na 1 miesiąc.</p><button type="button" class="btn primary" id="buyMonthlyLicense">Kup licencję miesięczną</button></div>
+    <div class="card"><h3>Licencja roczna</h3><p>Abonament na 12 miesięcy.</p><button type="button" class="btn primary" id="buyAnnualLicense">Kup licencję roczną</button></div>
+    <div class="card"><h3>Przedłużenie licencji</h3><p>Przedłuż ważność aktywnej licencji.</p><button type="button" class="btn" id="extendMonthlyLicense">Przedłuż o 1 miesiąc</button> <button type="button" class="btn" id="extendAnnualLicense">Przedłuż o 12 miesięcy</button></div>
+    <div class="card"><h3>Automatyczne odnowienie</h3><p id="autoRenewStatus">Wyłączone</p><button type="button" class="btn" id="toggleAutoRenew">Włącz automatyczne odnawianie</button></div>
+  </div>
+  <div class="tableWrap"><table class="table"><thead><tr><th>Status licencji</th><th>Ważna od</th><th>Ważna do</th><th>Plan</th><th>Odnowienie</th></tr></thead><tbody><tr><td id="licenseStatus">Brak danych</td><td id="licenseFrom">—</td><td id="licenseTo">—</td><td id="licensePlan">—</td><td id="licenseRenewal">—</td></tr></tbody></table></div>
+  <div id="licensePaymentMsg" class="help"></div>
+</section>
+<section class="card"><div class="sectionTitle"><h2>Historia płatności</h2></div><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>Operacja</th><th>Okres</th><th>Kwota</th><th>Status</th></tr></thead><tbody id="licensePaymentsTable"><tr><td colspan="5">Brak płatności.</td></tr></tbody></table></div></section>
+</section>
+
 <section id="licencePanel" class="panel">
 <section class="card">
   <div class="sectionTitle">
-    <h2>Licecncja Programu</h2>
+    <h2>Licencja Programu</h2>
     <span class="count" id="licenceCount"></span>
   </div>
 
@@ -1101,6 +1287,24 @@ zaprzestanie działań czyniących go jej stroną (jak określono w pkt 1).</p><
 
 </section>
 </main>
+<div id="editUserModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="editUserTitle">
+  <div class="editUserBox">
+    <h2 id="editUserTitle">Edytuj użytkownika</h2>
+    <div class="editUserGrid">
+      <div class="full"><label for="editUserEmail">E-mail</label><input id="editUserEmail" type="email" readonly></div>
+      <div><label for="editUserCompany">Firma</label><input id="editUserCompany" type="text" readonly></div>
+      <div><label for="editUserRole">Rola</label><select id="editUserRole"><option value="company_admin">Administrator firmy</option><option value="limited_admin">Administrator ograniczony</option><option value="user">Użytkownik</option></select></div>
+      <div class="full"><label for="editUserActive">Dostęp do tej firmy</label><select id="editUserActive"><option value="unchanged">Bez zmiany</option><option value="true">Aktywny</option><option value="false">Nieaktywny</option></select><div class="editUserHint">Status dostępu jest zapisywany osobno. „Bez zmiany” nie wykonuje żadnej operacji na aktywności.</div></div>
+      <div class="full f81PermissionsBox">
+        <div class="f81PermissionsTitle">Indywidualne uprawnienia</div>
+        <div class="f81PermissionsHint">Uprawnienia są niezależne od roli. Program Admin może ustalać je dla Company Admin, Limited Admin i User. Company Admin może ustalać je tylko dla Limited Admin i User.</div>
+        <div id="editUserPermissions" class="f81PermissionsGrid"></div>
+      </div>
+    </div>
+    <div id="editUserMsg" class="help"></div>
+    <div class="editUserActions"><button type="button" class="secondary smallBtn" id="editUserCancel">Anuluj</button><button type="button" class="smallBtn" id="editUserSave">Zapisz zmiany</button></div>
+  </div>
+</div>
 <script>
 
 /* ===== MENU — klik + wysuwanie palcem Android/iOS, bez dotykania bazy/logowania ===== */
@@ -1129,13 +1333,20 @@ zaprzestanie działań czyniących go jej stroną (jak określono w pkt 1).</p><
   });
 
   document.querySelectorAll('.sideItem').forEach(function(btn){
-    btn.addEventListener('click',function(){
+    btn.addEventListener('click',async function(){
       const id=btn.dataset.panel;
       document.querySelectorAll('.sideItem').forEach(x=>x.classList.toggle('active',x===btn));
       document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));
       document.querySelectorAll('.tab').forEach(function(tab){
         tab.classList.toggle('active',tab.dataset.tab===id);
       });
+      if(id==='rodoPanel'){
+        /* ETAP 10 DIAGNOZA: po każdej zmianie firmy RODO musi zostać
+           pobrane ponownie dla aktualnego workspace. Nie używamy
+           rodoLoaded jako blokady przed odświeżeniem. */
+        rodoLoaded=false;
+        await loadRodo(ACTIVE_WORKSPACE);
+      }
       if(window.innerWidth<=900) closeMenu();
       window.scrollTo({top:0,behavior:'smooth'});
     });
@@ -1185,7 +1396,107 @@ zaprzestanie działań czyniących go jej stroną (jak określono w pkt 1).</p><
     if(window.innerWidth>900) closeMenu();
   });
 })();
-const cfg=window.TERM_CONFIG||{};const sb=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);const WORKSPACE=cfg.WORKSPACE_ID;
+const cfg=window.TERM_CONFIG||{};
+const sb=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
+/* 2F.3A — lista firm jest pobierana dynamicznie z public.workspaces.
+   RLS w Supabase ogranicza wynik do workspace'ów, do których zalogowany
+   użytkownik ma członkostwo w admin_users. Konfiguracja COMPANIES nie jest
+   już źródłem listy firm. */
+let COMPANY_LIST=[];
+let ACTIVE_WORKSPACE=String(window.TERM_CONFIG?.WORKSPACE_ID||"");
+let WORKERS=[];
+let activeCompanyName="Firma";
+function getWorkspace(){return ACTIVE_WORKSPACE}
+function companyById(id){return COMPANY_LIST.find(x=>String(x.id)===String(id))||null}
+function getRememberedWorkspace(){
+  try{return String(sessionStorage.getItem("TERM_ACTIVE_WORKSPACE")||"");}catch(e){return "";}
+}
+function setActiveCompany(id){
+  const c=companyById(id);
+  if(!c) return false;
+  ACTIVE_WORKSPACE=String(c.id);
+  activeCompanyName=String(c.name||"Firma");
+  try{sessionStorage.setItem("TERM_ACTIVE_WORKSPACE",ACTIVE_WORKSPACE);}catch(e){}
+  return true;
+}
+const rememberedWorkspace=getRememberedWorkspace();
+if(rememberedWorkspace) ACTIVE_WORKSPACE=rememberedWorkspace;
+
+let companyListLoading=false;
+let isProgramAdmin=false;
+
+async function loadProgramAdminStatus(){
+  try{
+    const r=await sb.rpc('czy_glowny_admin_programu');
+    if(r.error) throw r.error;
+    isProgramAdmin=r.data===true;
+    /* F8-1: wszystkie zakładki są widoczne. Uprawnienia blokują akcje,
+       a nie samą nawigację. Zakładka Firmy pozostaje dostępna dla każdego,
+       ale jej dane i operacje są wyłącznie dla program_admin. */
+    document.querySelectorAll('.tab[data-tab=\"companiesPanel\"], .sideItem[data-panel=\"companiesPanel\"]').forEach(el=>{
+      el.classList.remove('hidden','roleRestrictedHide');
+      el.removeAttribute('aria-hidden');
+    });
+    return isProgramAdmin;
+  }catch(e){
+    isProgramAdmin=false;
+    document.querySelectorAll('.tab[data-tab=\"companiesPanel\"], .sideItem[data-panel=\"companiesPanel\"]').forEach(el=>{
+      el.classList.remove('hidden','roleRestrictedHide');
+      el.removeAttribute('aria-hidden');
+    });
+    return false;
+  }
+}
+
+async function loadCompanyList(){
+  /* 2F.3B — najpierw potwierdzamy aktywną sesję. Lista firm nigdy nie
+     jest budowana z konfiguracji HTML ani z poprzedniego workspace. */
+  if(companyListLoading) return false;
+  companyListLoading=true;
+  try{
+    const {data:sessionData,error:sessionError}=await sb.auth.getSession();
+    if(sessionError) throw sessionError;
+    const user=sessionData?.session?.user;
+    if(!user){
+      COMPANY_LIST=[];
+      ACTIVE_WORKSPACE="";
+      activeCompanyName="Firma";
+      return false;
+    }
+
+    if(isProgramAdmin){
+      const r=await sb.rpc('pobierz_firmy_admin_programu');
+      if(r.error) throw r.error;
+      const list=Array.isArray(r.data)?r.data:[];
+      COMPANY_LIST=list.map(x=>({id:String(x.id),name:String(x.nazwa||x.id),aktywna:x.aktywna!==false}));
+    }else{
+      /* Lista może być potrzebna wyłącznie do ustalenia aktywnego workspace.
+         F8-1 nigdy nie renderuje tej listy w zakładce Firmy dla ról innych
+         niż program_admin. */
+      const r=await sb.from('workspaces').select('id,nazwa,aktywna').order('nazwa');
+      if(r.error) throw r.error;
+      const list=Array.isArray(r.data)?r.data:[];
+      COMPANY_LIST=list.map(x=>({id:String(x.id),name:String(x.nazwa||x.id),aktywna:x.aktywna!==false}));
+    }
+    const activeList=COMPANY_LIST.filter(c=>c.aktywna!==false);
+    if(!activeList.length){
+      ACTIVE_WORKSPACE="";
+      activeCompanyName="Firma";
+      return false;
+    }
+
+    /* Nieaktywna firma może pozostać w COMPANY_LIST, ale nie może być
+       aktywnym workspace aplikacji. W takim przypadku wybieramy pierwszą
+       aktywną firmę. */
+    const current=companyById(ACTIVE_WORKSPACE);
+    if(!current || current.aktywna===false) setActiveCompany(activeList[0].id);
+    else activeCompanyName=String(current.name||"Firma");
+
+    return true;
+  }finally{
+    companyListLoading=false;
+  }
+}
 const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
 const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const plDate=s=>new Intl.DateTimeFormat('pl-PL',{dateStyle:'full'}).format(new Date(s+'T12:00:00'));
@@ -1198,9 +1509,15 @@ const initialAuthSearch=window.location.search||'';
 const isRecoveryLink=/(?:^|[&#?])type(?:%3D|=)recovery(?:[&#]|$)/i.test(initialAuthHash+'\n'+initialAuthSearch)
   ||/(?:^|[?&])code=[^&]+/i.test(initialAuthSearch)
   ||/(?:^|[&#])access_token=[^&#]+/i.test(initialAuthHash);
-let view=new Date(),selected=new Date(),rows=[],services=[],hours=[],daysOff=[],editingServiceId=null,rodoRows=[],rodoLoaded=false,usersRows=[],activityTimer=null,recoveryMode=isRecoveryLink,recoveryPanelShown=false;
+let view=new Date(),selected=new Date(),rows=[],services=[],visitTypes=[],hours=[],daysOff=[],editingServiceId=null,editingVisitTypeId=null,editingWorkerId=null,rodoRows=[],rodoLoaded=false,usersRows=[],activityTimer=null,recoveryMode=isRecoveryLink,recoveryPanelShown=false;
 const NEW_VISIT_RODO_VERSION='1.0';
 const days=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
+document.addEventListener('click',function(e){
+  const target=e.target.closest('.tab[data-tab="companiesPanel"], .sideItem[data-panel="companiesPanel"]');
+  if(!target) return;
+  /* F8-1: każdy może wejść do zakładki Firmy. Ochrona dotyczy danych i akcji. */
+},true);
+
 document.querySelectorAll('.tab').forEach(b=>b.onclick=async()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
@@ -1208,12 +1525,58 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=async()=>{
   $(b.dataset.tab).classList.add('active');
   if(b.dataset.tab==='rodoPanel'&&!rodoLoaded) await loadRodo();
   if(b.dataset.tab==='settingsPanel') await loadAdminPanel();
+  if(b.dataset.tab==='companiesPanel'){
+    /* Zakładka Firmy jest dostępna dla wszystkich.
+       Dla ról innych niż program_admin renderCompanies() ukrywa dane firm
+       i blokuje przyciski operacyjne. */
+    renderCompanies();
+  }
 });
 function statusClass(s){return s==='oczekuje'?'pending':s==='odrzucona'?'rejected':'confirmed'}
 function statusLabel(s){return s==='oczekuje'?'oczekuje':s==='odrzucona'?'odrzucona':'potwierdzona'}
 function showMsg(id,text,err=false){$(id).textContent=text;$(id).className='help'+(err?' err':'')}
 function dayIndex(s){return (new Date(s+'T12:00:00').getDay()+6)%7}
 function isOff(s){return daysOff.find(x=>s>=x.od&&s<=x.do)}
+
+(function(){
+  let selectedLicenseAction=null;
+  function licenseMsg(t,err){const e=document.getElementById("licensePaymentMsg");if(e){e.textContent=t;e.className="help"+(err?" err":"");}}
+  function openLicenseModal(label,months){
+    selectedLicenseAction={label,months};
+    const m=document.getElementById("licensePaymentModal");
+    if(!m)return;
+    const p=document.getElementById("licenseModalProduct");
+    const c=document.getElementById("licenseModalCompany");
+    const msg=document.getElementById("licenseModalMsg");
+    if(p)p.textContent=label;
+    if(c)c.textContent=(typeof activeCompanyName!=="undefined"&&activeCompanyName)?activeCompanyName:"Wybrana firma";
+    if(msg)msg.textContent="Zamówienie jest gotowe do rozpoczęcia.";
+    m.classList.add("open");m.setAttribute("aria-hidden","false");
+    document.body.style.overflow="hidden";
+  }
+  function closeLicenseModal(){
+    const m=document.getElementById("licensePaymentModal");
+    if(!m)return;
+    m.classList.remove("open");m.setAttribute("aria-hidden","true");
+    document.body.style.overflow="";selectedLicenseAction=null;
+  }
+  document.addEventListener("click",function(e){
+    const id=e.target&&e.target.id;
+    if(id==="buyMonthlyLicense") openLicenseModal("Zakup licencji miesięcznej",1);
+    if(id==="buyAnnualLicense") openLicenseModal("Zakup licencji rocznej",12);
+    if(id==="extendMonthlyLicense") openLicenseModal("Przedłużenie licencji o 1 miesiąc",1);
+    if(id==="extendAnnualLicense") openLicenseModal("Przedłużenie licencji o 12 miesięcy",12);
+    if(id==="toggleAutoRenew"){const b=e.target; const on=b.dataset.on!=="1"; b.dataset.on=on?"1":"0"; b.textContent=on?"Wyłącz automatyczne odnawianie":"Włącz automatyczne odnawianie"; const st=document.getElementById("autoRenewStatus"); if(st)st.textContent=on?"Włączone":"Wyłączone"; licenseMsg(on?"Automatyczne odnawianie zostało zaznaczone. Po podłączeniu operatora zostanie zapisane po stronie serwera.":"Automatyczne odnawianie wyłączone.");}
+    if(id==="licenseModalClose"||id==="licenseModalCancel") closeLicenseModal();
+    if(id==="licenseModalPay"){
+      const msg=document.getElementById("licenseModalMsg");
+      if(msg)msg.textContent="Przejście do operatora płatności będzie dostępne po jego bezpiecznym podłączeniu. Nie oznaczono płatności jako opłaconej.";
+    }
+    if(e.target&&e.target.id==="licensePaymentModal") closeLicenseModal();
+  });
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeLicenseModal();});
+})();
+
 function showRecoveryPanel(){
   recoveryMode=true;
   $('login').classList.add('hidden');
@@ -1237,10 +1600,169 @@ async function hideRecoveryPanel(){
   $('logout').classList.add('hidden');
 }
 
+let workspaceRefreshSeq=0;
+
+function clearWorkspaceData(){
+  /* ETAP 6A — przy zmianie firmy nie pokazujemy nawet chwilowo danych
+     poprzedniego workspace. Najpierw czyścimy stan JS i wszystkie elementy
+     formularzy/list, dopiero potem pobieramy dane nowej firmy. */
+  rows=[]; services=[]; visitTypes=[]; hours=[]; daysOff=[]; rodoRows=[]; rodoLoaded=false; usersRows=[]; WORKERS=[];
+  editingServiceId=null; editingVisitTypeId=null;
+
+  const resetSelect=(id,placeholder)=>{const el=$(id);if(!el)return;el.innerHTML='<option value="">'+placeholder+'</option>';el.value='';};
+  resetSelect('masseur','— wybierz masażystę —');
+  resetSelect('visitType','— wybierz rodzaj wizyty —');
+  resetSelect('service','— wybierz usługę —');
+  resetSelect('visitMasseur','Wszyscy masażyści');
+
+  ['visitSearch','visitFrom','visitTo','client','phone','clientEmail','note'].forEach(id=>{const el=$(id);if(el)el.value='';});
+  const dateEl=$('date'); if(dateEl) dateEl.value='';
+  const statusEl=$('visitStatus'); if(statusEl) statusEl.value='';
+  const times=$('availableTimes'); if(times) times.innerHTML='<div class="empty">Ładowanie danych wybranej firmy…</div>';
+  const selectedLabel=$('selectedLabel'); if(selectedLabel) selectedLabel.textContent='';
+  const count=$('count'); if(count) count.textContent='';
+  const allCount=$('allCount'); if(allCount) allCount.textContent='0 wizyt';
+  const rodoDetail=$('rodoDetail'); if(rodoDetail){rodoDetail.classList.add('hidden');rodoDetail.innerHTML='';}
+  const rodoMsg=$('rodoMsg'); if(rodoMsg) rodoMsg.textContent='';
+  const usersMsg=$('usersMsg'); if(usersMsg) usersMsg.textContent='';
+  const adminMsg=$('adminMsg'); if(adminMsg) adminMsg.textContent='';
+
+  renderVisitTypes();
+  renderCalendar(); renderDayList(); renderVisitsTable(); renderServices(); renderHours(); renderOff();
+  renderUsers();
+  const sync=$('sync'); if(sync) sync.textContent='● Przygotowywanie danych firmy…';
+}
+
+function initCompanySwitcher(){
+  const wrap=$('companySwitcher'),sel=$('companySelect');
+  if(!wrap||!sel) return;
+  /* 2F.3D — trzy jawne stany: 0 / 1 / wiele firm.
+     Lista pochodzi wyłącznie z autoryzowanej COMPANY_LIST. */
+  /* Przełącznik pokazuje wyłącznie firmy aktywne. Nieaktywne pozostają
+     widoczne w zakładce Firmy, gdzie można je ponownie aktywować. */
+  const safeList=Array.isArray(COMPANY_LIST)?COMPANY_LIST.filter(c=>c&&c.id&&c.aktywna!==false):[];
+  const count=safeList.length;
+  sel.innerHTML=safeList.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name||c.id)+'</option>').join('');
+
+  if(count===0){
+    ACTIVE_WORKSPACE='';
+    activeCompanyName='Firma';
+    sel.value='';
+    wrap.classList.add('hidden');
+    wrap.setAttribute('aria-hidden','true');
+    sel.onchange=null;
+    return;
+  }
+
+  if(!companyById(ACTIVE_WORKSPACE)) setActiveCompany(safeList[0].id);
+  sel.value=ACTIVE_WORKSPACE;
+  renderCompanies();
+
+  /* Przy jednej firmie nie pokazujemy zbędnego wyboru, ale nadal
+     utrzymujemy poprawnie ustawiony ACTIVE_WORKSPACE. */
+  const multiple=count>1;
+  wrap.classList.toggle('hidden',!multiple);
+  wrap.setAttribute('aria-hidden',multiple?'false':'true');
+
+  sel.onchange=async()=>{
+    const previous=ACTIVE_WORKSPACE;
+    const next=String(sel.value||'');
+    if(!setActiveCompany(next)){sel.value=previous;return;}
+    const refreshId=++workspaceRefreshSeq;
+    /* 2F.3E — najpierw odpinamy starą firmę i czyścimy jej dane z UI.
+       Dopiero po udanym odświeżeniu podpinamy Realtime dla nowego workspace. */
+    try{if(realtimeChannel) sb.removeChannel(realtimeChannel);}catch(e){}
+    realtimeChannel=null;
+    if(activityTimer){clearInterval(activityTimer);activityTimer=null;}
+    clearWorkspaceData();
+    $('sync').textContent='● Łączenie z firmą: '+activeCompanyName;
+    try{
+      const ok=await refreshAll(next);
+      if(refreshId!==workspaceRefreshSeq || ACTIVE_WORKSPACE!==next) return;
+      if(!ok) throw new Error('Nie udało się pobrać kompletu danych wybranej firmy.');
+      await loadAdminPanel();
+      if(refreshId!==workspaceRefreshSeq || ACTIVE_WORKSPACE!==next) return;
+      /* ETAP 6B — jeśli użytkownik jest już na zakładce RODO,
+         po zmianie firmy pobieramy zgody dla NOWEGO workspace. */
+      const rodoPanel=$('rodoPanel');
+      if(rodoPanel && rodoPanel.classList.contains('active')){
+        await loadRodo(next);
+        if(refreshId!==workspaceRefreshSeq || ACTIVE_WORKSPACE!==next) return;
+      }
+      startActivityHeartbeat();
+      subscribeRealtime();
+      $('sync').textContent='● Połączono z bazą online — '+activeCompanyName;
+      renderCompanyInfo();
+    }catch(e){
+      if(refreshId!==workspaceRefreshSeq) return;
+      setActiveCompany(previous); sel.value=previous;
+      clearWorkspaceData();
+      $('sync').textContent='Błąd przełączania firmy — przywracanie poprzedniej: '+(e?.message||e);
+      const restored=await refreshAll(previous);
+      if(restored){
+        await loadAdminPanel();
+        startActivityHeartbeat();
+        subscribeRealtime();
+        $('sync').textContent='● Przywrócono firmę — '+activeCompanyName;
+        renderCompanyInfo();
+      }else{
+        $('sync').textContent='Nie udało się przywrócić danych poprzedniej firmy.';
+      }
+    }
+  };
+}
+
+
+/* ETAP 10B — po powrocie karty przeglądarki odświeżamy stan aktywnej firmy.
+   Nie zmieniamy wybranej firmy; synchronizujemy UI i dane z ACTIVE_WORKSPACE,
+   aby nie pozostawić w pamięci widoku RODO poprzedniego workspace. */
+let visibilityRefreshInProgress=false;
+async function refreshAfterReturnToTab(){
+  if(visibilityRefreshInProgress || !ACTIVE_WORKSPACE || !sb) return;
+  visibilityRefreshInProgress=true;
+  const target=String(ACTIVE_WORKSPACE);
+  const refreshId=++workspaceRefreshSeq;
+  try{
+    clearWorkspaceData();
+    renderCompanyInfo();
+    $('sync').textContent='● Odświeżanie danych aktywnej firmy: '+activeCompanyName;
+    const ok=await refreshAll(target);
+    if(refreshId!==workspaceRefreshSeq || ACTIVE_WORKSPACE!==target || !ok) return;
+    await loadAdminPanel();
+    if(refreshId!==workspaceRefreshSeq || ACTIVE_WORKSPACE!==target) return;
+    const rodoPanel=$('rodoPanel');
+    if(rodoPanel && rodoPanel.classList.contains('active')){
+      rodoLoaded=false;
+      await loadRodo(target);
+    }
+    startActivityHeartbeat();
+    subscribeRealtime();
+    $('sync').textContent='● Połączono z bazą online — '+activeCompanyName;
+    renderCompanyInfo();
+  }catch(e){
+    console.warn('Odświeżenie po powrocie do karty nie powiodło się:',e);
+  }finally{
+    visibilityRefreshInProgress=false;
+  }
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') refreshAfterReturnToTab();
+});
+window.addEventListener('pageshow',()=>refreshAfterReturnToTab());
+
+function renderCompanyInfo(){
+  let el=$('activeCompanyInfo');
+  if(!el){
+    el=document.createElement('div'); el.id='activeCompanyInfo'; el.className='companyInfo';
+    const app=$('app'); if(app) app.insertBefore(el,app.firstElementChild?.nextElementSibling||app.firstElementChild);
+  }
+  el.innerHTML='<strong>Aktywna firma: '+esc(activeCompanyName)+'</strong><br>Dane panelu są ładowane wyłącznie dla wybranego workspace. Przełączenie firmy nie zmienia bazy ani struktury Supabase.';
+}
+
 async function registerActivity(){
   const {data}=await sb.auth.getSession();
   if(!data?.session?.user) return;
-  const r=await sb.rpc('rejestruj_aktywnosc_uzytkownika',{p_workspace_id:WORKSPACE});
+  const r=await sb.rpc('rejestruj_aktywnosc_uzytkownika_v2',{p_workspace_id:ACTIVE_WORKSPACE});
   if(r.error) console.warn('Nie udało się zapisać aktywności użytkownika:',r.error.message);
 }
 
@@ -1266,25 +1788,395 @@ function fmtDate(v){
   if(Number.isNaN(d.getTime())) return '—';
   return new Intl.DateTimeFormat('pl-PL',{dateStyle:'short'}).format(d);
 }
+function renderRoleBadge(role){
+  const r=String(role||'user').trim().toLowerCase();
+  if(r==='program_admin') return '<span class="adminMini">Główny administrator programu</span>';
+  if(r==='company_admin') return '<span class="adminMini">Administrator firmy</span>';
+  if(r==='limited_admin') return '<span class="adminMini">Administrator ograniczony</span>';
+  return '<span class="userMini">Użytkownik</span>';
+}
+
+function f81PermissionSummary(u){
+  const p=f81GetPermissions(u);
+  const labels=F81_PERMISSION_DEFS.filter(x=>p[x.key]===true).map(x=>x.label);
+  return labels.length?'<span title="'+esc(labels.join(', '))+'">'+esc(labels.length+' aktywn.')+'</span>':'<span>brak</span>';
+}
+
 function renderUsers(){
   const all=Array.isArray(usersRows)?usersRows:[];
-  const admins=all.filter(x=>x.is_admin);
+  const myRole=String(F81_CURRENT_ROLE||'user').trim().toLowerCase();
+
+  const admins=all.filter(x=>{
+    const r=String(x?.rola||'user').trim().toLowerCase();
+    return r==='program_admin' || r==='company_admin' || r==='limited_admin';
+  });
+
   $('usersTotal').textContent=all.length;
-  $('usersOnline').textContent=all.filter(x=>x.is_online).length;
+  $('usersOnline').textContent=all.filter(x=>x.aktywny===true).length;
   $('usersAdmins').textContent=admins.length;
-  $('usersTable').innerHTML=all.length?all.map(x=>`<tr><td><span class="userEmail">${esc(x.email||'—')}</span></td><td><span class="onlineBadge ${x.is_online?'online':'offline'}">${x.is_online?'🟢 Aktywny':'⚪ Nieaktywny'}</span></td><td>${x.is_admin?'<span class="adminMini">Administrator</span>':'<span class="userMini">Użytkownik</span>'}</td><td>${esc(fmtDate(x.created_at))}</td><td>${esc(fmtDateTime(x.last_sign_in_at))}</td><td>${esc(fmtDateTime(x.last_seen_at))}</td></tr>`).join(''):'<tr><td colspan="6" class="usersEmpty">Brak użytkowników do wyświetlenia.</td></tr>';
-  $('adminsTable').innerHTML=admins.length?admins.map(x=>`<tr><td><span class="userEmail">${esc(x.email||'—')}</span></td><td><span class="onlineBadge ${x.is_online?'online':'offline'}">${x.is_online?'🟢 Aktywny':'⚪ Nieaktywny'}</span></td><td>${esc(fmtDate(x.created_at))}</td><td>${esc(fmtDateTime(x.last_sign_in_at))}</td><td>${esc(fmtDateTime(x.last_seen_at))}</td></tr>`).join(''):'<tr><td colspan="5" class="usersEmpty">Brak administratorów.</td></tr>';
+
+  $('usersTable').innerHTML=all.length?all.map(x=>{
+    const uid=esc(x.user_id||'');
+    const role=String(x?.rola||'user').trim().toLowerCase();
+    const canManageRole=f81CanManageTarget(role) && role!=='program_admin';
+
+    const editBtn=canManageRole
+      ? '<button type="button" class="smallBtn" data-user-edit="'+uid+'">Edytuj</button>'
+      : '';
+    const roleBtn=canManageRole
+      ? '<button type="button" class="smallBtn" data-user-role="'+uid+'">Zmień rolę</button>'
+      : '';
+
+    const ownOrProtected=role==='program_admin' || (myRole==='company_admin' && role==='company_admin');
+    const activeBtns=(!ownOrProtected && canManageRole)
+      ? '<button type="button" class="smallBtn" data-user-activate="'+uid+'">Aktywuj</button><button type="button" class="smallBtn warn" data-user-deactivate="'+uid+'">Dezaktywuj</button><button type="button" class="smallBtn danger" data-user-remove="'+uid+'">Usuń dostęp</button>'
+      : '';
+
+    return `<tr><td><span class="userEmail">${esc(x.email||'—')}</span></td><td><span class="onlineBadge ${x.aktywny?'online':'offline'}">${x.aktywny?'🟢 Aktywny':'🔴 Nieaktywny'}</span></td><td><span class="onlineBadge ${x.is_online?'online':'offline'}">${x.is_online?'🟢 Online':'⚪ Offline'}</span></td><td><div>${renderRoleBadge(role)}</div><div class="f81PermSummary">${f81PermissionSummary(x)}</div></td><td>${esc(fmtDate(x.created_at))}</td><td>${esc(fmtDateTime(x.last_sign_in_at))}</td><td>${esc(fmtDateTime(x.last_seen_at))}</td><td><div class="userActions">${editBtn}${roleBtn}${activeBtns}</div></td></tr>`;
+  }).join(''):'<tr><td colspan="8" class="usersEmpty">Brak użytkowników do wyświetlenia.</td></tr>';
+
+  $('adminsTable').innerHTML=admins.length?admins.map(x=>{
+    const role=String(x?.rola||'user').trim().toLowerCase();
+    return `<tr><td><span class="userEmail">${esc(x.email||'—')}</span></td><td><span class="onlineBadge ${x.aktywny?'online':'offline'}">${x.aktywny?'🟢 Aktywny':'🔴 Nieaktywny'}</span></td><td><span class="onlineBadge ${x.is_online?'online':'offline'}">${x.is_online?'🟢 Online':'⚪ Offline'}</span></td><td>${esc(fmtDate(x.created_at))}</td><td>${esc(fmtDateTime(x.last_sign_in_at))}</td></tr>`;
+  }).join(''):'<tr><td colspan="5" class="usersEmpty">Brak administratorów.</td></tr>';
+
+  document.querySelectorAll('[data-user-edit]').forEach(b=>b.onclick=()=>openEditUser(b.dataset.userEdit));
+  document.querySelectorAll('[data-user-role]').forEach(b=>b.onclick=()=>userRoleAction(b.dataset.userRole));
+  document.querySelectorAll('[data-user-activate]').forEach(b=>b.onclick=()=>userActiveAction(b.dataset.userActivate,true));
+  document.querySelectorAll('[data-user-deactivate]').forEach(b=>b.onclick=()=>userActiveAction(b.dataset.userDeactivate,false));
+  document.querySelectorAll('[data-user-remove]').forEach(b=>b.onclick=()=>userRemoveAction(b.dataset.userRemove));
+}
+
+let editingUser=null;
+let editingUserIsProgramAdmin=false;
+let editingUserCurrentRole='user';
+
+async function getCurrentSessionUserId(){
+  const {data}=await sb.auth.getSession();
+  return data?.session?.user?.id||'';
+}
+
+function roleLabel(role){
+  const r=String(role||'user').trim().toLowerCase();
+  if(r==='program_admin') return 'Główny administrator programu';
+  if(r==='company_admin') return 'Administrator firmy';
+  if(r==='limited_admin') return 'Administrator ograniczony';
+  return 'Użytkownik';
+}
+
+function roleFromUserRow(u){
+  /* ETAP F3: pobierz aktualny stan z danych listy. Do czasu osobnego
+     etapu backendowego zwracającego pole `rola`, starsze dane listy
+     pozwalają bezpiecznie rozróżnić company_admin od user. */
+  const raw=String(u?.rola||'').trim().toLowerCase();
+  if(['program_admin','company_admin','limited_admin','user'].includes(raw)) return raw;
+  return 'user';
+}
+
+
+/* =========================================================
+   F8-1 — HIERARCHIA ZARZĄDZANIA UPRAWNIENIAMI
+   Bez zmian w Supabase.
+   Rola i indywidualne uprawnienia pozostają osobnymi mechanizmami.
+   Hierarchia:
+   program_admin -> company_admin / limited_admin / user
+   company_admin -> limited_admin / user
+   limited_admin -> brak zarządzania rolami
+   user         -> brak zarządzania rolami
+   ========================================================= */
+let F81_CURRENT_ROLE='user';
+
+function f81CanManageTarget(targetRole){
+  const me=String(F81_CURRENT_ROLE||'user').trim().toLowerCase();
+  const target=String(targetRole||'user').trim().toLowerCase();
+  if(me==='program_admin'){
+    return ['company_admin','limited_admin','user'].includes(target);
+  }
+  if(me==='company_admin'){
+    return ['limited_admin','user'].includes(target);
+  }
+  return false;
+}
+
+function f81CanChangeRole(currentTargetRole,newRole){
+  const me=String(F81_CURRENT_ROLE||'user').trim().toLowerCase();
+  const current=String(currentTargetRole||'user').trim().toLowerCase();
+  const wanted=String(newRole||'user').trim().toLowerCase();
+
+  if(me==='program_admin'){
+    if(current==='program_admin') return wanted==='program_admin';
+    return ['company_admin','limited_admin','user'].includes(wanted);
+  }
+  if(me==='company_admin'){
+    return ['limited_admin','user'].includes(current) &&
+           ['limited_admin','user'].includes(wanted);
+  }
+  return false;
+}
+
+function f81RoleManagementMessage(){
+  if(F81_CURRENT_ROLE==='program_admin')
+    return 'Program Admin może ustalać uprawnienia i role Administratora firmy, Administratora ograniczonego i Użytkownika.';
+  if(F81_CURRENT_ROLE==='company_admin')
+    return 'Administrator firmy może zarządzać wyłącznie Administratorami ograniczonymi i Użytkownikami w swojej firmie. Nie może zarządzać innym Administratorem firmy ani Program Adminem.';
+  return 'Ten poziom konta nie może zarządzać rolami innych użytkowników.';
+}
+
+const F81_PERMISSION_DEFS=[
+  {key:'calendar',label:'Terminarz / wizyty',roles:['company_admin','limited_admin','user']},
+  {key:'services',label:'Usługi',roles:['company_admin','limited_admin','user']},
+  {key:'visitTypes',label:'Rodzaje wizyt',roles:['company_admin','limited_admin','user']},
+  {key:'workers',label:'Pracownicy',roles:['company_admin','limited_admin']},
+  {key:'hours',label:'Godziny pracy',roles:['company_admin','limited_admin']},
+  {key:'daysOff',label:'Dni wolne',roles:['company_admin','limited_admin']},
+  {key:'rodo',label:'RODO',roles:['company_admin','limited_admin','user']},
+  {key:'settings',label:'Ustawienia',roles:['company_admin','limited_admin']},
+  {key:'license',label:'Licencja',roles:['company_admin']}
+];
+let F81_SESSION_PERMISSIONS={};
+let F81_CURRENT_USER_ID='';
+function f81PermissionDefaults(role){
+  const r=String(role||'user').toLowerCase();
+  const out={};
+  F81_PERMISSION_DEFS.forEach(p=>out[p.key]=p.roles.includes(r));
+  return out;
+}
+function f81EmptyPermissions(){
+  const out={};
+  F81_PERMISSION_DEFS.forEach(p=>out[p.key]=false);
+  return out;
+}
+function f81LoadStoredPermissions(uid){
+  const id=String(uid||'');
+  if(!id)return {};
+  try{
+    const raw=localStorage.getItem('F81_PERMISSIONS_'+id);
+    const parsed=raw?JSON.parse(raw):{};
+    return parsed&&typeof parsed==='object'?parsed:{};
+  }catch(e){return {};}
+}
+function f81StorePermissions(uid,permissions){
+  const id=String(uid||'');
+  if(!id)return;
+  try{localStorage.setItem('F81_PERMISSIONS_'+id,JSON.stringify(permissions||{}));}catch(e){}
+}
+function f81GetPermissions(u){
+  const uid=String(u?.user_id||'');
+  const role=String(u?.rola || window.TERM_CURRENT_ROLE || F81_CURRENT_ROLE || 'user').trim().toLowerCase();
+  /*
+     F8-1 FIX — uprawnienia bazowe wynikają z roli, a zapisane ustawienia
+     indywidualne tylko je nadpisują. Dzięki temu nowa przeglądarka/telefon
+     nie traktuje company_admin jak user tylko dlatego, że nie ma jeszcze
+     lokalnego wpisu F81_PERMISSIONS_<user_id>.
+  */
+  const defaults=f81PermissionDefaults(role);
+  const source=(uid&&F81_SESSION_PERMISSIONS[uid])||u?.uprawnienia||u?.permissions||f81LoadStoredPermissions(uid);
+  if(source && typeof source==='object') Object.keys(defaults).forEach(k=>{
+    if(typeof source[k]==='boolean') defaults[k]=source[k];
+  });
+  return defaults;
+}
+window.f81GetCurrentPermissions=function f81GetCurrentPermissions(){
+  const role=String(window.TERM_CURRENT_ROLE||F81_CURRENT_ROLE||'user').trim().toLowerCase();
+  if(role==='program_admin'){
+    const full={}; F81_PERMISSION_DEFS.forEach(p=>full[p.key]=true); return full;
+  }
+  const current={user_id:F81_CURRENT_USER_ID,rola:role};
+  const permissions=f81GetPermissions(current);
+  /* Licencja jest zawsze dostępna dla company_admin. */
+  if(role==='company_admin') permissions.license=true;
+  return permissions;
+};
+function f81RenderPermissionEditor(u){
+  const box=$('editUserPermissions'); if(!box)return;
+  const targetRole=roleFromUserRow(u||{});
+  const canManage=f81CanManageTarget(targetRole) && targetRole!=='program_admin';
+  const allowedByRole=f81PermissionDefaults(targetRole);
+  const current=f81GetPermissions(u);
+  box.innerHTML=F81_PERMISSION_DEFS.map(p=>{
+    const roleAllows=allowedByRole[p.key];
+    const checked=current[p.key]===true;
+    const disabled=!canManage || !roleAllows;
+    return `<label class="f81PermItem ${disabled?'disabled':''}"><input class="f81PermNative" type="checkbox" data-f81-perm="${p.key}" ${checked?'checked':''} ${disabled?'disabled':''}><span class="f81Check" aria-hidden="true"></span><span class="f81PermLabel">${esc(p.label)}</span>${!roleAllows?'<span class="f81PermLock">(niedostępne dla tej roli)</span>':''}</label>`;
+  }).join('');
+}
+function f81ReadPermissionEditor(){
+  const out={};
+  document.querySelectorAll('[data-f81-perm]').forEach(x=>{out[x.dataset.f81Perm]=x.checked===true;});
+  return out;
+}
+function f81ApplySessionPermissions(u,permissions){
+  const uid=String(u?.user_id||'');
+  if(!uid)return;
+  F81_SESSION_PERMISSIONS[uid]={...f81GetPermissions(u),...permissions};
+  u.uprawnienia=F81_SESSION_PERMISSIONS[uid];
+  f81StorePermissions(uid,F81_SESSION_PERMISSIONS[uid]);
+}
+
+async function openEditUser(userId){
+  const u=usersRows.find(x=>String(x.user_id)===String(userId));
+  if(!u)return;
+  editingUser=u;
+  editingUserCurrentRole=roleFromUserRow(u);
+  editingUserIsProgramAdmin=false;
+  try{
+    const currentId=await getCurrentSessionUserId();
+    if(currentId && String(currentId)===String(userId)){
+      const pa=await sb.rpc('czy_glowny_admin_programu');
+      if(!pa.error) editingUserIsProgramAdmin=pa.data===true;
+    }
+  }catch(e){}
+
+  $('editUserEmail').value=u.email||'';
+  $('editUserCompany').value=activeCompanyName||'—';
+  $('editUserRole').value=editingUserIsProgramAdmin?'program_admin':editingUserCurrentRole;
+  $('editUserActive').value='unchanged';
+  $('editUserRole').disabled=editingUserIsProgramAdmin;
+  f81RenderPermissionEditor(u);
+  showMsg('editUserMsg',editingUserIsProgramAdmin
+    ?'Główny administrator programu — zmiana roli jest zablokowana.'
+    : 'Aktualna rola: '+roleLabel(editingUserCurrentRole)+'.');
+  $('editUserModal').classList.remove('hidden');
+  if(!editingUserIsProgramAdmin) $('editUserRole').focus();
+}
+function closeEditUser(){
+  editingUser=null;
+  editingUserIsProgramAdmin=false;
+  editingUserCurrentRole='user';
+  $('editUserRole').disabled=false;
+  $('editUserModal').classList.add('hidden');
+  showMsg('editUserMsg','');
+}
+async function saveEditUser(){
+  if(!editingUser)return;
+  const btn=$('editUserSave');
+  btn.disabled=true;
+  showMsg('editUserMsg','Zapisywanie zmian…');
+  try{
+    const wantedRole=String($('editUserRole').value||'').trim().toLowerCase();
+    const currentRole=String(editingUserCurrentRole||'user').trim().toLowerCase();
+    const wantedActive=$('editUserActive').value;
+    const allowedRoles=['company_admin','limited_admin','user'];
+
+    if(editingUserIsProgramAdmin){
+      if(wantedRole!=='program_admin') throw new Error('Nie można zmieniać roli głównego administratora programu');
+    }else if(wantedRole!==currentRole){
+      if(!f81CanChangeRole(currentRole,wantedRole)){
+        throw new Error(F81_CURRENT_ROLE==='company_admin'
+          ? 'Administrator firmy może ustalać role wyłącznie dla Administratora ograniczonego i Użytkownika. Nie może zmienić roli Administratora firmy.'
+          : 'Brak uprawnienia do zmiany tej roli.');
+      }
+      if(!allowedRoles.includes(wantedRole)) throw new Error('Nieprawidłowa rola użytkownika. Wybierz Administratora firmy, Administratora ograniczonego albo Użytkownika.');
+      const r=await sb.rpc('zmien_role_uzytkownika',{
+        p_user_id:editingUser.user_id,
+        p_workspace_id:ACTIVE_WORKSPACE,
+        p_nowa_rola:wantedRole
+      });
+      if(r.error)throw r.error;
+    }
+
+    if(wantedActive!=='unchanged'){
+      const r=await sb.rpc('ustaw_aktywnosc_uzytkownika',{
+        p_user_id:editingUser.user_id,
+        p_workspace_id:ACTIVE_WORKSPACE,
+        p_aktywny:wantedActive==='true'
+      });
+      if(r.error)throw r.error;
+    }
+
+    /* F8-1: indywidualne uprawnienia nie zmieniają roli.
+       Na tym etapie nie dodajemy nowego RPC/tabeli do Supabase.
+       Zmiana jest trzymana w pamięci bieżącej sesji, aby nie udawać
+       trwałego i bezpiecznego zapisu, którego backend jeszcze nie obsługuje. */
+    const permTargetRole=roleFromUserRow(editingUser);
+    if(f81CanManageTarget(permTargetRole) && permTargetRole!=='program_admin'){
+      f81ApplySessionPermissions(editingUser,f81ReadPermissionEditor());
+    }
+    closeEditUser();
+    showMsg('usersMsg','Zmiany użytkownika zostały zapisane.');
+    await loadUsersAdmin();
+  }catch(e){
+    showMsg('editUserMsg','Nie udało się zapisać zmian: '+(e?.message||e),true);
+  }finally{btn.disabled=false;}
+}
+
+async function userRoleAction(userId){
+  const u=usersRows.find(x=>String(x.user_id)===String(userId));
+  if(!u)return;
+  const currentRole=roleFromUserRow(u);
+
+  if(!f81CanManageTarget(currentRole) || currentRole==='program_admin'){
+    showMsg('usersMsg',F81_CURRENT_ROLE==='company_admin'
+      ? 'Administrator firmy nie może zarządzać rolą Administratora firmy ani Program Admina.'
+      : 'Brak uprawnienia do zarządzania tą rolą.',true);
+    return;
+  }
+
+  try{
+    const currentId=await getCurrentSessionUserId();
+    if(currentId && String(currentId)===String(userId)){
+      const pa=await sb.rpc('czy_glowny_admin_programu');
+      if(!pa.error && pa.data===true){
+        showMsg('usersMsg','Rola głównego administratora programu jest chroniona i nie może być zmieniana tutaj.',true);
+        return;
+      }
+    }
+  }catch(e){}
+  if(currentRole==='program_admin'){
+    showMsg('usersMsg','Rola głównego administratora programu jest chroniona i nie może być zmieniana tutaj.',true);
+    return;
+  }
+  const choice=prompt('Wybierz nową rolę dla tego użytkownika:\n\n1 — Administrator firmy\n2 — Administrator ograniczony\n3 — Użytkownik\n\nAktualna rola: '+roleLabel(currentRole),'3');
+  if(choice===null)return;
+  const map={'1':'company_admin','2':'limited_admin','3':'user','company_admin':'company_admin','limited_admin':'limited_admin','user':'user'};
+  const newRole=map[String(choice).trim().toLowerCase()];
+  if(!newRole){showMsg('usersMsg','Nieprawidłowa rola. Wybierz 1, 2 albo 3.',true);return;}
+  if(newRole===currentRole){showMsg('usersMsg','Wybrana rola jest już ustawiona.');return;}
+  if(!confirm('Czy na pewno zmienić rolę użytkownika na: '+roleLabel(newRole)+'?'))return;
+  showMsg('usersMsg','Zapisywanie zmiany roli…');
+  try{
+    const r=await sb.rpc('zmien_role_uzytkownika',{p_user_id:userId,p_workspace_id:ACTIVE_WORKSPACE,p_nowa_rola:newRole});
+    if(r.error)throw r.error;
+    await loadUsersAdmin();
+    showMsg('usersMsg','Rola została zmieniona na: '+roleLabel(newRole)+'.');
+  }catch(e){
+    showMsg('usersMsg','Nie udało się zmienić roli: '+(e?.message||e),true);
+  }
+}
+async function userActiveAction(userId,active){
+  const u=usersRows.find(x=>String(x.user_id)===String(userId));
+  const targetRole=roleFromUserRow(u||{});
+  if(!f81CanManageTarget(targetRole) || targetRole==='program_admin'){
+    showMsg('usersMsg','Brak uprawnienia do zmiany dostępu tego użytkownika.',true);
+    return;
+  }
+
+  if(!confirm('Czy na pewno '+(active?'aktywować':'dezaktywować')+' dostęp tego użytkownika do wybranej firmy?')) return;
+  showMsg('usersMsg',active?'Aktywowanie dostępu…':'Dezaktywowanie dostępu…');
+  try{const r=await sb.rpc('ustaw_aktywnosc_uzytkownika',{p_user_id:userId,p_workspace_id:ACTIVE_WORKSPACE,p_aktywny:active});if(r.error)throw r.error;showMsg('usersMsg',active?'Dostęp został aktywowany.':'Dostęp został dezaktywowany.');await loadUsersAdmin();}catch(e){showMsg('usersMsg','Nie udało się zmienić aktywności: '+(e?.message||e),true);}
+}
+async function userRemoveAction(userId){
+  const u=usersRows.find(x=>String(x.user_id)===String(userId));
+  const targetRole=roleFromUserRow(u||{});
+  if(!f81CanManageTarget(targetRole) || targetRole==='program_admin'){
+    showMsg('usersMsg','Brak uprawnienia do usunięcia dostępu tego użytkownika.',true);
+    return;
+  }
+
+  if(!confirm('Czy na pewno usunąć temu użytkownikowi dostęp do wybranej firmy? Konto logowania nie zostanie usunięte.')) return;
+  showMsg('usersMsg','Usuwanie dostępu…');
+  try{const r=await sb.rpc('usun_uzytkownika_z_workspace',{p_user_id:userId,p_workspace_id:ACTIVE_WORKSPACE});if(r.error)throw r.error;showMsg('usersMsg','Dostęp do wybranej firmy został usunięty.');await loadUsersAdmin();}catch(e){showMsg('usersMsg','Nie udało się usunąć dostępu: '+(e?.message||e),true);}
 }
 
 async function loadUsersAdmin(){
   $('usersAdminArea').classList.add('hidden');
   $('adminsListArea').classList.add('hidden');
-  $('usersTable').innerHTML='<tr><td colspan="6" class="usersEmpty">Ładowanie listy użytkowników…</td></tr>';
+  $('usersTable').innerHTML='<tr><td colspan="8" class="usersEmpty">Ładowanie listy użytkowników…</td></tr>';
   $('adminsTable').innerHTML='<tr><td colspan="5" class="usersEmpty">Ładowanie listy administratorów…</td></tr>';
   showMsg('usersMsg','Ładowanie listy użytkowników…');
   showMsg('adminsMsg','');
   try{
-    const r=await sb.rpc('pobierz_uzytkownikow_admin',{p_workspace_id:WORKSPACE});
+    const r=await sb.rpc('pobierz_uzytkownikow_admin_v2',{p_workspace_id:ACTIVE_WORKSPACE});
     if(r.error) throw r.error;
     usersRows=Array.isArray(r.data)?r.data:[];
     renderUsers();
@@ -1293,30 +2185,77 @@ async function loadUsersAdmin(){
     showMsg('usersMsg','Lista użytkowników została pobrana bezpiecznie.');
   }catch(e){
     usersRows=[];
-    $('usersTable').innerHTML='<tr><td colspan="6" class="usersEmpty">Brak danych.</td></tr>';
+    $('usersTable').innerHTML='<tr><td colspan="8" class="usersEmpty">Brak danych.</td></tr>';
     $('adminsTable').innerHTML='<tr><td colspan="5" class="usersEmpty">Brak danych.</td></tr>';
     showMsg('usersMsg','Nie udało się pobrać listy użytkowników: '+(e?.message||e),true);
   }
 }
 
+let loggedLoading=false;
+
 async function logged(){
-  const {data}=await sb.auth.getSession();
-  const user=data?.session?.user;
-  if(recoveryMode) return;
-  if(user){
-    $('login').classList.add('hidden');
-    $('recoveryPanel').classList.add('hidden');
-    $('app').classList.remove('hidden');
-    $('logout').classList.remove('hidden');
-    startActivityHeartbeat();
-    await refreshAll();
-    await loadAdminPanel();
-  }else{
-    stopActivityHeartbeat();
-    $('login').classList.remove('hidden');
-    $('recoveryPanel').classList.add('hidden');
-    $('app').classList.add('hidden');
-    $('logout').classList.add('hidden');
+  if(loggedLoading) return;
+  loggedLoading=true;
+  try{
+    const {data, error}=await sb.auth.getSession();
+    if(error) throw error;
+    const user=data?.session?.user;
+    if(recoveryMode) return;
+    if(user){
+      /* 2F.3B — aplikacja firmowa pozostaje ukryta, dopóki lista firm nie
+         zostanie pobrana i zweryfikowana przez RLS. */
+      $('login').classList.add('hidden');
+      $('recoveryPanel').classList.add('hidden');
+      $('app').classList.add('hidden');
+      $('logout').classList.add('hidden');
+      try{
+        await loadProgramAdminStatus();
+        const hasCompany=await loadCompanyList();
+      if(!hasCompany){
+        stopActivityHeartbeat();
+        $('app').classList.add('hidden');
+        $('logout').classList.add('hidden');
+        $('login').classList.remove('hidden');
+        alert('Brak aktywnej firmy przypisanej do tego konta.');
+        return;
+      }
+      /* ETAP 8E — Atica-Projekty jest firmą startową.
+         Po pobraniu listy firm ponownie ustawiamy wyłącznie skonfigurowany
+         workspace startowy, aby lista pobrana dynamicznie nie nadpisywała
+         wyboru pierwszej firmy. Nie zmienia to Supabase ani listy firm. */
+      const startupWorkspace=String(cfg.WORKSPACE_ID||'');
+      const rememberedWorkspace= getRememberedWorkspace();
+      if(rememberedWorkspace && companyById(rememberedWorkspace)) setActiveCompany(rememberedWorkspace);
+      else if(startupWorkspace && companyById(startupWorkspace)) setActiveCompany(startupWorkspace);
+      initCompanySwitcher();
+      renderCompanies();
+      renderCompanyInfo();
+      startActivityHeartbeat();
+      $('app').classList.remove('hidden');
+      $('logout').classList.remove('hidden');
+      await refreshAll();
+      await loadAdminPanel();
+    }catch(e){
+      stopActivityHeartbeat();
+      $('app').classList.add('hidden');
+      $('logout').classList.add('hidden');
+      $('login').classList.remove('hidden');
+      alert('Nie udało się pobrać listy firm: '+(e?.message||e));
+      }
+    }else{
+      COMPANY_LIST=[];
+      ACTIVE_WORKSPACE="";
+      activeCompanyName="Firma";
+      const wrap=$('companySwitcher');
+      if(wrap) wrap.classList.add('hidden');
+      stopActivityHeartbeat();
+      $('login').classList.remove('hidden');
+      $('recoveryPanel').classList.add('hidden');
+      $('app').classList.add('hidden');
+      $('logout').classList.add('hidden');
+    }
+  }finally{
+    loggedLoading=false;
   }
 }
 
@@ -1334,11 +2273,14 @@ async function loadAdminPanel(){
   $('adminCurrentRole').className='adminRole user';
   $('adminCurrentRole').textContent='Sprawdzanie roli…';
   try{
-    const r=await sb.rpc('czy_uzytkownik_jest_adminem',{p_user_id:user.id,p_workspace_id:WORKSPACE});
-    if(r.error) throw r.error;
-    isAdmin=!!r.data;
+    /* ETAP F1/F2 — odczyt roli z centralnego mechanizmu uprawnień. */
+    const roleResult=await sb.rpc('pobierz_moja_role_workspace',{p_workspace_id:ACTIVE_WORKSPACE});
+    if(roleResult.error) throw roleResult.error;
+    const currentRole=String(roleResult.data||'none').trim().toLowerCase();
+    F81_CURRENT_ROLE=['program_admin','company_admin','limited_admin','user'].includes(currentRole) ? currentRole : 'user';
+    isAdmin=currentRole==='program_admin' || currentRole==='company_admin';
     $('adminCurrentRole').className='adminRole '+(isAdmin?'admin':'user');
-    $('adminCurrentRole').textContent=isAdmin?'Administrator':'Użytkownik';
+    $('adminCurrentRole').textContent=currentRole==='program_admin'?'Główny administrator programu':currentRole==='company_admin'?'Administrator firmy':currentRole==='limited_admin'?'Administrator ograniczony':currentRole==='user'?'Użytkownik':'Brak roli';
     grantBtn.disabled=!isAdmin;
     revokeBtn.disabled=!isAdmin;
     if(!isAdmin){
@@ -1357,27 +2299,7 @@ async function loadAdminPanel(){
   }
 
   async function adminAction(action){
-    const target=$('adminTargetEmail').value.trim().toLowerCase();
-    if(!target){showMsg('adminMsg','Wpisz e-mail użytkownika.',true);return}
-    if(!target.includes('@')){showMsg('adminMsg','Wpisz poprawny adres e-mail.',true);return}
-    grantBtn.disabled=true;revokeBtn.disabled=true;
-    showMsg('adminMsg',action==='grant'?'Nadawanie uprawnień…':'Odbieranie uprawnień…');
-    try{
-      const fn=action==='grant'?'nadaj_admina_email':'odbierz_admina_email';
-      const r=await sb.rpc(fn,{p_email:target,p_workspace_id:WORKSPACE});
-      if(r.error) throw r.error;
-      showMsg('adminMsg',action==='grant'?'Administrator został nadany dla: '+target:'Uprawnienia administratora zostały odebrane dla: '+target);
-      if(target===email.toLowerCase()){
-        setTimeout(loadAdminPanel,250);
-      }else{
-        grantBtn.disabled=false;revokeBtn.disabled=false;
-        await loadUsersAdmin();
-      }
-    }catch(e){
-      showMsg('adminMsg','Operacja nie została wykonana: '+(e?.message||e),true);
-      grantBtn.disabled=!isAdmin;
-      revokeBtn.disabled=!isAdmin;
-    }
+    showMsg('adminMsg','Nowe zarządzanie użytkownikami znajduje się w tabeli poniżej. Ta stara sekcja nie wykonuje operacji na Supabase.',true);
   }
   grantBtn.onclick=()=>adminAction('grant');
   revokeBtn.onclick=()=>{
@@ -1386,17 +2308,155 @@ async function loadAdminPanel(){
   };
 }
 
-async function refreshAll(){await Promise.all([loadVisits(),loadServices(),loadHours(),loadOff(),loadSettings()]);populateVisitMasseurFilter();renderCalendar();renderDayList();renderVisitsTable();renderServices();renderHours();renderOff()}
-async function loadVisits(){const r=await sb.from('wizyty').select('*').eq('workspace_id',WORKSPACE).order('data').order('godzina');if(r.error){$('sync').textContent='Błąd wizyt: '+r.error.message;return}rows=r.data||[]}
-async function loadServices(){const r=await sb.from('uslugi').select('id,nazwa,czas_trwania,aktywna').eq('workspace_id',WORKSPACE).order('nazwa');if(!r.error)services=r.data||[]}
-async function loadHours(){const r=await sb.from('godziny_pracy').select('id,dzien_tygodnia,od,do,aktywne').eq('workspace_id',WORKSPACE).order('dzien_tygodnia');if(!r.error)hours=r.data||[]}
-async function loadOff(){const r=await sb.from('dni_wolne').select('id,od,do,opis').eq('workspace_id',WORKSPACE).order('od');if(!r.error)daysOff=r.data||[]}
+async function loadWorkers(workspaceId=ACTIVE_WORKSPACE){
+  const target=String(workspaceId||'');
+  if(!target) return false;
+  const r=await sb.from('pracownicy').select('id,imie,nazwisko,aktywny').eq('workspace_id',target).order('nazwisko').order('imie');
+  if(r.error){
+    $('sync').textContent='Błąd pracowników: '+r.error.message;
+    if(ACTIVE_WORKSPACE===target) WORKERS=[];
+    return false;
+  }
+  if(ACTIVE_WORKSPACE===target){
+    WORKERS=Array.isArray(r.data)?r.data:[];
+    renderMasseurSelect();
+    renderWorkers();
+  }
+  return true;
+}
+function renderWorkers(){
+  const l=$('workersList'); if(!l) return;
+  const list=Array.isArray(WORKERS)?WORKERS:[];
+  l.innerHTML=list.length?list.map(w=>{
+    const name=(String(w.imie||'').trim()+' '+String(w.nazwisko||'').trim()).trim();
+    return '<div class="workerRow"><div class="workerName">'+esc(name)+'</div><div class="workerStatus"><span class="statusBadge '+(w.aktywny?'confirmed':'rejected')+'">'+(w.aktywny?'aktywny':'nieaktywny')+'</span></div><div class="actions" style="margin:0"><button type="button" class="smallBtn" data-worker-edit="'+esc(w.id)+'">Edytuj</button><button type="button" class="smallBtn danger" data-worker-delete="'+esc(w.id)+'">Usuń</button></div></div>';
+  }).join(''):'<div class="empty">Brak pracowników w tej firmie.</div>';
+  l.querySelectorAll('[data-worker-edit]').forEach(b=>b.onclick=()=>{
+    const w=list.find(x=>String(x.id)===b.dataset.workerEdit); if(!w)return;
+    editingWorkerId=w.id; $('workerFirstName').value=w.imie||''; $('workerLastName').value=w.nazwisko||''; $('workerActive').checked=!!w.aktywny;
+    $('workerSaveBtn').textContent='Zapisz zmiany'; $('workerCancel').classList.remove('hidden'); showMsg('workerMsg','Edytujesz wybranego pracownika.'); $('workerFirstName').focus();
+  });
+  l.querySelectorAll('[data-worker-delete]').forEach(b=>b.onclick=async()=>{
+    const w=list.find(x=>String(x.id)===b.dataset.workerDelete); if(!w)return;
+    const name=(String(w.imie||'').trim()+' '+String(w.nazwisko||'').trim()).trim();
+    if(!confirm('Czy na pewno usunąć pracownika „'+name+'”?')) return;
+    const r=await sb.from('pracownicy').delete().eq('id',w.id).eq('workspace_id',ACTIVE_WORKSPACE);
+    if(r.error) showMsg('workerMsg','Nie udało się usunąć pracownika: '+r.error.message,true);
+    else { showMsg('workerMsg','Pracownik usunięty.'); await loadWorkers(); populateVisitMasseurFilter(); }
+  });
+}
+function resetWorkerForm(){
+  editingWorkerId=null; $('workerForm').reset(); $('workerActive').checked=true; $('workerSaveBtn').textContent='Dodaj pracownika'; $('workerCancel').classList.add('hidden');
+}
+$('workerCancel').onclick=resetWorkerForm;
+$('workerForm').onsubmit=async e=>{
+  e.preventDefault();
+  const imie=$('workerFirstName').value.trim(), nazwisko=$('workerLastName').value.trim(), aktywny=$('workerActive').checked;
+  if(!imie||!nazwisko){showMsg('workerMsg','Podaj imię i nazwisko.',true);return;}
+  const btn=$('workerSaveBtn'); btn.disabled=true; showMsg('workerMsg',editingWorkerId?'Zapisywanie zmian…':'Dodawanie pracownika…');
+  try{
+    let r;
+    if(editingWorkerId){
+      r=await sb.from('pracownicy').update({imie,nazwisko,aktywny,updated_at:new Date().toISOString()}).eq('id',editingWorkerId).eq('workspace_id',ACTIVE_WORKSPACE);
+    }else{
+      r=await sb.from('pracownicy').insert({workspace_id:ACTIVE_WORKSPACE,imie,nazwisko,aktywny});
+    }
+    if(r.error) throw r.error;
+    showMsg('workerMsg',editingWorkerId?'Pracownik został zaktualizowany.':'Pracownik został dodany.');
+    resetWorkerForm(); await loadWorkers(); populateVisitMasseurFilter();
+  }catch(err){showMsg('workerMsg','Nie udało się zapisać pracownika: '+(err?.message||err),true)}
+  finally{btn.disabled=false}
+};
+function renderMasseurSelect(){
+  const sel=$('masseur');
+  if(!sel) return;
+  const current=String(sel.value||'').trim().toLowerCase();
+  const list=Array.isArray(WORKERS)?WORKERS:[];
+  sel.innerHTML='<option value="">— wybierz masażystę —</option>'+list.map(w=>{
+    const name=(String(w.imie||'').trim()+' '+String(w.nazwisko||'').trim()).trim();
+    return '<option value="'+esc(name).replace(/\"/g,'&quot;')+'">'+esc(name)+'</option>';
+  }).join('');
+  if(current){
+    const found=list.map(w=>(String(w.imie||'').trim()+' '+String(w.nazwisko||'').trim()).trim()).find(n=>n.toLowerCase()===current);
+    if(found) sel.value=found;
+  }
+}
+
+function populateVisitTypeSelect(){
+  const sel=$('visitType');
+  if(!sel) return;
+  const current=String(sel.value||'').trim();
+  const active=(Array.isArray(visitTypes)?visitTypes:[]).filter(v=>v&&v.aktywna===true&&String(v.nazwa||'').trim()).sort((a,b)=>String(a.nazwa||'').localeCompare(String(b.nazwa||''),'pl'));
+  sel.innerHTML='<option value="">— wybierz rodzaj wizyty —</option>'+active.map(v=>{const name=String(v.nazwa||'').trim();return '<option value="'+esc(name).replace(/"/g,'&quot;')+'">'+esc(name)+'</option>';}).join('');
+  const match=active.find(v=>String(v.nazwa||'').trim().toLowerCase()===current.toLowerCase());
+  sel.value=match?String(match.nazwa||'').trim():'';
+}
+function populateVisitServiceSelect(){
+  const sel=$('service');
+  if(!sel) return;
+  const current=String(sel.value||'').trim();
+  const active=(Array.isArray(services)?services:[]).filter(v=>v&&v.aktywna===true&&String(v.nazwa||'').trim()).sort((a,b)=>String(a.nazwa||'').localeCompare(String(b.nazwa||''),'pl'));
+  sel.innerHTML='<option value="">— wybierz usługę —</option>'+active.map(v=>{const name=String(v.nazwa||'').trim();return '<option value="'+esc(String(v.id)).replace(/"/g,'&quot;')+'">'+esc(name)+' — '+esc(v.czas_trwania)+' min</option>';}).join('');
+  const match=active.find(v=>String(v.id)===current);
+  sel.value=match?String(match.id):'';
+}
+
+async function refreshAll(workspaceId=ACTIVE_WORKSPACE){
+  const target=String(workspaceId||'');
+  if(!target) return false;
+  const refreshId=workspaceRefreshSeq;
+  const results=await Promise.all([loadVisits(target),loadServices(target),loadVisitTypes(target),loadHours(target),loadOff(target),loadSettings(target),loadWorkers(target)]);
+  if(refreshId!==workspaceRefreshSeq || ACTIVE_WORKSPACE!==target) return false;
+  if(results.some(x=>x===false)) return false;
+  populateVisitMasseurFilter();populateVisitTypeSelect();populateVisitServiceSelect();renderCalendar();renderDayList();renderVisitsTable();renderServices();renderVisitTypes();renderHours();renderOff();
+  return true;
+}
+async function loadVisits(workspaceId=ACTIVE_WORKSPACE){const r=await sb.from('wizyty').select('*').eq('workspace_id',workspaceId).order('data').order('godzina');if(r.error){$('sync').textContent='Błąd wizyt: '+r.error.message;return false}if(ACTIVE_WORKSPACE===workspaceId) rows=r.data||[];return true}
+async function loadServices(workspaceId=ACTIVE_WORKSPACE){const r=await sb.from('uslugi').select('id,nazwa,czas_trwania,aktywna').eq('workspace_id',workspaceId).order('nazwa');if(r.error){return false}if(ACTIVE_WORKSPACE===workspaceId) services=r.data||[];return true}
+async function loadVisitTypes(workspaceId=ACTIVE_WORKSPACE){const r=await sb.from('rodzaje_wizyt').select('id,nazwa,aktywna').eq('workspace_id',workspaceId).order('nazwa');if(r.error){return false}if(ACTIVE_WORKSPACE===workspaceId) visitTypes=r.data||[];return true}
+async function loadHours(workspaceId=ACTIVE_WORKSPACE){const r=await sb.from('godziny_pracy').select('id,dzien_tygodnia,od,do,aktywne').eq('workspace_id',workspaceId).order('dzien_tygodnia');if(r.error){return false}if(ACTIVE_WORKSPACE===workspaceId) hours=r.data||[];return true}
+async function loadOff(workspaceId=ACTIVE_WORKSPACE){const r=await sb.from('dni_wolne').select('id,od,do,opis').eq('workspace_id',workspaceId).order('od');if(r.error){return false}if(ACTIVE_WORKSPACE===workspaceId) daysOff=r.data||[];return true}
 function renderCalendar(){const y=view.getFullYear(),m=view.getMonth(),first=new Date(y,m,1),start=(first.getDay()+6)%7,daysIn=new Date(y,m+1,0).getDate(),c=$('calendar');c.innerHTML='';$('title').textContent=new Intl.DateTimeFormat('pl-PL',{month:'long',year:'numeric'}).format(first);['Pn','Wt','Śr','Cz','Pt','Sb','Nd'].forEach(x=>{const e=document.createElement('div');e.className='dow';e.textContent=x;c.appendChild(e)});for(let i=0;i<42;i++){const n=i-start+1,d=new Date(y,m,n),s=iso(d),e=document.createElement('div');e.className='day'+(n<1||n>daysIn?' muted':'')+(s===iso(new Date())?' today':'')+(s===iso(selected)?' sel':'');if(isOff(s))e.classList.add('dayOff');const a=rows.filter(x=>x.data===s);if(a.length)e.classList.add('has');e.innerHTML='<div class="num">'+d.getDate()+'</div>'+a.slice(0,3).map(x=>'<div class="appt '+statusClass(x.status)+'">'+esc((x.godzina||'').slice(0,5))+' '+esc(x.klient)+(x.masazysta?' · '+esc(x.masazysta):'')+'</div>').join('');e.onclick=()=>{if(n>=1&&n<=daysIn){selected=d;$('date').value=s;renderCalendar();renderDayList();loadAvailableTimes()}};c.appendChild(e)}}
 function actionButtons(x){const id=x.id,s=x.status||'potwierdzona';let h='<button class="smallBtn" data-action="delete" data-id="'+id+'">Usuń</button>';if(s==='oczekuje')h='<button class="smallBtn" data-action="confirm" data-id="'+id+'">Potwierdź</button><button class="smallBtn" data-action="reject" data-id="'+id+'">Odrzuć</button>'+h;else if(s==='potwierdzona')h='<button class="smallBtn" data-action="reject" data-id="'+id+'">Odrzuć</button>'+h;else h='<button class="smallBtn" data-action="confirm" data-id="'+id+'">Potwierdź</button>'+h;return h}
-function bindActions(root){root.querySelectorAll('[data-action]').forEach(b=>b.onclick=async()=>{const id=b.dataset.id,a=b.dataset.action;if(a==='delete'){if(!confirm('Usunąć tę wizytę?'))return;const r=await sb.from('wizyty').delete().eq('id',id);if(r.error)alert(r.error.message);else await refreshAll();return}const ns=a==='confirm'?'potwierdzona':'odrzucona';if(!confirm(ns==='potwierdzona'?'Potwierdzić tę wizytę?':'Odrzucić tę wizytę?'))return;const r=await sb.from('wizyty').update({status:ns}).eq('id',id);if(r.error)alert(r.error.message);else await refreshAll()})}
-function renderDayList(){const s=iso(selected),a=rows.filter(x=>x.data===s).sort((x,y)=>(x.godzina||'').localeCompare(y.godzina||''));$('selectedLabel').textContent=plDate(s);$('count').textContent=a.length?a.length+' '+(a.length===1?'wizyta':'wizyty'):'';$('dayList').innerHTML=a.length?a.map(x=>'<div class="item" style="border-top:1px solid #e4dac7;padding:11px 0"><b>'+esc((x.godzina||'').slice(0,5))+' — '+esc(x.klient)+'</b> <span class="muted">('+esc(x.czas_trwania??x.duration??x.czas??60)+' min)</span><div>'+esc(x.usluga||'Wizyta')+(x.masazysta?' · Masażysta: '+esc(x.masazysta):'')+(x.telefon?' · '+esc(x.telefon):'')+'</div>'+(x.email?'<div class="muted">E-mail: <a href="mailto:'+encodeURIComponent(x.email)+'">'+esc(x.email)+'</a></div>':'')+'<div style="margin-top:5px"><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></div>'+(x.notatka?'<div class="muted" style="margin-top:5px">'+esc(x.notatka)+'</div>':'')+'<div class="actions">'+actionButtons(x)+'</div></div>').join(''):'<div class="empty">Brak wizyt na ten dzień.</div>';bindActions($('dayList'))}
-function renderVisitsTable(){let a=[...rows];const q=$('visitSearch').value.trim().toLowerCase(),st=$('visitStatus').value,from=$('visitFrom').value,to=$('visitTo').value,masseur=$('visitMasseur')?.value||'';if(q)a=a.filter(x=>[x.klient,x.telefon,x.email].some(v=>String(v||'').toLowerCase().includes(q)));if(st)a=a.filter(x=>(x.status||'potwierdzona')===st);if(from)a=a.filter(x=>x.data>=from);if(to)a=a.filter(x=>x.data<=to);if(masseur)a=a.filter(x=>String(x.masazysta||'').trim().toLowerCase()===masseur.trim().toLowerCase());a.sort((x,y)=>(x.data+x.godzina).localeCompare(y.data+y.godzina));$('allCount').textContent=a.length+' '+(a.length===1?'wizyta':'wizyt');$('visitsTable').innerHTML=a.length?a.map(x=>'<tr><td>'+shortDate(x.data)+'</td><td>'+esc((x.godzina||'').slice(0,5))+'</td><td><b>'+esc(x.klient)+'</b></td><td>'+esc(x.masazysta||'')+'</td><td>'+esc(x.usluga||'Wizyta')+'<br><span class="muted">'+esc(x.czas_trwania??x.duration??x.czas??60)+' min</span></td><td>'+esc(x.telefon||'')+(x.email?'<br>'+esc(x.email):'')+'</td><td><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></td><td><div class="actions" style="margin:0">'+actionButtons(x)+'</div></td></tr>').join(''):'<tr><td colspan="8" class="empty">Brak wizyt spełniających kryteria.</td></tr>';bindActions($('visitsTable'))}
-function renderServices(){const l=$('servicesList');l.innerHTML=services.length?services.map(s=>'<div class="serviceRow"><div><b>'+esc(s.nazwa)+'</b></div><div>'+esc(s.czas_trwania)+' min</div><div><span class="statusBadge '+(s.aktywna?'confirmed':'rejected')+'">'+(s.aktywna?'aktywna':'nieaktywna')+'</span></div><div class="actions" style="margin:0"><button class="smallBtn" data-service-edit="'+s.id+'">Edytuj</button><button class="smallBtn danger" data-service-delete="'+s.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak usług.</div>';l.querySelectorAll('[data-service-edit]').forEach(b=>b.onclick=()=>{const s=services.find(x=>String(x.id)===b.dataset.serviceEdit);if(!s)return;editingServiceId=s.id;$('serviceName').value=s.nazwa;$('serviceMinutes').value=s.czas_trwania;$('serviceActive').checked=!!s.aktywna;$('serviceSaveBtn').textContent='Zapisz zmiany';$('serviceCancel').classList.remove('hidden')});l.querySelectorAll('[data-service-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć tę usługę?'))return;const r=await sb.from('uslugi').delete().eq('id',b.dataset.serviceDelete).eq('workspace_id',WORKSPACE);if(r.error)showMsg('serviceMsg',r.error.message,true);else{showMsg('serviceMsg','Usługa usunięta.');await loadServices();renderServices()}})}
+function bindActions(root){root.querySelectorAll('[data-action]').forEach(b=>b.onclick=async()=>{const id=b.dataset.id,a=b.dataset.action;if(a==='delete'){if(!confirm('Usunąć tę wizytę?'))return;const r=await sb.from('wizyty').delete().eq('id',id).eq('workspace_id',ACTIVE_WORKSPACE);if(r.error)alert(r.error.message);else await refreshAll();return}const ns=a==='confirm'?'potwierdzona':'odrzucona';if(!confirm(ns==='potwierdzona'?'Potwierdzić tę wizytę?':'Odrzucić tę wizytę?'))return;const r=await sb.from('wizyty').update({status:ns}).eq('id',id).eq('workspace_id',ACTIVE_WORKSPACE);if(r.error)alert(r.error.message);else await refreshAll()})}
+function renderDayList(){const s=iso(selected),a=rows.filter(x=>x.data===s).sort((x,y)=>(x.godzina||'').localeCompare(y.godzina||''));$('selectedLabel').textContent=plDate(s);$('count').textContent=a.length?a.length+' '+(a.length===1?'wizyta':'wizyty'):'';$('dayList').innerHTML=a.length?a.map(x=>'<div class="item" style="border-top:1px solid #e4dac7;padding:11px 0"><b>'+esc((x.godzina||'').slice(0,5))+' — '+esc(x.klient)+'</b> <span class="muted">('+esc(x.czas_trwania??x.duration??x.czas??60)+' min)</span><div>'+((x.rodzaj_wizyty&&String(x.rodzaj_wizyty).trim())?'<b>Rodzaj wizyty:</b> '+esc(x.rodzaj_wizyty)+' · ':'')+'<b>Usługa:</b> '+esc(x.usluga||'Wizyta')+(x.masazysta?' · Masażysta: '+esc(x.masazysta):'')+(x.telefon?' · '+esc(x.telefon):'')+'</div>'+(x.email?'<div class="muted">E-mail: <a href="mailto:'+encodeURIComponent(x.email)+'">'+esc(x.email)+'</a></div>':'')+'<div style="margin-top:5px"><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></div>'+(x.notatka?'<div class="muted" style="margin-top:5px">'+esc(x.notatka)+'</div>':'')+'<div class="actions">'+actionButtons(x)+'</div></div>').join(''):'<div class="empty">Brak wizyt na ten dzień.</div>';bindActions($('dayList'))}
+function renderVisitsTable(){let a=[...rows];const q=$('visitSearch').value.trim().toLowerCase(),st=$('visitStatus').value,from=$('visitFrom').value,to=$('visitTo').value,masseur=$('visitMasseur')?.value||'';if(q)a=a.filter(x=>[x.klient,x.telefon,x.email].some(v=>String(v||'').toLowerCase().includes(q)));if(st)a=a.filter(x=>(x.status||'potwierdzona')===st);if(from)a=a.filter(x=>x.data>=from);if(to)a=a.filter(x=>x.data<=to);if(masseur)a=a.filter(x=>String(x.masazysta||'').trim().toLowerCase()===masseur.trim().toLowerCase());a.sort((x,y)=>(x.data+x.godzina).localeCompare(y.data+y.godzina));$('allCount').textContent=a.length+' '+(a.length===1?'wizyta':'wizyt');$('visitsTable').innerHTML=a.length?a.map(x=>'<tr><td>'+shortDate(x.data)+'</td><td>'+esc((x.godzina||'').slice(0,5))+'</td><td><b>'+esc(x.klient)+'</b></td><td>'+esc(x.masazysta||'')+'</td><td>'+esc(x.rodzaj_wizyty||'—')+'</td><td>'+esc(x.usluga||'Wizyta')+'<br><span class="muted">'+esc(x.czas_trwania??x.duration??x.czas??60)+' min</span></td><td>'+esc(x.telefon||'')+(x.email?'<br>'+esc(x.email):'')+'</td><td><span class="statusBadge '+statusClass(x.status)+'">'+statusLabel(x.status)+'</span></td><td><div class="actions" style="margin:0">'+actionButtons(x)+'</div></td></tr>').join(''):'<tr><td colspan="9" class="empty">Brak wizyt spełniających kryteria.</td></tr>';bindActions($('visitsTable'))}
+function renderVisitTypes(){
+  const l=$('visitTypesList');
+  if(!l) return;
+  const list=Array.isArray(visitTypes)?visitTypes:[];
+  l.innerHTML=list.length?list.map(v=>'<div class="serviceRow"><div><b>'+esc(v.nazwa)+'</b></div><div><span class="statusBadge '+(v.aktywna?'confirmed':'rejected')+'">'+(v.aktywna?'aktywna':'nieaktywna')+'</span></div><div class="actions" style="margin:0"><button class="smallBtn" data-visit-type-edit="'+v.id+'">Edytuj</button><button class="smallBtn danger" data-visit-type-delete="'+v.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak rodzajów wizyt.</div>';
+  l.querySelectorAll('[data-visit-type-edit]').forEach(b=>b.onclick=()=>{const v=visitTypes.find(x=>String(x.id)===b.dataset.visitTypeEdit);if(!v)return;editingVisitTypeId=v.id;$('visitTypeName').value=v.nazwa;$('visitTypeActive').checked=!!v.aktywna;$('visitTypeSaveBtn').textContent='Zapisz zmiany';$('visitTypeCancel').classList.remove('hidden');showMsg('visitTypeMsg','Edytujesz wybrany rodzaj wizyty.')});
+  l.querySelectorAll('[data-visit-type-delete]').forEach(b=>b.onclick=async()=>{const v=visitTypes.find(x=>String(x.id)===b.dataset.visitTypeDelete);if(!v)return;if(!confirm('Usunąć rodzaj wizyty „'+v.nazwa+'”?'))return;const r=await sb.from('rodzaje_wizyt').delete().eq('id',v.id).eq('workspace_id',ACTIVE_WORKSPACE);if(r.error)showMsg('visitTypeMsg',r.error.message,true);else{showMsg('visitTypeMsg','Rodzaj wizyty usunięty.');await loadVisitTypes();renderVisitTypes();populateVisitTypeSelect()}});
+}
+
+function resetVisitTypeForm(){
+  editingVisitTypeId=null;
+  $('visitTypeForm').reset();
+  $('visitTypeActive').checked=true;
+  $('visitTypeSaveBtn').textContent='Dodaj rodzaj wizyty';
+  $('visitTypeCancel').classList.add('hidden');
+}
+
+$('visitTypeForm').onsubmit=async function(e){
+  e.preventDefault();
+  const name=$('visitTypeName').value.trim();
+  const active=$('visitTypeActive').checked;
+  if(!name){showMsg('visitTypeMsg','Wpisz nazwę rodzaju wizyty.',true);return;}
+  const btn=$('visitTypeSaveBtn');btn.disabled=true;showMsg('visitTypeMsg',editingVisitTypeId?'Zapisywanie zmian…':'Dodawanie rodzaju wizyty…');
+  try{
+    let r;
+    if(editingVisitTypeId){r=await sb.from('rodzaje_wizyt').update({nazwa:name,aktywna:active}).eq('id',editingVisitTypeId).eq('workspace_id',ACTIVE_WORKSPACE);}
+    else{r=await sb.from('rodzaje_wizyt').insert({workspace_id:ACTIVE_WORKSPACE,nazwa:name,aktywna:active});}
+    if(r.error) throw r.error;
+    showMsg('visitTypeMsg',editingVisitTypeId?'Rodzaj wizyty został zaktualizowany.':'Rodzaj wizyty został dodany.');
+    resetVisitTypeForm();await loadVisitTypes();renderVisitTypes();populateVisitTypeSelect();
+  }catch(err){showMsg('visitTypeMsg','Nie udało się zapisać rodzaju wizyty: '+(err?.message||err),true)}
+  finally{btn.disabled=false}
+};
+$('visitTypeCancel').onclick=function(){resetVisitTypeForm();showMsg('visitTypeMsg','Edycja anulowana.')};
+
+function renderServices(){const l=$('servicesList');l.innerHTML=services.length?services.map(s=>'<div class="serviceRow"><div><b>'+esc(s.nazwa)+'</b></div><div>'+esc(s.czas_trwania)+' min</div><div><span class="statusBadge '+(s.aktywna?'confirmed':'rejected')+'">'+(s.aktywna?'aktywna':'nieaktywna')+'</span></div><div class="actions" style="margin:0"><button class="smallBtn" data-service-edit="'+s.id+'">Edytuj</button><button class="smallBtn danger" data-service-delete="'+s.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak usług.</div>';l.querySelectorAll('[data-service-edit]').forEach(b=>b.onclick=()=>{const s=services.find(x=>String(x.id)===b.dataset.serviceEdit);if(!s)return;editingServiceId=s.id;$('serviceName').value=s.nazwa;$('serviceMinutes').value=s.czas_trwania;$('serviceActive').checked=!!s.aktywna;$('serviceSaveBtn').textContent='Zapisz zmiany';$('serviceCancel').classList.remove('hidden')});l.querySelectorAll('[data-service-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć tę usługę?'))return;const r=await sb.from('uslugi').delete().eq('id',b.dataset.serviceDelete).eq('workspace_id',ACTIVE_WORKSPACE);if(r.error)showMsg('serviceMsg',r.error.message,true);else{showMsg('serviceMsg','Usługa usunięta.');await loadServices();renderServices();populateVisitServiceSelect()}})}
 
 /* ===== NAPRAWA: USŁUGI — DODAWANIE / EDYCJA / USUWANIE ===== */
 function resetServiceForm(){
@@ -1439,11 +2499,11 @@ $('serviceForm').onsubmit=async function(e){
           aktywna:active
         })
         .eq('id',editingServiceId)
-        .eq('workspace_id',WORKSPACE);
+        .eq('workspace_id',ACTIVE_WORKSPACE);
     }else{
       r=await sb.from('uslugi')
         .insert({
-          workspace_id:WORKSPACE,
+          workspace_id:ACTIVE_WORKSPACE,
           nazwa:name,
           czas_trwania:minutes,
           aktywna:active
@@ -1456,6 +2516,7 @@ $('serviceForm').onsubmit=async function(e){
     resetServiceForm();
     await loadServices();
     renderServices();
+    populateVisitServiceSelect();
   }catch(err){
     showMsg('serviceMsg','Nie udało się zapisać usługi: '+(err?.message||err),true);
   }finally{
@@ -1493,9 +2554,9 @@ $('saveHours').onclick=async()=>{
       let r;
       if(existing){
         r=await sb.from('godziny_pracy').update({od:item.od,do:item.do,aktywne:item.aktywne})
-          .eq('id',existing.id).eq('workspace_id',WORKSPACE);
+          .eq('id',existing.id).eq('workspace_id',ACTIVE_WORKSPACE);
       }else{
-        r=await sb.from('godziny_pracy').insert({workspace_id:WORKSPACE,...item});
+        r=await sb.from('godziny_pracy').insert({workspace_id:ACTIVE_WORKSPACE,...item});
       }
       if(r.error) throw r.error;
     }
@@ -1519,7 +2580,7 @@ $('offForm').onsubmit=async function(e){
   if(btn)btn.disabled=true;
   try{
     const r=await sb.from('dni_wolne').insert({
-      workspace_id:WORKSPACE,
+      workspace_id:ACTIVE_WORKSPACE,
       od:from,
       do:to,
       opis:desc||'Dzień wolny'
@@ -1539,7 +2600,7 @@ $('offForm').onsubmit=async function(e){
   }
 };
 
-function renderOff(){const l=$('offList');l.innerHTML=daysOff.length?daysOff.map(x=>'<div class="offRow"><div><b>'+shortDate(x.od)+'</b></div><div><b>'+shortDate(x.do)+'</b></div><div>'+esc(x.opis||'Dzień wolny')+'</div><div class="actions" style="margin:0"><button class="smallBtn danger" data-off-delete="'+x.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak ustawionych dni wolnych.</div>';l.querySelectorAll('[data-off-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć ten okres wolny?'))return;const r=await sb.from('dni_wolne').delete().eq('id',b.dataset.offDelete).eq('workspace_id',WORKSPACE);if(r.error)showMsg('offMsg',r.error.message,true);else{showMsg('offMsg','Okres usunięty.');await loadOff();renderOff();renderCalendar()}})}
+function renderOff(){const l=$('offList');l.innerHTML=daysOff.length?daysOff.map(x=>'<div class="offRow"><div><b>'+shortDate(x.od)+'</b></div><div><b>'+shortDate(x.do)+'</b></div><div>'+esc(x.opis||'Dzień wolny')+'</div><div class="actions" style="margin:0"><button class="smallBtn danger" data-off-delete="'+x.id+'">Usuń</button></div></div>').join(''):'<div class="empty">Brak ustawionych dni wolnych.</div>';l.querySelectorAll('[data-off-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Usunąć ten okres wolny?'))return;const r=await sb.from('dni_wolne').delete().eq('id',b.dataset.offDelete).eq('workspace_id',ACTIVE_WORKSPACE);if(r.error)showMsg('offMsg',r.error.message,true);else{showMsg('offMsg','Okres usunięty.');await loadOff();renderOff();renderCalendar()}})}
 
 /* ===== RODO ADMIN — bezpośredni odczyt tabeli ZABRONIONY.
    Panel korzysta wyłącznie z funkcji pobierz_zgody_rodo_admin. ===== */
@@ -1665,7 +2726,7 @@ function renderRodo(){
       const tel=rodoValue(x,['klient_telefon','telefon'])||'—';
       const email=rodoValue(x,['klient_email','email'])||'—';
       const rid=rodoValue(x,['rezerwacja_id','rezerwacjaId','reservation_id'])||'—';
-      const wid=rodoValue(x,['workspace_id','workspaceId'])||WORKSPACE;
+      const wid=rodoValue(x,['workspace_id','workspaceId'])||ACTIVE_WORKSPACE;
       const rd=rodoValue(x,['rodo_data','created_at','createdAt']);
       const rv=rodoValue(x,['rodo_wersja','rodoWersja'])||'—';
       const rg=rodoBool(rodoValue(x,['rodo_potwierdzone','rodoPotwierdzone']));
@@ -1725,7 +2786,7 @@ async function saveRodoEdit(x,row){
   showMsg('rodoMsg','Zapisywanie zmian...');
   const r=await sb.rpc('edytuj_zgode_rodo_admin',{
     p_id:payload.id,
-    p_workspace_id:WORKSPACE,
+    p_workspace_id:ACTIVE_WORKSPACE,
     p_klient:payload.klient,
     p_telefon:payload.telefon,
     p_email:payload.email,
@@ -1745,7 +2806,7 @@ async function deleteRodoConsent(x){
   showMsg('rodoMsg','Usuwanie zgody...');
   const r=await sb.rpc('usun_zgode_rodo_admin',{
     p_id:id,
-    p_workspace_id:WORKSPACE
+    p_workspace_id:ACTIVE_WORKSPACE
   });
   if(r.error){
     showMsg('rodoMsg','Nie udało się usunąć zgody: '+r.error.message,true);
@@ -1754,12 +2815,14 @@ async function deleteRodoConsent(x){
   showMsg('rodoMsg','Zgoda została usunięta.');
   await loadRodo();
 }
-async function loadRodo(){
+async function loadRodo(workspaceId=ACTIVE_WORKSPACE){
+  const target=String(workspaceId||'');
+  if(!target) return false;
   $('rodoMsg').textContent='Ładowanie zgód RODO...';
   $('rodoRefresh').disabled=true;
   $('rodoTable').innerHTML='<tr><td colspan="9" class="rodoLoading">Ładowanie...</td></tr>';
   try{
-    const r=await sb.rpc('pobierz_zgody_rodo_admin',{p_workspace_id:WORKSPACE});
+    const r=await sb.rpc('pobierz_zgody_rodo_admin',{p_workspace_id:target});
     if(r.error){
       rodoRows=[];
       rodoLoaded=false;
@@ -1772,6 +2835,7 @@ async function loadRodo(){
       $('rodoCount').textContent='';
       return;
     }
+    if(ACTIVE_WORKSPACE!==target) return false;
     rodoRows=Array.isArray(r.data)?r.data:[];
     rodoLoaded=true;
     $('rodoMsg').textContent='Zgody zostały pobrane bezpiecznie z funkcji administracyjnej.';
@@ -1789,8 +2853,148 @@ async function loadRodo(){
   }
 }
 
-async function loadSettings(){const r=await sb.from('ustawienia').select('*').eq('workspace_id',WORKSPACE).maybeSingle();if(r.error){showMsg('settingsMsg','Nie udało się wczytać ustawień: '+r.error.message,true);return}const x=r.data||{};$('setName').value=x.nazwa_terminarza||'Terminarz wizyt';$('setOwner').value=x.nazwa_osoby||'';$('setPhone').value=x.telefon||'';$('setEmail').value=x.email||'';$('setMessage').value=x.informacja_dla_klienta||'';$('setMessage2').value=x.informacja_dla_klienta_2||'';$('setMessage3').value=x.informacja_dla_klienta_3||''}
-$('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={workspace_id:WORKSPACE,nazwa_terminarza:$('setName').value.trim()||'Terminarz wizyt',nazwa_osoby:$('setOwner').value.trim(),telefon:$('setPhone').value.trim(),email:$('setEmail').value.trim(),informacja_dla_klienta:$('setMessage').value.trim(),informacja_dla_klienta_2:$('setMessage2').value.trim(),informacja_dla_klienta_3:$('setMessage3').value.trim(),updated_at:new Date().toISOString()};const r=await sb.from('ustawienia').upsert(payload,{onConflict:'workspace_id'});if(r.error)showMsg('settingsMsg','Nie udało się zapisać ustawień. Jeśli tabela nie ma jeszcze pól informacja_dla_klienta_2 i informacja_dla_klienta_3, dodaj je w Supabase.',true);else showMsg('settingsMsg','Ustawienia zapisane w bazie Supabase.')};
+function renderCompanies(){
+  const count=$('companiesCount');
+  const box=$('companiesList');
+  const form=$('companyForm');
+  const createBtn=$('companyCreateBtn');
+  const clearBtn=$('companyClearBtn');
+  const input=$('companyNameInput');
+
+  if(!isProgramAdmin){
+    /* F8-1: zakładka jest dostępna, ale firmy są ukryte dla wszystkich
+       poza Adminem Programu. Przycisk Dodaj firmę pozostaje widoczny,
+       lecz jest zablokowany i informuje o braku uprawnień. */
+    if(count) count.textContent='';
+    if(box) box.innerHTML='';
+    if(input) input.disabled=true;
+    if(createBtn){
+      createBtn.disabled=true;
+      createBtn.setAttribute('aria-disabled','true');
+      createBtn.title='Tylko Administrator Programu może dodawać firmy.';
+    }
+    if(clearBtn) clearBtn.disabled=true;
+    if(form) form.classList.add('f81CompanyLocked');
+    showMsg('companyMsg','🔒 Brak uprawnień. Tylko Administrator Programu może dodawać i zarządzać firmami.',true);
+    return;
+  }
+
+  if(input) input.disabled=false;
+  if(createBtn){
+    createBtn.disabled=false;
+    createBtn.removeAttribute('aria-disabled');
+    createBtn.title='';
+  }
+  if(clearBtn) clearBtn.disabled=false;
+  if(form) form.classList.remove('f81CompanyLocked');
+
+  const list=Array.isArray(COMPANY_LIST)?COMPANY_LIST:[];
+  if(count) count.textContent=list.length+' firm';
+  if(!box) return;
+  box.innerHTML=list.length?list.map(c=>{
+    const active=c.aktywna!==false;
+    const current=String(c.id)===String(ACTIVE_WORKSPACE);
+    return '<div class=\"companyRow\">'+
+      '<div><div class=\"companyRowName\">'+esc(c.name||c.id)+'</div><div class=\"companyRowMeta\">ID: '+esc(c.id)+(current?' · aktualnie wybrana':'')+'</div></div>'+
+      '<div class=\"companyActions\">'+
+        '<div class=\"companyActive '+(active?'yes':'no')+'\">'+(active?'🟢 Aktywna':'⚪ Nieaktywna')+'</div>'+
+        '<button type=\"button\" class=\"secondary companyBtn\" data-company-action=\"edit\" data-company-id=\"'+esc(c.id)+'\">✏️ Edytuj</button>'+
+        '<button type=\"button\" class=\"secondary companyBtn\" data-company-action=\"toggle\" data-company-id=\"'+esc(c.id)+'\">'+(active?'⏸️ Dezaktywuj':'▶️ Aktywuj')+'</button>'+
+        '<button type=\"button\" class=\"danger companyBtn\" data-company-action=\"delete\" data-company-id=\"'+esc(c.id)+'\">🗑️ Usuń</button>'+
+      '</div>'+
+    '</div>';
+  }).join(''):'<div class=\"empty\">Brak firm dostępnych dla tego konta.</div>';
+}
+
+async function companyAction(action,id){
+  if(!isProgramAdmin){ showMsg('companyMsg','Brak uprawnień głównego administratora programu.',true); return; }
+  const c=companyById(id); if(!c) return;
+  try{
+    if(action==='edit'){
+      const name=prompt('Nowa nazwa firmy:',String(c.name||''));
+      if(name===null) return;
+      const next=String(name).trim();
+      if(!next){alert('Nazwa firmy nie może być pusta.');return;}
+      const r=await sb.rpc('edytuj_workspace_admin',{p_workspace_id:id,p_nazwa:next});
+      if(r.error) throw r.error;
+      await loadCompanyList(); renderCompanies(); renderCompanyInfo();
+      showMsg('companyMsg','Nazwa firmy została zmieniona.');
+    }else if(action==='toggle'){
+      const next=c.aktywna===false;
+      if(!next && String(id)===String(ACTIVE_WORKSPACE)){alert('Najpierw przełącz się na inną firmę, aby dezaktywować tę firmę.');return;}
+      const label=next?'aktywować':'dezaktywować';
+      if(!confirm('Czy na pewno chcesz '+label+' firmę „'+String(c.name||c.id)+'”?')) return;
+      const r=await sb.rpc('ustaw_aktywnosc_workspace_admin',{p_workspace_id:id,p_aktywna:next});
+      if(r.error) throw r.error;
+      await loadCompanyList(); renderCompanies(); renderCompanyInfo();
+      showMsg('companyMsg',next?'Firma została aktywowana.':'Firma została dezaktywowana.');
+    }else if(action==='delete'){
+      if(String(id)===String(ACTIVE_WORKSPACE)){alert('Najpierw przełącz się na inną firmę. Aktywnej firmy nie można usunąć.');return;}
+      if(!confirm('Czy na pewno chcesz usunąć firmę „'+String(c.name||c.id)+'”?')) return;
+      const r=await sb.rpc('usun_workspace_admin',{p_workspace_id:id});
+      if(r.error) throw r.error;
+      await loadCompanyList(); renderCompanies(); renderCompanyInfo();
+      showMsg('companyMsg','Firma została usunięta.');
+    }
+  }catch(err){ showMsg('companyMsg','Operacja na firmie nie powiodła się: '+(err?.message||err),true); }
+}
+
+const companiesList=$ ('companiesList');
+if(companiesList) companiesList.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-company-action]');
+  if(!btn) return;
+  companyAction(btn.dataset.companyAction,String(btn.dataset.companyId||''));
+});
+
+const companyForm=$('companyForm');
+if(companyForm){
+  companyForm.onsubmit=async e=>{
+    e.preventDefault();
+    if(!isProgramAdmin){showMsg('companyMsg','Brak uprawnień głównego administratora programu.',true);return;}
+    const input=$('companyNameInput');
+    const btn=$('companyCreateBtn');
+    const name=String(input?.value||'').trim();
+    if(!name){showMsg('companyMsg','Podaj nazwę firmy.',true);input?.focus();return;}
+    if(name.length>200){showMsg('companyMsg','Nazwa firmy jest za długa.',true);return;}
+    if(btn) btn.disabled=true;
+    showMsg('companyMsg','Tworzenie firmy…');
+    try{
+      const r=await sb.rpc('utworz_workspace_admin',{p_nazwa:name});
+      if(r.error) throw r.error;
+      const newId=String(r.data||'');
+      if(!newId) throw new Error('Supabase nie zwrócił identyfikatora nowej firmy.');
+      await loadCompanyList();
+      if(!companyById(newId)){
+        throw new Error('Firma została utworzona, ale nie pojawiła się na liście uprawnionych firm.');
+      }
+      input.value='';
+      renderCompanies();
+      showMsg('companyMsg','Firma „'+name+'” została utworzona.');
+    }catch(err){
+      showMsg('companyMsg','Nie udało się utworzyć firmy: '+(err?.message||err),true);
+    }finally{
+      if(btn) btn.disabled=false;
+    }
+  };
+}
+const companyFormGuard=$('companyForm');
+if(companyFormGuard){
+  companyFormGuard.addEventListener('click',function(e){
+    const btn=e.target.closest('#companyCreateBtn');
+    if(!btn || isProgramAdmin) return;
+    e.preventDefault();
+    e.stopPropagation();
+    showMsg('companyMsg','🔒 Brak uprawnień. Tylko Administrator Programu może dodawać firmy.',true);
+  },true);
+}
+const companyClearBtn=$('companyClearBtn');
+if(companyClearBtn) companyClearBtn.onclick=()=>{
+  $('companyNameInput').value='';
+  showMsg('companyMsg','');
+};
+
+async function loadSettings(workspaceId=ACTIVE_WORKSPACE){const r=await sb.from('ustawienia').select('*').eq('workspace_id',workspaceId).maybeSingle();if(r.error){showMsg('settingsMsg','Nie udało się wczytać ustawień: '+r.error.message,true);return false}if(ACTIVE_WORKSPACE!==workspaceId) return false; const x=r.data||{};$('setName').value=x.nazwa_terminarza||'Terminarz wizyt';$('setOwner').value=x.nazwa_osoby||'';$('setPhone').value=x.telefon||'';$('setEmail').value=x.email||'';$('setMessage').value=x.informacja_dla_klienta||'';$('setMessage2').value=x.informacja_dla_klienta_2||'';$('setMessage3').value=x.informacja_dla_klienta_3||'';return true}
+$('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={workspace_id:ACTIVE_WORKSPACE,nazwa_terminarza:$('setName').value.trim()||'Terminarz wizyt',nazwa_osoby:$('setOwner').value.trim(),telefon:$('setPhone').value.trim(),email:$('setEmail').value.trim(),informacja_dla_klienta:$('setMessage').value.trim(),informacja_dla_klienta_2:$('setMessage2').value.trim(),informacja_dla_klienta_3:$('setMessage3').value.trim(),updated_at:new Date().toISOString()};const r=await sb.from('ustawienia').upsert(payload,{onConflict:'workspace_id'});if(r.error)showMsg('settingsMsg','Nie udało się zapisać ustawień. Jeśli tabela nie ma jeszcze pól informacja_dla_klienta_2 i informacja_dla_klienta_3, dodaj je w Supabase.',true);else showMsg('settingsMsg','Ustawienia zapisane w bazie Supabase.')};
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}const btn=$('loginBtn');showMsg('loginMsg','Logowanie...');btn.disabled=true;try{const r=await sb.auth.signInWithPassword({email,password});if(r.error){showMsg('loginMsg','Błąd logowania: '+r.error.message,true);return}showMsg('loginMsg','Zalogowano.');await logged()}catch(e){showMsg('loginMsg','Błąd połączenia z bazą: '+(e?.message||e),true)}finally{btn.disabled=false}};
 $('signupBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){showMsg('loginMsg','Podaj e-mail i hasło.',true);return}if(password.length<6){showMsg('loginMsg','Hasło musi mieć co najmniej 6 znaków.',true);return}showMsg('loginMsg','Tworzenie konta...');$('signupBtn').disabled=true;const r=await sb.auth.signUp({email,password});$('signupBtn').disabled=false;if(r.error){showMsg('loginMsg','Błąd tworzenia konta: '+r.error.message,true);return}if(r.data?.session){showMsg('loginMsg','Konto utworzone.');await logged()}else showMsg('loginMsg','Konto utworzone. Sprawdź e-mail, jeśli wymagana jest jego weryfikacja.');};
 
@@ -1823,14 +3027,11 @@ function isPastSlot(date,time){
   return timeToMinutes(time) <= now.getHours()*60+now.getMinutes();
 }
 function selectedServiceRow(){
-  const name=String($('service').value||'').trim().toLowerCase();
-  if(!name) return null;
-  return services.find(x=>String(x.nazwa||'').trim().toLowerCase()===name) || null;
+  const id=String($('service').value||'').trim();
+  if(!id) return null;
+  return services.find(x=>String(x.id)===id) || null;
 }
-function syncDurationToService(){
-  const svc=selectedServiceRow();
-  if(svc && Number(svc.czas_trwania)>0) $('duration').value=String(svc.czas_trwania);
-}
+
 function clearSelectedTime(){
   selectedTime='';
   document.querySelectorAll('#availableTimes button[data-time]').forEach(x=>x.classList.remove('selected'));
@@ -1839,35 +3040,96 @@ async function loadAvailableTimes(){
   const requestNo=++slotRequestNo;
   clearSelectedTime();
   const date=$('date').value;
-  const service=String($('service').value||'').trim();
-  const duration=Number($('duration').value||60);
+  const serviceId=String($('service').value||'').trim();
+  const serviceRow=selectedServiceRow();
   const box=$('availableTimes');
-  if(!date || !service){
-    box.innerHTML='<div class="empty">Wybierz datę i rodzaj wizyty.</div>';
+  if(!date || !serviceId || !serviceRow){
+    box.innerHTML='<div class="empty">Wybierz datę i usługę.</div>'; 
     return;
   }
-  if(isOff(date)){
-    box.innerHTML='<div class="empty"><b>Brak terminów.</b><br>Wybrany dzień jest wolny.</div>';
-    return;
-  }
-  const day=dayIndex(date);
-  const work=hours.find(h=>Number(h.dzien_tygodnia)===day && h.aktywne===true);
-  if(!work){
-    box.innerHTML='<div class="empty"><b>Brak terminów.</b><br>W tym dniu nie ma aktywnych godzin pracy.</div>';
+  if(!ACTIVE_WORKSPACE){
+    box.innerHTML='<div class="empty"><span class="help err">Nie wybrano firmy.</span></div>';
     return;
   }
   box.innerHTML='<div class="empty">Pobieram dostępne godziny…</div>';
+  // Odświeżamy dane zależne od firmy tuż przed pobraniem slotów.
+  // Nie blokujemy RPC lokalnym cache godzin pracy — źródłem prawdy jest funkcja Supabase.
   try{
-    const r=await sb.rpc('get_available_slots',{p_workspace_id:WORKSPACE,p_date:date,p_duration:duration});
-    if(requestNo!==slotRequestNo)return;
-    if(r.error){
-      box.innerHTML='<div class="empty"><span class="help err">Nie udało się pobrać dostępnych godzin: '+esc(r.error.message)+'</span></div>';
+    const target=ACTIVE_WORKSPACE;
+    const results=await Promise.all([loadServices(target),loadHours(target),loadOff(target)]);
+    if(requestNo!==slotRequestNo || ACTIVE_WORKSPACE!==target)return;
+    if(results.some(x=>x===false)){
+      box.innerHTML='<div class="empty"><span class="help err">Nie udało się pobrać danych potrzebnych do wyświetlenia godzin.</span></div>';
       return;
     }
-    let list=(r.data||[]).map(x=>typeof x==='string'?x:x?.slot_time).map(normalizeSlotTime).filter(Boolean);
-    list=[...new Set(list)].filter(t=>!isPastSlot(date,t));
+  }catch(e){
+    if(requestNo!==slotRequestNo)return;
+    box.innerHTML='<div class="empty"><span class="help err">Błąd pobierania danych: '+esc(e?.message||e)+'</span></div>';
+    return;
+  }
+  try{
+    const selectedAfterRefresh=String($('service').value||'').trim();
+    if(selectedAfterRefresh!==serviceId){
+      box.innerHTML='<div class="empty">Wybierz usługę ponownie.</div>';
+      return;
+    }
+
+    /*
+      ATICA-PROJEKTY: funkcja get_available_slots w Supabase nadal ma
+      zabezpieczenie ograniczające ją do starego workspace Firma główna.
+      Nie zmieniamy teraz Supabase. Dla Admina liczymy sloty bezpośrednio
+      z godzin pracy i wizyt aktywnej firmy. Dzięki temu każda firma może
+      mieć własny terminarz już na tym etapie.
+    */
+    const serviceDuration=Number(serviceRow.czas_trwania||0);
+    if(!serviceDuration){
+      box.innerHTML='<div class="empty"><span class="help err">Wybrana usługa nie ma ustawionego czasu trwania.</span></div>';
+      return;
+    }
+
+    const day=dayIndex(date);
+    const work=hours.find(h=>Number(h.dzien_tygodnia)===day && h.aktywne===true);
+    if(!work || !work.od || !work.do){
+      box.innerHTML='<div class="empty"><b>Brak dostępnych godzin.</b><br>W tym dniu firma nie ma aktywnych godzin pracy.</div>';
+      return;
+    }
+
+    const visitsResult=await sb.from('wizyty')
+      .select('godzina,czas_trwania,status')
+      .eq('workspace_id',ACTIVE_WORKSPACE)
+      .eq('data',date);
+    if(requestNo!==slotRequestNo)return;
+    if(visitsResult.error){
+      box.innerHTML='<div class="empty"><span class="help err">Nie udało się pobrać zajętych terminów: '+esc(visitsResult.error.message)+'</span></div>';
+      return;
+    }
+
+    const toMin=v=>{
+      const t=normalizeSlotTime(v), parts=t.split(':');
+      return parts.length===2 ? Number(parts[0])*60+Number(parts[1]) : -1;
+    };
+    const fromMin=toMin(work.od);
+    const toWorkMin=toMin(work.do);
+    const busy=(Array.isArray(visitsResult.data)?visitsResult.data:[])
+      .filter(v=>String(v?.status||'potwierdzona')!=='odrzucona')
+      .map(v=>({
+        start:toMin(v?.godzina),
+        end:toMin(v?.godzina)+(Number(v?.czas_trwania)||60)
+      }))
+      .filter(v=>v.start>=0 && v.end>v.start);
+
+    const list=[];
+    for(let t=fromMin;t+serviceDuration<=toWorkMin;t+=30){
+      const end=t+serviceDuration;
+      const occupied=busy.some(v=>v.start<end && v.end>t);
+      const hh=String(Math.floor(t/60)).padStart(2,'0');
+      const mm=String(t%60).padStart(2,'0');
+      const slot=hh+':'+mm;
+      if(!occupied && !isPastSlot(date,slot)) list.push(slot);
+    }
+
     if(!list.length){
-      box.innerHTML='<div class="empty"><b>Brak dostępnych godzin.</b><br>Wybierz inny dzień lub rodzaj wizyty.</div>';
+      box.innerHTML='<div class="empty"><b>Brak dostępnych godzin.</b><br>Wybierz inny dzień lub inną usługę.</div>';
       return;
     }
     box.innerHTML=list.map(t=>'<button type="button" data-time="'+esc(t)+'">'+esc(t)+'</button>').join('');
@@ -1892,8 +3154,7 @@ $('next').onclick=function(){
 };
 
 $('date').onchange=loadAvailableTimes;
-$('service').onchange=async()=>{syncDurationToService();await loadAvailableTimes();};
-$('duration').onchange=loadAvailableTimes;
+$('service').onchange=loadAvailableTimes;
 $('openNewVisitRodo').onclick=function(){ $('newVisitRodoModal').classList.remove('hidden'); };
 $('closeNewVisitRodo').onclick=function(){ $('newVisitRodoModal').classList.add('hidden'); };
 $('newVisitRodoModal').onclick=function(e){ if(e.target===$('newVisitRodoModal')) $('newVisitRodoModal').classList.add('hidden'); };
@@ -1901,17 +3162,21 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('newVisi
 
 $('clear').onclick=function(){
   $('form').reset();
-  $('duration').value='60';
-  $('newVisitRodo').checked=false;
+    $('newVisitRodo').checked=false;
   $('newVisitMarketing').checked=false;
   $('date').value=iso(selected);
   clearSelectedTime();
-  $('availableTimes').innerHTML='<div class="empty">Wybierz rodzaj wizyty.</div>';
+  $('availableTimes').innerHTML='<div class="empty">Wybierz datę, rodzaj wizyty i usługę.</div>';
 };
 
 $('masseur').addEventListener('change',function(){
   const value=this.value.trim();
   this.dataset.selectedMasseur=value;
+});
+
+$('visitType').addEventListener('change',function(){
+  this.dataset.selectedVisitType=this.value.trim();
+  loadAvailableTimes();
 });
 
 $('service').addEventListener('change',function(){
@@ -1924,8 +3189,10 @@ $('form').onsubmit=async function(e){
   const date=$('date').value;
   const time=selectedTime;
   const masseur=$('masseur').value.trim();
-  const service=$('service').value.trim();
-  const duration=Number($('duration').value||60);
+  const visitType=$('visitType').value.trim();
+  const serviceRow=selectedServiceRow();
+  const service=String(serviceRow?.nazwa||'').trim();
+  const duration=Number(serviceRow?.czas_trwania||0);
   const phone=$('phone').value.trim();
   const email=$('clientEmail').value.trim();
   const note=$('note').value.trim();
@@ -1937,8 +3204,8 @@ $('form').onsubmit=async function(e){
     return;
   }
 
-  if(!client||!date||!time||!masseur||!service){
-    alert('Uzupełnij klienta, datę, wybierz masażystę, rodzaj wizyty i dostępną godzinę.');
+  if(!client||!date||!time||!masseur||!visitType||!serviceRow||!duration){
+    alert('Uzupełnij klienta, datę, wybierz masażystę, rodzaj wizyty, usługę i dostępną godzinę.');
     return;
   }
   if(isPastSlot(date,time)){
@@ -1954,11 +3221,12 @@ $('form').onsubmit=async function(e){
     const reservationId=crypto.randomUUID();
     const payload={
       id:reservationId,
-      workspace_id:WORKSPACE,
+      workspace_id:ACTIVE_WORKSPACE,
       klient:client,
       data:date,
       godzina:time,
       masazysta:masseur,
+      rodzaj_wizyty:visitType,
       usluga:service,
       czas_trwania:duration,
       telefon:phone,
@@ -1982,7 +3250,7 @@ $('form').onsubmit=async function(e){
     const confirmSave=await sb.from('wizyty')
       .update({masazysta:masseur, usluga:service})
       .eq('id',reservationId)
-      .eq('workspace_id',WORKSPACE);
+      .eq('workspace_id',ACTIVE_WORKSPACE);
     if(confirmSave.error){
       alert('Wizyta została dodana, ale nie udało się utrwalić wyboru masażysty/usługi: '+confirmSave.error.message);
       return;
@@ -1991,7 +3259,7 @@ $('form').onsubmit=async function(e){
     const verify=await sb.from('wizyty')
       .select('masazysta,usluga')
       .eq('id',reservationId)
-      .eq('workspace_id',WORKSPACE)
+      .eq('workspace_id',ACTIVE_WORKSPACE)
       .maybeSingle();
     if(verify.error || !verify.data || String(verify.data.masazysta||'').trim()!==masseur || String(verify.data.usluga||'').trim()!==service){
       alert('Wizyta została dodana, ale baza nie potwierdziła wybranego masażysty/usługi. Sprawdź zapis w Supabase.');
@@ -2000,7 +3268,7 @@ $('form').onsubmit=async function(e){
 
     const rodoResult=await sb.rpc('zapisz_zgode_rodo',{
       p_rezerwacja_id:reservationId,
-      p_workspace_id:WORKSPACE,
+      p_workspace_id:ACTIVE_WORKSPACE,
       p_rodo_wersja:NEW_VISIT_RODO_VERSION,
       p_marketing_zgoda:marketingConsent
     });
@@ -2012,8 +3280,7 @@ $('form').onsubmit=async function(e){
     selected=new Date(date+'T12:00:00');
     view=new Date(selected.getFullYear(),selected.getMonth(),1);
     $('form').reset();
-    $('duration').value='60';
-    $('newVisitRodo').checked=false;
+        $('newVisitRodo').checked=false;
     $('newVisitMarketing').checked=false;
     $('date').value=date;
     clearSelectedTime();
@@ -2036,10 +3303,13 @@ function populateVisitMasseurFilter(){
   const sel=$('visitMasseur');
   if(!sel) return;
   const current=sel.value;
-  const names=[...new Set((rows||[]).map(x=>String(x.masazysta||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pl'));
+  const workerNames=(Array.isArray(WORKERS)?WORKERS:[]).map(w=>(String(w.imie||'').trim()+' '+String(w.nazwisko||'').trim()).trim()).filter(Boolean);
+  const visitNames=(rows||[]).map(x=>String(x.masazysta||'').trim()).filter(Boolean);
+  const names=[...new Set([...workerNames,...visitNames])].sort((a,b)=>a.localeCompare(b,'pl'));
   sel.innerHTML='<option value="">Wszyscy masażyści</option>'+names.map(n=>'<option value="'+esc(n).replace(/\"/g,'&quot;')+'">'+esc(n)+'</option>').join('');
   if(names.some(n=>n.toLowerCase()===current.toLowerCase())) sel.value=names.find(n=>n.toLowerCase()===current.toLowerCase());
 }
+
 
 function bindVisitFilters(){
   const search=$('visitSearch');
@@ -2067,12 +3337,51 @@ bindVisitFilters();
 $('rodoSearch').oninput=renderRodo;
 $('rodoFrom').onchange=renderRodo;
 $('rodoTo').onchange=renderRodo;
-$('rodoRefresh').onclick=loadRodo;
+$('rodoRefresh').onclick=()=>loadRodo();
 document.querySelectorAll('.sideItem[data-panel="rodoPanel"]').forEach(b=>{
   b.addEventListener('click',async()=>{
     if(!rodoLoaded) await loadRodo();
   });
 });
+
+$('addUserBtn').onclick=async()=>{
+  const email=prompt('Podaj e-mail istniejącego konta Auth, które chcesz dodać do wybranej firmy:');
+  if(email===null) return;
+  const cleanEmail=String(email).trim();
+  if(!cleanEmail){showMsg('usersMsg','Podaj adres e-mail użytkownika.',true);return;}
+
+  const roleInput=prompt('Wybierz rolę wpisując jedną z wartości:\n\n1 — Administrator firmy\n2 — Administrator ograniczony\n3 — Użytkownik\n\nDomyślnie: 3','3');
+  if(roleInput===null) return;
+  const roleChoice=String(roleInput).trim().toLowerCase();
+  const roleMap={
+    '1':'company_admin',
+    '2':'limited_admin',
+    '3':'user',
+    'company_admin':'company_admin',
+    'limited_admin':'limited_admin',
+    'user':'user'
+  };
+  const role=roleMap[roleChoice];
+  if(!role){showMsg('usersMsg','Nieprawidłowa rola. Wybierz 1, 2 albo 3.',true);return;}
+  if(!f81CanManageTarget(role)){
+    showMsg('usersMsg',F81_CURRENT_ROLE==='company_admin'
+      ? 'Administrator firmy może dodawać wyłącznie Administratorów ograniczonych i Użytkowników. Nie może nadawać roli Administratora firmy.'
+      : 'Brak uprawnienia do nadawania tej roli.',true);
+    return;
+  }
+
+  showMsg('usersMsg','Dodawanie użytkownika…');
+  try{
+    const r=await sb.rpc('dodaj_uzytkownika_po_email',{p_email:cleanEmail,p_workspace_id:ACTIVE_WORKSPACE,p_rola:role});
+    if(r.error) throw r.error;
+    showMsg('usersMsg','Użytkownik został dodany do wybranej firmy.');
+    await loadUsersAdmin();
+  }catch(e){showMsg('usersMsg','Nie udało się dodać użytkownika: '+(e?.message||e),true);}
+};
+  $('editUserCancel').onclick=closeEditUser;
+$('editUserSave').onclick=saveEditUser;
+$('editUserModal').addEventListener('click',e=>{if(e.target.id==='editUserModal')closeEditUser()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('editUserModal').classList.contains('hidden'))closeEditUser()});
 
 $('usersRefreshBtn').onclick=async()=>{
   const {data}=await sb.auth.getSession();
@@ -2132,7 +3441,12 @@ $('recoverySaveBtn').onclick=async()=>{
   }finally{btn.disabled=false;}
 };
 
-sb.channel('terminarz-wizyty').on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+WORKSPACE},()=>refreshAll()).subscribe();
+let realtimeChannel=null;
+function subscribeRealtime(){
+  try{if(realtimeChannel) sb.removeChannel(realtimeChannel);}catch(e){}
+  realtimeChannel=sb.channel('terminarz-wizyty-'+ACTIVE_WORKSPACE).on('postgres_changes',{event:'*',schema:'public',table:'wizyty',filter:'workspace_id=eq.'+ACTIVE_WORKSPACE},()=>refreshAll()).subscribe();
+}
+subscribeRealtime();
 $('logout').onclick=async()=>{const r=await sb.auth.signOut();if(r.error)alert('Nie udało się wylogować: '+r.error.message);else await logged()};
 
 /*
@@ -2160,4 +3474,230 @@ if(isRecoveryLink){
 }else{
   logged();
 }
-</script></body></html>
+</script>
+
+
+
+<!-- =========================================================
+     ETAP F8-1 — HIERARCHIA ADMINISTRATORÓW / ADMINISTRATOR OGRANICZONY
+     Zakres: Terminarz, Wizyty, podgląd Usług i Rodzajów wizyt.
+     Bez zmian w Supabase. Rola odczytywana wyłącznie dla zalogowanego
+     użytkownika z jego własnego członkostwa w aktywnej firmie.
+     ========================================================= -->
+<style id="etap-10g-2-restricted-admin">
+  /* F8-1: nie ukrywamy zakładek. Ograniczenia mają dotyczyć akcji. */
+  body.roleRestricted .roleRestrictedHide{display:none !important}
+  .f81CompanyLocked{opacity:.92}
+  #companyCreateBtn:disabled{cursor:not-allowed;opacity:.62}
+  #companyNameInput:disabled{cursor:not-allowed;background:#f3f3f3}
+  #companyClearBtn:disabled{cursor:not-allowed;opacity:.55}
+</style>
+<script>
+/* ===== ETAP 10G-2 — bezpieczne sterowanie widokiem Administratora ograniczonego ===== */
+(function(){
+  const ROLE_RESTRICTED='limited_admin';
+  let restrictedRoleToken=0;
+  window.TERM_CURRENT_ROLE='user';
+
+  function setHidden(panelId,hidden){
+    document.querySelectorAll('.sideItem[data-panel="'+panelId+'"], .tab[data-tab="'+panelId+'"]').forEach(el=>el.classList.toggle('roleRestrictedHide',hidden));
+    const panel=document.getElementById(panelId);
+    if(panel) panel.classList.toggle('roleRestrictedHide',hidden);
+  }
+
+  function showOnlyAllowedPanels(){
+    /* F8-1: wszystkie zakładki i panele pozostają widoczne dla każdej roli.
+       Ograniczenia dotyczą konkretnych przycisków/akcji i są nakładane
+       przez mechanizm indywidualnych uprawnień. */
+    document.querySelectorAll('.sideItem, .tab, .panel').forEach(el=>{
+      el.classList.remove('roleRestrictedHide');
+      el.removeAttribute('aria-hidden');
+    });
+  }
+
+  function activateAllowed(id){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===id));
+    document.querySelectorAll('.sideItem[data-panel]').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));
+  }
+
+  function applyRole(role,isProgramAdmin){
+    const normalized=String(role||'user').trim().toLowerCase();
+    window.TERM_CURRENT_ROLE=normalized;
+    F81_CURRENT_ROLE=normalized;
+    document.body.classList.remove('roleRestricted');
+    showOnlyAllowedPanels();
+    /* Po odczytaniu roli natychmiast przeliczamy uprawnienia bazowe tej roli.
+       To jest istotne na telefonie, gdzie localStorage może być pusty. */
+    setTimeout(()=>window.F81_applyButtonPermissions&&window.F81_applyButtonPermissions(),0);
+  }
+
+  window.loadCurrentWorkspaceRole10G2=async function(){
+    const token=++restrictedRoleToken;
+    try{
+      const {data,error}=await sb.auth.getSession();
+      if(error) throw error;
+      const user=data?.session?.user;
+      F81_CURRENT_USER_ID=String(user?.id||'');
+      if(!user){F81_CURRENT_USER_ID='';applyRole('user',false);return false;}
+      let programAdmin=false;
+      try{
+        const pa=await sb.rpc('czy_glowny_admin_programu');
+        if(!pa.error) programAdmin=pa.data===true;
+      }catch(e){}
+      if(programAdmin){
+        if(token!==restrictedRoleToken)return false;
+        applyRole('program_admin',true);
+        return true;
+      }
+      if(!ACTIVE_WORKSPACE){applyRole('none',false);return false;}
+      /* ETAP F1 — centralne odczytanie roli dla bieżącej firmy.
+         Frontend nie interpretuje już roli przez stare wartości „admin/user”.
+         Źródłem roli jest funkcja pobierz_moja_role_workspace(). */
+      const r=await sb.rpc('pobierz_moja_role_workspace',{p_workspace_id:ACTIVE_WORKSPACE});
+      if(r.error) throw r.error;
+      const role=String(r.data||'none').trim().toLowerCase();
+      if(token!==restrictedRoleToken)return false;
+      applyRole(role,false);
+      return role!=='none';
+    }catch(e){
+      if(token!==restrictedRoleToken)return false;
+      /* Przy błędzie bezpiecznie traktujemy konto jako zwykłego użytkownika. */
+      applyRole('user',false);
+      return false;
+    }
+  };
+
+  /* Nie zmieniamy istniejącej logiki logowania ani bazy — tylko dokładamy
+     aktualizację widoku po zalogowaniu i po zmianie aktywnej firmy. */
+  const oldRefreshAll=window.refreshAll;
+  if(typeof oldRefreshAll==='function'){
+    window.refreshAll=async function(workspaceId){
+      const result=await oldRefreshAll(workspaceId);
+      await window.loadCurrentWorkspaceRole10G2();
+      return result;
+    };
+  }
+
+  /* F8-1: nawigacja zakładek pozostaje aktywna.
+     Zakładka Licencje jest zawsze dostępna i nie może być zatrzymana
+     przez mechanizm indywidualnych uprawnień. */
+
+  document.addEventListener('DOMContentLoaded',function(){
+    setTimeout(()=>window.loadCurrentWorkspaceRole10G2(),0);
+    const companySelect=document.getElementById('companySelect');
+    if(companySelect) companySelect.addEventListener('change',()=>setTimeout(()=>window.loadCurrentWorkspaceRole10G2(),0));
+  });
+
+  /* Po każdym zalogowaniu/wylogowaniu ponownie ustalamy rolę. */
+  sb.auth.onAuthStateChange((event)=>{
+    if(event==='SIGNED_IN' || event==='SIGNED_OUT' || event==='USER_UPDATED'){
+      setTimeout(()=>window.loadCurrentWorkspaceRole10G2(),0);
+    }
+  });
+})();
+</script>
+
+<!-- F8-1 — przyciski pozostają widoczne, ale są blokowane bez indywidualnego uprawnienia -->
+<style id="f81-button-permissions">
+  button.f81PermissionLocked{opacity:.48 !important;cursor:not-allowed !important;filter:grayscale(.25);}
+  button.f81PermissionLocked::after{content:" 🔒";font-size:.9em;}
+</style>
+<script>
+(function(){
+  const MAP={
+    calendar:['calendar'],
+    visits:['calendar'],
+    services:['services'],
+    visitTypes:['visitTypes'],
+    workers:['workers'],
+    hours:['hours'],
+    off:['daysOff'],
+    settings:['settings'],
+    rodo:['rodo']
+  };
+  function panelOfButton(btn){
+    const panel=btn.closest('.panel');
+    return panel?panel.id.replace(/Panel$/,''):'';
+  }
+  function permissionForButton(btn){
+    if(!btn || btn.matches('.tab,.sideItem,.menuToggle,[data-panel]')) return null;
+    if(btn.id==='companyCreateBtn'||btn.id==='companyClearBtn'||btn.closest('#companiesPanel')) return null; // Firmy — osobny, niezmieniony mechanizm
+    if(btn.closest('#editUserModal')) return null;
+    const explicit=btn.getAttribute('data-f81-permission');
+    if(explicit) return explicit;
+    const panel=panelOfButton(btn);
+    const list=MAP[panel];
+    if(!list)return null;
+    /* Przyciski nawigacyjne kalendarza i filtry są tylko podglądowe. */
+    if(panel==='calendar' && (btn.id==='prev'||btn.id==='next')) return null;
+    if(panel==='visits' && btn.id==='clearVisitFilters') return 'visits';
+    return list[0]||null;
+  }
+  function hasPermission(key){
+    if(key==='license')return true;
+    const p=window.f81GetCurrentPermissions?window.f81GetCurrentPermissions():{};
+    return p[key]===true;
+  }
+  window.F81_applyButtonPermissions=function(){
+    document.querySelectorAll('.panel button').forEach(btn=>{
+      const key=permissionForButton(btn);
+      if(!key)return;
+      const allowed=hasPermission(key);
+      btn.disabled=!allowed;
+      btn.classList.toggle('f81PermissionLocked',!allowed);
+      btn.setAttribute('aria-disabled',allowed?'false':'true');
+      if(!allowed) btn.title='🔒 Brak nadanego uprawnienia: '+key;
+      else if(btn.title&&btn.title.startsWith('🔒 Brak nadanego')) btn.removeAttribute('title');
+    });
+  };
+  window.f81GetCurrentPermissions=window.f81GetCurrentPermissions||function(){return {};};
+  const oldApply=window.F81_applyButtonPermissions;
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>window.F81_applyButtonPermissions(),250));
+  /* Po każdym odświeżeniu list dynamicznych przyciski dostają ponownie blokadę. */
+  const observer=new MutationObserver(()=>{clearTimeout(window.__f81PermTimer);window.__f81PermTimer=setTimeout(()=>window.F81_applyButtonPermissions(),30);});
+  observer.observe(document.body,{subtree:true,childList:true});
+})();
+</script>
+
+<style id="f81-modal-final-fix">
+/* F8-1 — finalny wygląd okna edycji i uprawnień */
+#editUserModal .editUserBox{border-radius:0 !important;}
+#editUserModal .f81PermItem{position:relative;border-radius:0 !important;min-height:48px;padding:10px 12px !important;background:#fff;display:flex;align-items:center;gap:10px;}
+#editUserModal .f81PermNative{position:absolute !important;width:1px !important;height:1px !important;min-width:1px !important;min-height:1px !important;margin:-1px !important;padding:0 !important;opacity:0 !important;pointer-events:none !important;}
+#editUserModal .f81Check{width:20px;height:20px;min-width:20px;box-sizing:border-box;border:2px solid #777;background:#fff;display:inline-flex;align-items:center;justify-content:center;border-radius:0 !important;}
+#editUserModal .f81PermNative:checked + .f81Check{background:#64152d;border-color:#64152d;}
+#editUserModal .f81PermNative:checked + .f81Check::after{content:"✓";color:#fff;font-size:14px;font-weight:800;line-height:1;}
+#editUserModal .f81PermNative:focus-visible + .f81Check{outline:2px solid #64152d;outline-offset:2px;}
+#editUserModal .f81PermItem.disabled .f81Check{background:#eee;opacity:.7;}
+#editUserModal .f81PermLabel{line-height:1.35;flex:1;}
+#editUserModal .f81PermLock{font-size:.74rem;color:#8a8178;margin-left:auto;}
+@media(max-width:700px){#editUserModal .editUserBox{border-radius:0 !important;width:100%;max-width:none;}}
+</style>
+
+<!-- MODAL PŁATNOŚCI LICENCYJNEJ -->
+<div id="licensePaymentModal" class="licenseModal" aria-hidden="true">
+  <div class="licenseModalBox" role="dialog" aria-modal="true" aria-labelledby="licenseModalTitle">
+    <button type="button" class="licenseModalClose" id="licenseModalClose" aria-label="Zamknij">×</button>
+    <h2 id="licenseModalTitle">Płatność za licencję</h2>
+    <div class="licenseChoice"><strong>Wybrana opcja:</strong><div id="licenseModalProduct">—</div></div>
+    <div class="licenseChoice"><strong>Firma:</strong><div id="licenseModalCompany">—</div></div>
+    <div class="notice">To jest etap przygotowania zamówienia. Prawdziwa płatność zostanie wykonana dopiero po podłączeniu operatora płatności.</div>
+    <div id="licenseModalMsg" class="help"></div>
+    <div class="licenseModalActions">
+      <button type="button" id="licenseModalPay">Przejdź do płatności</button>
+      <button type="button" class="secondary" id="licenseModalCancel">Anuluj</button>
+    </div>
+  </div>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(err){
+      console.warn('Service Worker nie został zarejestrowany:', err);
+    });
+  });
+}
+</script>
+</body></html>
